@@ -225,6 +225,8 @@ class Receivings extends Secure_Controller
 		$data['paid_amount'] = $this->input->post('paid_amount');
 		$data['due_amount'] = $this->input->post('due_amount');
 		
+		
+		$data['purchase_amount'] = $this->input->post('amount_tendered');
 
 		// log_message('debug',print_r($data['cart'],TRUE));
 		// log_message('debug',print_r($data['expire_date'],TRUE));
@@ -261,8 +263,15 @@ class Receivings extends Secure_Controller
 			}
 		}
 
+		$opening_bal=$this->Receiving->opening_bal($supplier_id);
+
+		$closing_bal = bcadd($opening_bal,$data['purchase_amount']);
+
+		$closing_balance = bcsub($closing_bal,$data['paid_amount']);
+
+		log_message('debug',print_r($closing_balance ,TRUE));
 		//SAVE receiving to database
-		$data['receiving_id'] = 'RECV ' . $this->Receiving->save($data['cart'], $supplier_id, $employee_id, $data['comment'], $data['reference'], $data['payment_type'], $data['paid_amount'], $data['due_amount'], $data['stock_location']);
+		$data['receiving_id'] = 'RECV ' . $this->Receiving->save($data['cart'], $supplier_id, $employee_id, $data['comment'], $data['reference'], $data['payment_type'], $data['paid_amount'], $data['due_amount'], $data['purchase_amount'], $opening_bal, $closing_balance, $data['stock_location']);
 
 		$data = $this->xss_clean($data);
 

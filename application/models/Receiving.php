@@ -59,7 +59,7 @@ class Receiving extends CI_Model
 		return $this->db->update('receivings', $receiving_data);
 	}
 
-	public function save($items, $supplier_id, $employee_id, $comment, $reference, $payment_type, $paid_amount, $due_amount, $receiving_id = FALSE)
+	public function save($items, $supplier_id, $employee_id, $comment, $reference, $payment_type, $paid_amount, $due_amount, $purchase_amount, $opening_bal, $closing_balance, $receiving_id = FALSE)
 	{
 		if(count($items) == 0)
 		{
@@ -73,6 +73,9 @@ class Receiving extends CI_Model
 			'payment_type' => $payment_type,
 			'paid_amount' => $paid_amount,
 			'due_amount' => $due_amount,
+			'purchase_amount' => $purchase_amount,
+			'opening_balance' => $opening_bal,
+			'closing_balance' => $closing_balance,
 			'comment' => $comment,
 			'reference' => $reference
 		);
@@ -174,15 +177,35 @@ class Receiving extends CI_Model
 		return $success;
 	}
 
-	public function opening_bal($person_id)
-		{	
-			$this->db->select ('receivings.closing_balance') ;
-			$this->db->from ('receivings'); 
-			$this->db->where('receivings.supplier_id',$person_id);
-			$query=$this->db->get();		
-			$opening_result=$query->result();
-	    	return  $opening_result;
+	public function opening_bal($supplier_id){
+		
+		$this->db->select('max(receiving_id)');		
+		$this->db->from('receivings');
+		$this->db->where('supplier_id ',$supplier_id);
+		// $this->db->where('type != 3');	
+		$this->db->group_by('supplier_id');
+		
+		$sub_query = $this->db->get_compiled_select();
+		$this->db->select('closing_balance');
+		$this->db->from('receivings');
+		$this->db->where("receiving_id IN ($sub_query)");	
+		// $this->db->where('type != 3');	
+		$query = $this->db->get()->result();
+					
+		if($query==NULL || $query=='0')
+		{
+			$query='0.00';
+		 
+			return $query;
 		}
+		foreach($query as $row)
+		{
+			return $row->closing_balance;
+		}
+		return $query;
+		
+}
+
 
 
 	public function delete($receiving_id, $employee_id, $update_inventory = TRUE)

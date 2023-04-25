@@ -263,14 +263,7 @@ if (isset($success))
 									<tr>
 										<td><?php echo $this->lang->line('receivings_payed_amount'); ?></td>
 										<td>
-										<?php //echo form_input(array(
-								 
-								//  'name'=>'opening_balance',
-								//  'id'=>'opening_balance',
-								//  'class'=>'form-control input-sm',
-								//  'readonly'=>'true',
-								//  'value'=>to_currency_no_money(0.00))
-							//	 ); ?>
+										
 											<?php echo form_input(array('name'=>'paid_amount', 'value'=>to_currency_no_money(0.00), 'class'=>'form-control input-sm', 'size'=>'12','onClick'=>'this.select();')); ?>
 										</td>
 									</tr>
