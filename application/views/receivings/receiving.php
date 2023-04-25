@@ -191,7 +191,7 @@ if (isset($success))
 				{
 				?>
 					<th style="width: 55%;"><?php echo $this->lang->line('sales_total'); ?></th>
-					<th style="width: 45%; text-align: right;"><?php echo to_currency($total); ?></th>
+					<th style="width: 45%; text-align: right; font-size:25px; color:red;"><?php echo to_currency($total); ?></th>
 				<?php 
 				}
 				else
@@ -246,30 +246,52 @@ if (isset($success))
 									{
 									?>
 										<tr>
-											<td><?php echo $this->lang->line('receivings_reference');?></td>
+											<td><?php echo $this->lang->line('receivings_batch_no');?></td>
 											<td>
-												<?php echo form_input(array('name'=>'recv_reference', 'id'=>'recv_reference', 'class'=>'form-control input-sm', 'value'=>$reference, 'size'=>5));?>
+												<?php echo form_input(array('name'=>'recv_reference', 'id'=>'recv_reference', 'class'=>'form-control input-sm', 'value'=>$reference, 'size'=>'5'));?>
 											</td>
 										</tr>
 									<?php
 									}
 									?>
-									<tr>
-										<td><?php echo $this->lang->line('sales_payment'); ?></td>
+									<!-- <tr>
+										<td><?php //echo $this->lang->line('sales_payment'); ?></td>
 										<td>
-											<?php echo form_dropdown('payment_type', $payment_options, array(), array('id'=>'payment_types', 'class'=>'selectpicker show-menu-arrow', 'data-style'=>'btn-default btn-sm', 'data-width'=>'auto')); ?>
+											<?php //echo form_dropdown('payment_type', $payment_options, array(), array('id'=>'payment_types', 'class'=>'selectpicker show-menu-arrow', 'data-style'=>'btn-default btn-sm', 'data-width'=>'auto')); ?>
+										</td>
+									</tr> -->
+									<tr>
+										<td><?php echo $this->lang->line('receivings_payed_amount'); ?></td>
+										<td>
+										<?php //echo form_input(array(
+								 
+								//  'name'=>'opening_balance',
+								//  'id'=>'opening_balance',
+								//  'class'=>'form-control input-sm',
+								//  'readonly'=>'true',
+								//  'value'=>to_currency_no_money(0.00))
+							//	 ); ?>
+											<?php echo form_input(array('name'=>'paid_amount', 'value'=>to_currency_no_money(0.00), 'class'=>'form-control input-sm', 'size'=>'12','onClick'=>'this.select();')); ?>
 										</td>
 									</tr>
 									<tr>
 										<td><?php echo $this->lang->line('receivings_pending_amount'); ?></td>
 										<td>
-											<?php echo form_input(array('name'=>'amount_tendered', 'value'=>to_currency($total), 'class'=>'form-control input-sm', 'size'=>'5')); ?>
+											<?php echo form_input(array('name'=>'due_amount','value'=>to_currency_no_money(0.00), 'class'=>'form-control input-sm', 'size'=>'5','onClick'=>'this.select();')); ?>
 										</td>
 									</tr>
 									<tr>
 										<td><?php echo $this->lang->line('receivings_total_amount'); ?></td>
 										<td>
-											<?php echo form_input(array('readonly'=>'readonly','name'=>'amount_tendered', 'value'=>to_currency($total), 'class'=>'form-control input-sm', 'size'=>'5')); ?>
+										<div class="input-group input-group-sm">
+											<?php if (!currency_side()): ?>
+												<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+											<?php endif; ?>
+											<?php echo form_input(array('readonly'=>'readonly','name'=>'amount_tendered', 'value'=>round($total, 2), 'class'=>'form-control input-sm', 'size'=>'5','onClick'=>'this.select();')); ?>
+																	<?php if (currency_side()): ?>
+												<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
+											<?php endif; ?>
+										</div>
 										</td>
 									</tr>
 								</table>
@@ -333,7 +355,8 @@ if (isset($success))
 				{
 			?>
 					<?php echo form_open($controller_name."/edit_item/$line", array('class'=>'form-horizontal', 'id'=>'cart_'.$line)); ?>
-						<tr>
+					
+					<tr>
 							<td><span data-item-id="<?php echo $line;?>" class="delete_item_button"><span class="glyphicon glyphicon-trash"></span></span></td>
 							<td><?php echo $item['item_id']; ?></td>
 							<td style="align:center;">
@@ -342,23 +365,23 @@ if (isset($success))
 							</td>
 
 							<?php 
-							if ($items_module_allowed && $mode !='requisition')
-							{
+							// if ($items_module_allowed && $mode !='requisition')
+							// {
 							?>
 								<td><?php echo form_input(array('name'=>'price', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['price']),'onClick'=>'this.select();'));?></td>
 							<?php
-							}
-							else
-							{
+							// }
+							// else
+							// {
 							?>
 								<td>
-									<?php echo $item['price']; ?>
-									<?php echo form_hidden('price', to_currency_no_money($item['price'])); ?>
+									<?php //echo $item['unit_price']; ?>
+									<?php echo form_input(array('name'=>'unit_price', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['unit_price']),'onClick'=>'this.select();')); ?>
 								</td>
 							<?php
-							}
+							// }
 							?>
-							<td><?php echo form_input(array('name'=>'unit_price', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['unit_price']),'onClick'=>'this.select();'));?></td>
+							<!-- <td><?php //echo form_input(array('name'=>'sell_price', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['unit_price']),'onClick'=>'this.select();'));?></td> -->
 							
 							<td><?php echo form_input(array('name'=>'mrp_price', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['mrp_price']),'onClick'=>'this.select();'));?></td>
 							
@@ -389,7 +412,7 @@ if (isset($success))
 							?> 
 
 							
-							<td><?php echo form_input(array('name'=>'expire_date', 'class'=>'form-control input-sm datetime', 'value'=>to_datetime(strtotime($item['expire_date'])),'onClick'=>'this.select();'));?></td>
+							<td><?php echo form_input(array('name'=>'expire_date', 'id'=>'expire_date', 'class'=>'form-control input-sm datetime', 'value'=>to_datetime(strtotime($item['expire_date'])),'onClick'=>'this.select();'));?></td>
 							
 							<td><?php echo form_input(array('name'=>'hsn_code', 'readonly'=>'readonly', 'id'=>'hsn_code', 'class'=>'form-control input-sm', 'value'=>$item['hsn_code'],'onClick'=>'this.select();'));?></td>
 							<td><?php echo $item['tax_percentage']; ?></td>
@@ -444,6 +467,9 @@ $(document).ready(function()
 {
 
 	<?php $this->load->view('partial/datepicker_locale'); ?>
+	
+
+	
 
 	$('#hsn_code').autocomplete({
 		source: "<?php echo site_url('items/suggest_hsn_code');?>",
@@ -523,6 +549,8 @@ $(document).ready(function()
 		}
 	});
 
+	
+
 	dialog_support.init("a.modal-dlg, button.modal-dlg");
 
 	$('#supplier').blur(function()
@@ -576,7 +604,7 @@ $(document).ready(function()
 		}
 	}
 
-	$('[name="price"],[name="quantity"],[name="receiving_quantity"],[name="discount"],[name="description"],[name="serialnumber"]').change(function() {
+	$('[name="price"],[name="quantity"],[name="receiving_quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="expire_date"]').change(function() {
 		$(this).parents("tr").prevAll("form:first").submit()
 	});
 

@@ -18,8 +18,10 @@ $lang["receivings_hsn_code_item"] = "HSN Code";
 $lang["receivings_expire_date"] = "Expire Date";
 $lang["receivings_tax_percentage"] = "Tax %";
 $lang["receivings_tax_amount"] = "Tax Amount";
-$lang["receivings_total_amount"] = "Total Purchase Amount";
+$lang["receivings_total_amount"] = "Total Purchase Amount (Rs.)";
 $lang["receivings_pending_amount"] = "Due Amount";
+$lang["receivings_payed_amount"] = "Paid Amount";
+$lang["receivings_batch_no"] = "Batch No";
 
 
 $lang["receivings_daily"] = "";
@@ -49,7 +51,7 @@ $lang["receivings_reference"] = "Reference";
 $lang["receivings_register"] = "Items Receiving";
 $lang["receivings_requisition"] = "Requisition";
 $lang["receivings_return"] = "Return";
-$lang["receivings_select_supplier"] = "Select Supplier (Optional)";
+$lang["receivings_select_supplier"] = "Select Supplier Name ";
 $lang["receivings_ship_pack"] = "Ship Pack";
 $lang["receivings_start_typing_supplier_name"] = "Start Typing Supplier's name...";
 $lang["receivings_stock"] = "Stock";

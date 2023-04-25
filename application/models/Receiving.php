@@ -59,7 +59,7 @@ class Receiving extends CI_Model
 		return $this->db->update('receivings', $receiving_data);
 	}
 
-	public function save($items, $supplier_id, $employee_id, $comment, $reference, $payment_type, $receiving_id = FALSE)
+	public function save($items, $supplier_id, $employee_id, $comment, $reference, $payment_type, $paid_amount, $due_amount, $receiving_id = FALSE)
 	{
 		if(count($items) == 0)
 		{
@@ -71,18 +71,23 @@ class Receiving extends CI_Model
 			'supplier_id' => $this->Supplier->exists($supplier_id) ? $supplier_id : NULL,
 			'employee_id' => $employee_id,
 			'payment_type' => $payment_type,
+			'paid_amount' => $paid_amount,
+			'due_amount' => $due_amount,
 			'comment' => $comment,
 			'reference' => $reference
 		);
-
+		// log_message('debug',print_r($receivings_data,TRUE));
 		//Run these queries as a transaction, we want to make sure we do all or nothing
 		$this->db->trans_start();
 
 		$this->db->insert('receivings', $receivings_data);
 		$receiving_id = $this->db->insert_id();
-
+		
 		foreach($items as $line=>$item)
 		{
+			
+			$tax_amount = $item['price']*$item['quantity']*$item['receiving_quantity'] * $item['tax_percentage'] /100 ;
+			
 			$cur_item_info = $this->Item->get_info($item['item_id']);
 
 			$receivings_items_data = array(
@@ -96,12 +101,17 @@ class Receiving extends CI_Model
 				'discount' => $item['discount'],
 				'discount_type' => $item['discount_type'],
 				'item_cost_price' => $cur_item_info->cost_price,
-				'item_unit_price' => $item['price'],
-				'item_cost_price' =>  $item['sell_price'],
+				'item_unit_price' => $item['unit_price'],
+				'sell_price' =>  $item['unit_price'],
 				'mrp_price' =>  $item['mrp_price'],
+				'expire_date' =>  $item['expire_date'],
+				'hsn_code' =>  $item['hsn_code'],
+				'tax_percentage' =>  $item['tax_percentage'],
+				'tax_amount' =>  $tax_amount,
 				'item_location' => $item['item_location']
 			);
 
+			log_message('debug',print_r($receivings_items_data,TRUE));
 			$this->db->insert('receivings_items', $receivings_items_data);
 
 			$items_received = $item['receiving_quantity'] != 0 ? $item['quantity'] * $item['receiving_quantity'] : $item['quantity'];
@@ -163,6 +173,17 @@ class Receiving extends CI_Model
 
 		return $success;
 	}
+
+	public function opening_bal($person_id)
+		{	
+			$this->db->select ('receivings.closing_balance') ;
+			$this->db->from ('receivings'); 
+			$this->db->where('receivings.supplier_id',$person_id);
+			$query=$this->db->get();		
+			$opening_result=$query->result();
+	    	return  $opening_result;
+		}
+
 
 	public function delete($receiving_id, $employee_id, $update_inventory = TRUE)
 	{

@@ -115,11 +115,22 @@ class Receivings extends Secure_Controller
 
 	public function edit_item($item_id)
 	{
+
+		
 		$data = array();
 
 		$this->form_validation->set_rules('price', 'lang:items_price', 'required|callback_numeric');
 		$this->form_validation->set_rules('quantity', 'lang:items_quantity', 'required|callback_numeric');
 		$this->form_validation->set_rules('discount', 'lang:items_discount', 'required|callback_numeric');
+		$this->form_validation->set_rules('expire_date', 'lang:expire_date', 'required|callback_numeric');
+
+		$expire_date = $this->input->post('expire_date');
+
+			$item_date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $expire_date);
+
+			$expire_date = $item_date_formatter->format('Y-m-d H:i:s');
+
+			// log_message('debug',print_r($expire_date,TRUE));
 
 		$description = $this->input->post('description');
 		$serialnumber = $this->input->post('serialnumber');
@@ -132,7 +143,7 @@ class Receivings extends Secure_Controller
 
 		if($this->form_validation->run() != FALSE)
 		{
-			$this->receiving_lib->edit_item($item_id, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $receiving_quantity);
+			$this->receiving_lib->edit_item($item_id, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $receiving_quantity, $expire_date);
 		}
 		else
 		{
@@ -199,15 +210,25 @@ class Receivings extends Secure_Controller
 
 	public function complete()
 	{
+		
 		$data = array();
 		
 		$data['cart'] = $this->receiving_lib->get_cart();
 		$data['total'] = $this->receiving_lib->get_total();
 		$data['transaction_time'] = to_datetime(time());
+		$data['expire_date'] = $this->input->post('expire_date');
+
 		$data['mode'] = $this->receiving_lib->get_mode();
 		$data['comment'] = $this->receiving_lib->get_comment();
 		$data['reference'] = $this->receiving_lib->get_reference();
 		$data['payment_type'] = $this->input->post('payment_type');
+		$data['paid_amount'] = $this->input->post('paid_amount');
+		$data['due_amount'] = $this->input->post('due_amount');
+		
+
+		// log_message('debug',print_r($data['cart'],TRUE));
+		// log_message('debug',print_r($data['expire_date'],TRUE));
+
 		$data['show_stock_locations'] = $this->Stock_location->show_locations('receivings');
 		$data['stock_location'] = $this->receiving_lib->get_stock_source();
 		if($this->input->post('amount_tendered') != NULL)
@@ -241,7 +262,7 @@ class Receivings extends Secure_Controller
 		}
 
 		//SAVE receiving to database
-		$data['receiving_id'] = 'RECV ' . $this->Receiving->save($data['cart'], $supplier_id, $employee_id, $data['comment'], $data['reference'], $data['payment_type'], $data['stock_location']);
+		$data['receiving_id'] = 'RECV ' . $this->Receiving->save($data['cart'], $supplier_id, $employee_id, $data['comment'], $data['reference'], $data['payment_type'], $data['paid_amount'], $data['due_amount'], $data['stock_location']);
 
 		$data = $this->xss_clean($data);
 
@@ -256,7 +277,7 @@ class Receivings extends Secure_Controller
 
 		$data['print_after_sale'] = $this->receiving_lib->is_print_after_sale();
 
-log_message('debug',print_r($data,TRUE));
+// log_message('debug',print_r($data,TRUE));
 		$this->load->view("receivings/receipt",$data);
 
 		$this->receiving_lib->clear_all();
@@ -282,6 +303,23 @@ log_message('debug',print_r($data,TRUE));
 			$this->_reload($data);	
 		}
 	}
+
+	public function ro_company_id($supplier_id)
+    {
+
+        $result = $this->Receiving->opening_bal($supplier_id);
+        $pending = 0;
+        if ($result != null) {
+            foreach ($result as $row) {
+                $pending = $row->pending_payables;
+				var_dump($pending);
+            }
+        }
+        if ($pending == null || $result == null) {
+            $pending = 0;
+        }
+        echo $pending;
+    }
 	
 	public function receipt($receiving_id)
 	{
@@ -293,6 +331,9 @@ log_message('debug',print_r($data,TRUE));
 		$data['transaction_time'] = to_datetime(strtotime($receiving_info['receiving_time']));
 		$data['show_stock_locations'] = $this->Stock_location->show_locations('receivings');
 		$data['payment_type'] = $receiving_info['payment_type'];
+		$data['paid_amount'] = $receiving_info['paid_amount'];
+		$data['due_amount'] = $receiving_info['due_amount'];
+		
 		$data['reference'] = $this->receiving_lib->get_reference();
 		$data['receiving_id'] = 'RECV ' . $receiving_id;
 		$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['receiving_id']);
@@ -381,14 +422,20 @@ log_message('debug',print_r($data,TRUE));
 		$date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $newdate);
 		$receiving_time = $date_formatter->format('Y-m-d H:i:s');
 
+		$expire_date = $this->input->post('expire_date');
+		$expire_date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $expire_date);
+
+
+
 		$receiving_data = array(
 			'receiving_time' => $receiving_time,
+			'expire_date' => $expire_date_formatter->format('Y-m-d H:i:s'),
 			'supplier_id' => $this->input->post('supplier_id') ? $this->input->post('supplier_id') : NULL,
 			'employee_id' => $this->input->post('employee_id'),
 			'comment' => $this->input->post('comment'),
 			'reference' => $this->input->post('reference') != '' ? $this->input->post('reference') : NULL
 		);
-
+		log_message('debug',print_r($receiving_data,TRUE));
 		$this->Inventory->update('RECV '.$receiving_id, ['trans_date' => $receiving_time]);
 		if($this->Receiving->update($receiving_data, $receiving_id))
 		{

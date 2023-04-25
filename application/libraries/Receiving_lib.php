@@ -215,7 +215,7 @@ class Receiving_lib
 
 		$tax_percentage = $item_tax_info[0]['percent'] + $item_tax_info[1]['percent'];
 
-		log_message('debug',print_r($tax_percentage,TRUE));
+		// log_message('debug',print_r($tax_percentage,TRUE));
 		
 		$item_info = $this->CI->Item->get_info($item_id,$item_location,$item_tax_info);
 		
@@ -304,17 +304,21 @@ class Receiving_lib
 		return TRUE;
 	}
 
-	public function edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $receiving_quantity)
+	public function edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $receiving_quantity, $expire_date)
 	{
 		$items = $this->get_cart();
 		if(isset($items[$line]))
 		{
+			
 			$line = &$items[$line];
+			
 			$line['description'] = $description;
 			$line['serialnumber'] = $serialnumber;
 			$line['quantity'] = $quantity;
 			$line['receiving_quantity'] = $receiving_quantity;
 			$line['discount'] = $discount;
+			$line['expire_date'] = $expire_date;
+			// log_message('debug',print_r($line = &$items[$line] ,TRUE));
 			if(!is_null($discount_type))
 			{
 				$line['discount_type'] = $discount_type;
@@ -413,6 +417,11 @@ class Receiving_lib
 		$total = 0;
 		foreach($this->get_cart() as $item)
 		{
+
+			
+
+			$subtotal = bcadd($total, $this->get_item_total(($item['quantity']), $item['price'], $item['discount'], $item['discount_type'], $item['receiving_quantity']));
+
 			$total = bcadd($total, $this->get_item_total(($item['quantity']), $item['price'], $item['discount'], $item['discount_type'], $item['receiving_quantity']));
 		}
 		
