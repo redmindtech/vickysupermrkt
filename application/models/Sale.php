@@ -673,7 +673,8 @@ class Sale extends CI_Model
 				'item_cost_price'	=> $item['cost_price'],
 				'item_unit_price'	=> $item['price'],
 				'item_location'		=> $item['item_location'],
-				'print_option'		=> $item['print_option']
+				'print_option'		=> $item['print_option'],
+				'mrp_price'			=>$item['mrp_price']
 			);
 
 			$this->db->insert('sales_items', $sales_items_data);

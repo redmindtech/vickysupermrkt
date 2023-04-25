@@ -100,18 +100,19 @@ if(isset($success))
 		</div>
 	<?php echo form_close(); ?>
 
-
+<!-- <br><br><br><br><br><br><br> -->
 <!-- Sale Items List -->
 
 	<table class="sales_table_100" id="register">
 		<thead>
 			<tr>
-				<th style="width: 5%; "><?php echo $this->lang->line('common_delete'); ?></th>
-				<th style="width: 15%;"><?php echo $this->lang->line('sales_item_number'); ?></th>
+				<th hidden style="width: 5%; "><?php echo $this->lang->line('common_delete'); ?></th>
+				<th style="width: 15%;"><?php echo $this->lang->line('sales_item_id'); ?></th>
 				<th style="width: 30%;"><?php echo $this->lang->line('sales_item_name'); ?></th>
+				<th style="width: 10%;"><?php echo $this->lang->line('mrp_price'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('sales_price'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('sales_quantity'); ?></th>
-				<th style="width: 15%;"><?php echo $this->lang->line('sales_discount'); ?></th>
+				<th style="width: 15%;" hidden ><?php echo $this->lang->line('sales_discount'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('sales_total'); ?></th>
 				<th style="width: 5%; "><?php echo $this->lang->line('sales_update'); ?></th>
 			</tr>
@@ -136,7 +137,7 @@ if(isset($success))
 			?>
 					<?php echo form_open($controller_name."/edit_item/$line", array('class'=>'form-horizontal', 'id'=>'cart_'.$line)); ?>
 						<tr>
-							<td>
+							<td hidden>
 								<span data-item-id="<?php echo $line; ?>" class="delete_item_button"><span class="glyphicon glyphicon-trash"></span></span>
 								<?php
 								echo form_hidden('location', $item['item_location']);
@@ -156,7 +157,7 @@ if(isset($success))
 							else
 							{
 							?>
-								<td><?php echo $item['item_number']; ?></td>
+								<td><?php echo $item['item_id']; ?></td>
 								<td style="align: center;">
 									<?php echo $item['name'] . ' '. implode(' ', array($item['attribute_values'], $item['attribute_dtvalues'])); ?>
 									<br/>
@@ -165,12 +166,24 @@ if(isset($success))
 							<?php
 							}
 							?>
-
+							<td>
+							<?php
+								if($items_module_allowed && $change_price)
+								{
+									echo form_input(array('name'=>'mrp_price', 'class'=>'form-control input-sm',  'value'=>to_currency_no_money($item['mrp_price']), 'tabindex'=>++$tabindex, 'readonly' => 'readonly','onClick'=>'this.select();'));
+								}
+								else
+								{
+									echo to_currency($item['mrp_price']);
+									echo form_hidden('mrp_price', to_currency_no_money($item['mrp_price']));
+								}
+								?>
+							</td>
 							<td>
 								<?php
 								if($items_module_allowed && $change_price)
 								{
-									echo form_input(array('name'=>'price', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['price']), 'tabindex'=>++$tabindex, 'onClick'=>'this.select();'));
+									echo form_input(array('name'=>'price', 'class'=>'form-control input-sm','readonly' => 'readonly', 'value'=>to_currency_no_money($item['price']), 'tabindex'=>++$tabindex, 'onClick'=>'this.select();'));
 								}
 								else
 								{
@@ -194,12 +207,12 @@ if(isset($success))
 								?>
 							</td>
 
-							<td>
+							<td hidden>
 								<div class="input-group">
-									<?php echo form_input(array('name'=>'discount', 'class'=>'form-control input-sm', 'value'=>$item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'tabindex'=>++$tabindex, 'onClick'=>'this.select();')); ?>
-									<span class="input-group-btn">
-										<?php echo form_checkbox(array('id'=>'discount_toggle', 'name'=>'discount_toggle', 'value'=>1, 'data-toggle'=>"toggle",'data-size'=>'small', 'data-onstyle'=>'success', 'data-on'=>'<b>'.$this->config->item('currency_symbol').'</b>', 'data-off'=>'<b>%</b>', 'data-line'=>$line, 'checked'=>$item['discount_type'])); ?>
-									</span>
+									<?php echo form_input(array('name'=>'discount', 'id'=>"discount",'class'=>'form-control input-sm', 'value'=>$item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'tabindex'=>++$tabindex, 'onClick'=>'this.select();','hidden'=>true)); ?>
+									<!-- <span class="input-group-btn">
+										<?php echo form_checkbox(array('id'=>'discount_toggle','hidden'=>'hidden', 'name'=>'discount_toggle', 'value'=>1, 'data-toggle'=>"toggle",'data-size'=>'small', 'data-onstyle'=>'success', 'data-on'=>'<b>'.$this->config->item('currency_symbol').'</b>', 'data-off'=>'<b>%</b>', 'data-line'=>$line, 'checked'=>$item['discount_type'])); ?>
+									</span> -->
 								</div>
 							</td>
 
@@ -224,7 +237,7 @@ if(isset($success))
 							{
 							?>
 								<td><?php echo form_input(array('type'=>'hidden', 'name'=>'item_id', 'value'=>$item['item_id'])); ?></td>
-								<td style="align: center;" colspan="6">
+								<td hidden style="align: center;" colspan="6">
 									<?php echo form_input(array('name'=>'item_description', 'id'=>'item_description', 'class'=>'form-control input-sm', 'value'=>$item['description'], 'tabindex'=>++$tabindex)); ?>
 								</td>
 								<td> </td>
@@ -233,17 +246,17 @@ if(isset($success))
 							else
 							{
 							?>
-								<td> </td>
+								
 								<?php
 								if($item['allow_alt_description'])
 								{
 								?>
-									<td style="color: #2F4F4F;"><?php echo $this->lang->line('sales_description_abbrv'); ?></td>
+									<td hidden style="color: #2F4F4F;"><?php echo $this->lang->line('sales_description_abbrv'); ?></td>
 								<?php
 								}
 								?>
 
-								<td colspan='2' style="text-align: left;">
+								<td hidden colspan='2' style="text-align: left;">
 									<?php
 									if($item['allow_alt_description'])
 									{
@@ -264,8 +277,8 @@ if(isset($success))
 									}
 									?>
 								</td>
-								<td>&nbsp;</td>
-								<td style="color: #2F4F4F;">
+								<td hidden>&nbsp;</td>
+								<td hidden style="color: #2F4F4F;">
 									<?php
 									if($item['is_serialized'])
 									{
@@ -273,7 +286,7 @@ if(isset($success))
 									}
 									?>
 								</td>
-								<td colspan='4' style="text-align: left;">
+								<td hidden colspan='4' style="text-align: left;">
 									<?php
 									if($item['is_serialized'])
 									{
@@ -668,6 +681,7 @@ if(isset($success))
 <script type="text/javascript">
 $(document).ready(function()
 {
+	$("#discount").hide();
 	const redirect = function() {
 		window.location.href = "<?php echo site_url('sales'); ?>";
 	};

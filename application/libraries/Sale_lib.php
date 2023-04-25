@@ -754,6 +754,7 @@ class Sale_lib
 			return FALSE;
 		}
 
+		log_message('debug',print_r($item_info,TRUE));
 		$applied_discount = $discount;
 		$item_id = $item_info->item_id;
 		$item_type = $item_info->item_type;
@@ -761,6 +762,7 @@ class Sale_lib
 
 		$price = $item_info->unit_price;
 		$cost_price = $item_info->cost_price;
+		$mrp_price=$item_info->mrp_price;
 		if($price_override != NULL)
 		{
 			$price = $price_override;
@@ -903,7 +905,8 @@ class Sale_lib
 					'stock_type' => $stock_type,
 					'item_type' => $item_type,
 					'hsn_code' => $item_info->hsn_code,
-					'tax_category_id' => $item_info->tax_category_id
+					'tax_category_id' => $item_info->tax_category_id,
+					'mrp_price'=>$mrp_price
 				)
 			);
 			//add to existing array
