@@ -65,6 +65,7 @@ class Item_hsn_codes extends Secure_Controller
 		$hsn_code_data = array(
 			'hsn_code' => $this->input->post('hsn_code'),
 			'tax_percentage' => $this->input->post('tax_percentage'),
+			'description' => $this->input->post('description'),
 		);
 		
 		if($this->Item_hsn_code->save($hsn_code_data, $id))
