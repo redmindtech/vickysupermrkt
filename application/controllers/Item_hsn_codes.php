@@ -111,5 +111,12 @@ class Item_hsn_codes extends Secure_Controller
 			echo json_encode(array('success' => FALSE, 'message' => $this->lang->line('hsn_code_cannot_be_deleted')));
 		}
 	}
+	// public function get_percent($hsn)
+	// {
+	// 	// $percent=$this->Item_hsn_code->get_hsn_percent($hsn);
+	// 	log_message('debug',print_r($hsn,true));
+	// 	// var_dump($percent);
+	// 	// return $percent;
+	// }
 }
 ?>

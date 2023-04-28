@@ -185,5 +185,14 @@ class item_hsn_code extends CI_Model
 
 		return $this->db->get();
 	}
+	public function get_hsn_percent($hsn)
+	{
+		$this->db->select('tax_percentage');
+			$this->db->from('item_hsn_code');
+			$this->db->where('hsn_code',$hsn);
+			$query = $this->db->get();			
+			$per_= $query->result();
+			return $per_;
+	}
 }
 ?>

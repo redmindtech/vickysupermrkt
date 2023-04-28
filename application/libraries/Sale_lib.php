@@ -759,6 +759,12 @@ class Sale_lib
 		$item_id = $item_info->item_id;
 		$item_type = $item_info->item_type;
 		$stock_type = $item_info->stock_type;
+		$hsn=$item_info->hsn_code;
+
+		 $tax_percent=$this->CI->Item_hsn_code->get_hsn_percent($hsn);
+		 
+		$hsn_percent=$tax_percent[0]->tax_percentage;
+	
 
 		$price = $item_info->unit_price;
 		$cost_price = $item_info->cost_price;
@@ -906,7 +912,8 @@ class Sale_lib
 					'item_type' => $item_type,
 					'hsn_code' => $item_info->hsn_code,
 					'tax_category_id' => $item_info->tax_category_id,
-					'mrp_price'=>$mrp_price
+					'mrp_price'=>$mrp_price,
+					'tax_percent'=>$hsn_percent
 				)
 			);
 			//add to existing array

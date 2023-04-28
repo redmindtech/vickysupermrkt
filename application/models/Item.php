@@ -1032,5 +1032,6 @@ class Item extends CI_Model
 		}
 		return $item_name;
 	}
+	
 }
 ?>

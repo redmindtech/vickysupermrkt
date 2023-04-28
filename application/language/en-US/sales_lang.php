@@ -222,3 +222,4 @@ $lang["sales_work_order_sent"] = "Work Order sent to";
 $lang["sales_work_order_unsent"] = "Work Order failed to be sent to";
 $lang["mrp_price"]="M.R.P";
 $lang["sales_item_id"]="Item Code";
+$lang["tax_percentage"]="Tax";

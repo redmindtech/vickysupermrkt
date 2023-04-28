@@ -109,9 +109,10 @@ if(isset($success))
 				<th hidden style="width: 5%; "><?php echo $this->lang->line('common_delete'); ?></th>
 				<th style="width: 15%;"><?php echo $this->lang->line('sales_item_id'); ?></th>
 				<th style="width: 30%;"><?php echo $this->lang->line('sales_item_name'); ?></th>
-				<th style="width: 10%;"><?php echo $this->lang->line('mrp_price'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('sales_price'); ?></th>
+				<th style="width: 10%;"><?php echo $this->lang->line('mrp_price'); ?></th>				
 				<th style="width: 10%;"><?php echo $this->lang->line('sales_quantity'); ?></th>
+				<th style="width: 10%;"><?php echo $this->lang->line('tax_percentage'); ?></th>
 				<th style="width: 15%;" hidden ><?php echo $this->lang->line('sales_discount'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('sales_total'); ?></th>
 				<th style="width: 5%; "><?php echo $this->lang->line('sales_update'); ?></th>
@@ -165,20 +166,7 @@ if(isset($success))
 								</td>
 							<?php
 							}
-							?>
-							<td>
-							<?php
-								if($items_module_allowed && $change_price)
-								{
-									echo form_input(array('name'=>'mrp_price', 'class'=>'form-control input-sm',  'value'=>to_currency_no_money($item['mrp_price']), 'tabindex'=>++$tabindex, 'readonly' => 'readonly','onClick'=>'this.select();'));
-								}
-								else
-								{
-									echo to_currency($item['mrp_price']);
-									echo form_hidden('mrp_price', to_currency_no_money($item['mrp_price']));
-								}
-								?>
-							</td>
+							?>							
 							<td>
 								<?php
 								if($items_module_allowed && $change_price)
@@ -189,6 +177,19 @@ if(isset($success))
 								{
 									echo to_currency($item['price']);
 									echo form_hidden('price', to_currency_no_money($item['price']));
+								}
+								?>
+							</td>
+							<td>
+							<?php
+								if($items_module_allowed && $change_price)
+								{
+									echo form_input(array('name'=>'mrp_price', 'class'=>'form-control input-sm',  'value'=>to_currency_no_money($item['mrp_price']), 'tabindex'=>++$tabindex, 'readonly' => 'readonly','onClick'=>'this.select();'));
+								}
+								else
+								{
+									echo to_currency($item['mrp_price']);
+									echo form_hidden('mrp_price', to_currency_no_money($item['mrp_price']));
 								}
 								?>
 							</td>
@@ -206,7 +207,7 @@ if(isset($success))
 								}
 								?>
 							</td>
-
+							<td><?php echo form_input(array('name'=>'tax_percent', 'class'=>'form-control input-sm','readonly' => 'readonly', 'value'=>$item['tax_percent'].'%', 'tabindex'=>++$tabindex, 'onClick'=>'this.select();'));?></td>
 							<td hidden>
 								<div class="input-group">
 									<?php echo form_input(array('name'=>'discount', 'id'=>"discount",'class'=>'form-control input-sm', 'value'=>$item['discount_type'] ? to_currency_no_money($item['discount']) : to_decimals($item['discount']), 'tabindex'=>++$tabindex, 'onClick'=>'this.select();','hidden'=>true)); ?>
