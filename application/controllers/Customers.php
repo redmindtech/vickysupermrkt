@@ -304,6 +304,13 @@ class Customers extends Persons
 		echo !$exists ? 'true' : 'false';
 	}
 
+	public function ajax_check_phone_no()
+	{
+		$exists = $this->Customer->check_phone_no_exists(strtolower($this->input->post('phone_number')), $this->input->post('person_id'));
+
+		echo !$exists ? 'true' : 'false';
+	}
+
 	/*
 	AJAX call to verify if an account number already exists
 	*/

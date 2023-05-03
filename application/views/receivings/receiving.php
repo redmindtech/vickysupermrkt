@@ -231,8 +231,6 @@ if (isset($success))
 				?>
 					<?php echo form_open($controller_name."/complete", array('id'=>'finish_receiving_form', 'class'=>'form-horizontal')); ?>
 						<div class="form-group form-group-sm">
-							<label id="comment_label" for="comment"><?php echo $this->lang->line('common_comments'); ?></label>
-							<?php echo form_textarea(array('name'=>'comment', 'id'=>'comment', 'class'=>'form-control input-sm', 'value'=>$comment, 'rows'=>'4'));?>
 							<div id="payment_details" >
 								<table class="sales_table_100" >
 									<tr>
@@ -260,6 +258,23 @@ if (isset($success))
 											<?php //echo form_dropdown('payment_type', $payment_options, array(), array('id'=>'payment_types', 'class'=>'selectpicker show-menu-arrow', 'data-style'=>'btn-default btn-sm', 'data-width'=>'auto')); ?>
 										</td>
 									</tr> -->
+
+									<tr>
+										<td><?php echo $this->lang->line('receivings_invoice_no'); ?></td>
+										<td>
+										
+											<?php echo form_input(array('name'=>'invoice_no', 'value'=>'', 'class'=>'form-control input-sm', 'size'=>'12','onClick'=>'this.select();')); ?>
+										</td>
+									</tr>
+
+									<tr>
+										<td><?php echo $this->lang->line('receivings_purchase_amt'); ?></td>
+										<td>
+										
+											<?php echo form_input(array('name'=>'supplier_inv_amount', 'id'=>'supplier_inv_amount', 'value'=>to_currency_no_money(0.00), 'class'=>'form-control input-sm', 'size'=>'12','onClick'=>'this.select();')); ?>
+										</td>
+									</tr>
+
 									<tr>
 										<td><?php echo $this->lang->line('receivings_payed_amount'); ?></td>
 										<td>
@@ -276,18 +291,15 @@ if (isset($success))
 									<tr>
 										<td><?php echo $this->lang->line('receivings_total_amount'); ?></td>
 										<td>
-										<div class="input-group input-group-sm">
-											<?php if (!currency_side()): ?>
-												<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-											<?php endif; ?>
-											<?php echo form_input(array('readonly'=>'readonly','name'=>'amount_tendered', 'value'=>round($total, 2), 'class'=>'form-control input-sm', 'size'=>'5','onClick'=>'this.select();')); ?>
-																	<?php if (currency_side()): ?>
-												<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
-											<?php endif; ?>
-										</div>
+																					
+											<?php echo form_input(array('readonly'=>'readonly', 'id'=>'total', 'name'=>'amount_tendered', 'value'=>round($total, 2), 'class'=>'form-control input-sm', 'size'=>'13','onClick'=>'this.select();')); ?>
+					
 										</td>
 									</tr>
 								</table>
+								<label id="comment_label" for="comment"><?php echo $this->lang->line('common_comments'); ?></label>
+							<?php echo form_textarea(array('name'=>'comment', 'id'=>'comment', 'class'=>'form-control input-sm', 'value'=>$comment, 'rows'=>'2'));?>
+							
 							</div>
 
 							<div class='btn btn-sm btn-danger pull-left' id='cancel_receiving_button'><span class="glyphicon glyphicon-remove">&nbsp</span><?php echo $this->lang->line('receivings_cancel_receiving') ?></div>
@@ -318,11 +330,12 @@ if (isset($success))
 				<th style="width:7%;"><?php echo $this->lang->line('receivings_purchase_price'); ?></th>
 				<th style="width:7%;"><?php echo $this->lang->line('receivings_sale_price'); ?></th>
 				<th style="width:7%;"><?php echo $this->lang->line('receivings_mrp_price'); ?></th>
+				<th style="width:7%;"><?php echo $this->lang->line('receivings_roi'); ?></th>
 				<th style="width:7%;"><?php echo $this->lang->line('receivings_quantity'); ?></th>
-				<th style="width:7%;"><?php echo $this->lang->line('receivings_ship_pack'); ?></th>
+				<!-- <th style="width:7%;"><?php //echo $this->lang->line('receivings_ship_pack'); ?></th> -->
 				<!-- <th style="width:10%;"><?php //echo $this->lang->line('receivings_discount'); ?></th> -->
 				<th style="width:9%;"><?php echo $this->lang->line('receivings_expire_date'); ?></th>
-				<th style="width:6%;"><?php echo $this->lang->line('receivings_hsn_code_item'); ?></th>
+				<th style="width:7%;"><?php echo $this->lang->line('receivings_hsn_code_item'); ?></th>
 				<th style="width:6%;"><?php echo $this->lang->line('receivings_tax_percentage'); ?></th>
 				<th style="width:6%;"><?php echo $this->lang->line('receivings_tax_amount'); ?></th>
 				<th style="width:10%;"><?php echo $this->lang->line('receivings_total'); ?></th>
@@ -361,7 +374,7 @@ if (isset($success))
 							// if ($items_module_allowed && $mode !='requisition')
 							// {
 							?>
-								<td><?php echo form_input(array('name'=>'price', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['price']),'onClick'=>'this.select();'));?></td>
+								<td><?php echo form_input(array('name'=>'price', 'id'=>'price', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['price']),'onClick'=>'this.select();'));?></td>
 							<?php
 							// }
 							// else
@@ -369,16 +382,17 @@ if (isset($success))
 							?>
 								<td>
 									<?php //echo $item['unit_price']; ?>
-									<?php echo form_input(array('name'=>'unit_price', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['unit_price']),'onClick'=>'this.select();')); ?>
+									<?php echo form_input(array('name'=>'unit_price', 'id'=>'unit_price' ,'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['unit_price']),'onClick'=>'this.select();')); ?>
 								</td>
 							<?php
 							// }
 							?>
 							<!-- <td><?php //echo form_input(array('name'=>'sell_price', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['unit_price']),'onClick'=>'this.select();'));?></td> -->
 							
-							<td><?php echo form_input(array('name'=>'mrp_price', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['mrp_price']),'onClick'=>'this.select();'));?></td>
+							<td><?php echo form_input(array('name'=>'mrp_price', 'id'=>'mrp_price' , 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['mrp_price']),'onClick'=>'this.select();'));?></td>
+							<td><?php echo form_input(array('name'=>'roi_price',  'id'=>'roi_price' , 'readonly'=>'readonly', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['unit_price']-$item['price']),'onClick'=>'this.select();'));?></td>
 							
-							<td><?php echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['quantity']),'onClick'=>'this.select();')); ?></td>
+							<td hidden="true"><?php echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['quantity']),'onClick'=>'this.select();')); ?></td>
 							<td><?php echo form_input(array('name'=>'receiving_quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['receiving_quantity']),'onClick'=>'this.select();'));?></td>
 
 							<?php       
@@ -460,10 +474,8 @@ $(document).ready(function()
 {
 
 	<?php $this->load->view('partial/datepicker_locale'); ?>
-	
 
 	
-
 	$('#hsn_code').autocomplete({
 		source: "<?php echo site_url('items/suggest_hsn_code');?>",
 		delay: 10,
@@ -553,7 +565,18 @@ $(document).ready(function()
 
 	$("#finish_receiving_button").click(function()
 	{
+		var supplier_inv_amount = $('#supplier_inv_amount').val();
+		var total = $('#total').val();
+		if(supplier_inv_amount !== total)
+		{
+			alert('Please Check Invoice Amount and Total Amount');
+		}
+		else{
+		// alert(id1);
+		// alert(id2);
+
 		$('#finish_receiving_form').submit();
+		}
 	});
 
 	$("#cancel_receiving_button").click(function()
@@ -597,7 +620,7 @@ $(document).ready(function()
 		}
 	}
 
-	$('[name="price"],[name="quantity"],[name="receiving_quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="expire_date"]').change(function() {
+	$('[name="price"],[name="quantity"],[name="receiving_quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="expire_date"],[name="unit_price"]').change(function() {
 		$(this).parents("tr").prevAll("form:first").submit()
 	});
 

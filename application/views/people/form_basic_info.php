@@ -1,5 +1,5 @@
 <div class="form-group form-group-sm">	
-	<?php echo form_label($this->lang->line('common_first_name'), 'first_name', array('class'=>'required control-label col-xs-3')); ?>
+	<?php echo form_label($this->lang->line('customers_customer_name'), 'first_name', array('class'=>'required control-label col-xs-3')); ?>
 	<div class='col-xs-8'>
 		<?php echo form_input(array(
 				'name'=>'first_name',
@@ -11,9 +11,9 @@
 </div>
 
 <div class="form-group form-group-sm">	
-	<?php echo form_label($this->lang->line('common_last_name'), 'last_name', array('class'=>'required control-label col-xs-3')); ?>
+	<?php echo form_hidden($this->lang->line('common_last_name'), 'last_name', array('class'=>'required control-label col-xs-3')); ?>
 	<div class='col-xs-8'>
-		<?php echo form_input(array(
+		<?php echo form_hidden(array(
 				'name'=>'last_name',
 				'id'=>'last_name',
 				'class'=>'form-control input-sm',
@@ -54,6 +54,7 @@
 			<span class="input-group-addon input-sm"><span class="glyphicon glyphicon-envelope"></span></span>
 			<?php echo form_input(array(
 					'name'=>'email',
+					'type'=>'email',
 					'id'=>'email',
 					'class'=>'form-control input-sm',
 					'value'=>$person_info->email)
@@ -69,6 +70,7 @@
 			<span class="input-group-addon input-sm"><span class="glyphicon glyphicon-phone-alt"></span></span>
 			<?php echo form_input(array(
 					'name'=>'phone_number',
+					'type'=>'number',
 					'id'=>'phone_number',
 					'class'=>'form-control input-sm',
 					'value'=>$person_info->phone_number)

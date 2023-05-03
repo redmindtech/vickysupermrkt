@@ -27,7 +27,7 @@ $lang["common_export_csv_yes"] = "Yes";
 $lang["common_fields_required_message"] = "Fields in red are required";
 $lang["common_fields_required_message_unique"] = "";
 $lang["common_first_name"] = "First Name";
-$lang["common_first_name_required"] = "First Name is a required field.";
+$lang["common_first_name_required"] = "Name is a required field.";
 $lang["common_first_page"] = "First";
 $lang["common_gender"] = "Gender";
 $lang["common_gender_female"] = "F";
@@ -87,3 +87,5 @@ $lang["common_you_are_using_ospos"] = "";
 $lang["common_zip"] = "Postal Code";
 
 $lang["common_serial_number"]="S.No";
+
+

@@ -462,6 +462,26 @@ $(document).ready(function()
 		$("input[name='sales_tax_code_name']").val(ui.item.label);
 	};
 
+	$('#first_name').keypress(function (e) {
+			var regex = new RegExp("^[a-zA-Z]+$");
+			var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+			if (regex.test(str)) {
+
+                $('#first_name').css('border-color','green');
+				return true;
+			}
+			else
+			{
+			e.preventDefault();
+			$('#first_name').show();
+			$('#first_name').attr('placeholder',
+                'Please Enter Alphabets');
+
+                
+			return false;
+			}
+		});
+
 	$('#sales_tax_code_name').autocomplete({
 		source: "<?php echo site_url('taxes/suggest_tax_codes'); ?>",
 		minChars: 0,
@@ -489,7 +509,7 @@ $(document).ready(function()
 		rules:
 		{
 			first_name: 'required',
-			last_name: 'required',
+			// last_name: 'required',
 			consent: 'required',
 			email:
 			{
@@ -500,6 +520,22 @@ $(document).ready(function()
 					data: {
 						'person_id': "<?php echo $person_info->person_id; ?>"
 						// email is posted by default
+					}
+				}
+			},
+			phone_number:
+			{
+				minlength: 10,
+				maxlength: 13,
+				number: true,
+
+				remote:
+				{ 
+					url: "<?php echo site_url($controller_name . '/ajax_check_phone_no') ?>",
+					type: 'POST',
+					data: {
+						'person_id': "<?php echo $person_info->person_id; ?>"
+						// phone_number is posted by default
 					}
 				}
 			},
@@ -520,9 +556,10 @@ $(document).ready(function()
 		messages:
 		{
 			first_name: "<?php echo $this->lang->line('common_first_name_required'); ?>",
-			last_name: "<?php echo $this->lang->line('common_last_name_required'); ?>",
+			// last_name: "<?php //echo $this->lang->line('common_last_name_required'); ?>",
 			consent: "<?php echo $this->lang->line('customers_consent_required'); ?>",
 			email: "<?php echo $this->lang->line('customers_email_duplicate'); ?>",
+			phone_number: "<?php echo $this->lang->line('customers_phone_number_valid'); ?>",
 			account_number: "<?php echo $this->lang->line('customers_account_number_duplicate'); ?>"
 		}
 	}, form_support.error));

@@ -103,6 +103,9 @@ class Item extends CI_Model
 			$this->db->select('MAX(items.tax_category_id) AS tax_category_id');
 			$this->db->select('MAX(items.deleted) AS deleted');
 			$this->db->select('MAX(items.expire_date) AS expire_date');
+			$this->db->select('MAX(items.mrp_price) AS mrp_price');
+			
+			$this->db->select('MAX(item_hsn_code.tax_percentage) AS tax_percentage');
 
 			$this->db->select('MAX(suppliers.person_id) AS person_id');
 			$this->db->select('MAX(suppliers.company_name) AS company_name');
@@ -129,6 +132,7 @@ class Item extends CI_Model
 		$this->db->from('items AS items');
 		$this->db->join('suppliers AS suppliers', 'suppliers.person_id = items.supplier_id', 'left');
 		$this->db->join('inventory AS inventory', 'inventory.trans_items = items.item_id');
+		$this->db->join('item_hsn_code AS item_hsn_code', 'item_hsn_code.hsn_code = items.hsn_code');
 
 		if($filters['stock_location_id'] > -1)
 		{

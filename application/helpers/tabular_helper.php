@@ -223,11 +223,13 @@ function get_customer_manage_table_headers()
 
 	$headers = array(
 		array('people.person_id' => $CI->lang->line('common_id')),
-		array('last_name' => $CI->lang->line('common_last_name')),
-		array('first_name' => $CI->lang->line('common_first_name')),
+		// array('last_name' => $CI->lang->line('last_name')),
+		array('customer_name' => $CI->lang->line('customers_customer_name')),
+		// array('first_name' => $CI->lang->line('common_first_name')),
 		array('email' => $CI->lang->line('common_email')),
 		array('phone_number' => $CI->lang->line('common_phone_number')),
-		array('total' => $CI->lang->line('common_total_spent'), 'sortable' => FALSE)
+		array('total' => $CI->lang->line('common_total_spent'), 'sortable' => FALSE),
+		array('loyalty_points' => $CI->lang->line('customer_loyalty_points'), 'sortable' => FALSE)
 	);
 
 	if($CI->Employee->has_grant('messages', $CI->session->userdata('person_id')))
@@ -249,11 +251,13 @@ function get_customer_data_row($person, $stats)
 
 	return array (
 		'people.person_id' => $person->person_id,
-		'last_name' => $person->last_name,
-		'first_name' => $person->first_name,
+		'customer_name' => $person->first_name . " " . $person->last_name ,
+		// 'last_name' => $person->last_name,
+		// 'first_name' => $person->first_name,
 		'email' => empty($person->email) ? '' : mailto($person->email, $person->email),
 		'phone_number' => $person->phone_number,
 		'total' => to_currency($stats->total),
+		'loyalty_points' => $person->points,
 		'messages' => empty($person->phone_number) ? '' : anchor("Messages/view/$person->person_id", '<span class="glyphicon glyphicon-phone"></span>',
 			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line('messages_sms_send'))),
 		'edit' => anchor($controller_name."/view/$person->person_id", '<span class="glyphicon glyphicon-edit"></span>',
@@ -274,8 +278,8 @@ function get_suppliers_manage_table_headers()
 		array('company_name' => $CI->lang->line('suppliers_company_name')),
 		array('agency_name' => $CI->lang->line('suppliers_agency_name')),
 		array('category' => $CI->lang->line('suppliers_category')),
-		array('last_name' => $CI->lang->line('common_last_name')),
-		array('first_name' => $CI->lang->line('common_first_name')),
+		// array('last_name' => $CI->lang->line('common_last_name')),
+		array('customer_name' => $CI->lang->line('customers_customer_name')),
 		array('email' => $CI->lang->line('common_email')),
 		array('phone_number' => $CI->lang->line('common_phone_number'))
 	);
@@ -302,8 +306,8 @@ function get_supplier_data_row($supplier)
 		'company_name' => $supplier->company_name,
 		'agency_name' => $supplier->agency_name,
 		'category' => $supplier->category,
-		'last_name' => $supplier->last_name,
-		'first_name' => $supplier->first_name,
+		// 'last_name' => $supplier->last_name,
+		'customer_name' => $supplier->first_name . " " . $supplier->last_name ,
 		'email' => empty($supplier->email) ? '' : mailto($supplier->email, $supplier->email),
 		'phone_number' => $supplier->phone_number,
 		'messages' => empty($supplier->phone_number) ? '' : anchor("Messages/view/$supplier->person_id", '<span class="glyphicon glyphicon-phone"></span>',
@@ -331,6 +335,7 @@ function get_items_manage_table_headers()
 		array('company_name' => $CI->lang->line('suppliers_company_name')),
 		array('cost_price' => $CI->lang->line('items_cost_price')),
 		array('unit_price' => $CI->lang->line('items_unit_price')),
+		array('mrp_price' => $CI->lang->line('items_mrp_price')),
 		array('quantity' => $CI->lang->line('items_quantity'))
 	);
 
@@ -385,8 +390,8 @@ function get_item_data_row($item)
 			$tax_percents .= to_tax_decimals($tax_info['percent']) . '%, ';
 		}
 		// remove ', ' from last item
-		$tax_percents = substr($tax_percents, 0, -2);
-		$tax_percents = !$tax_percents ? '-' : $tax_percents;
+		// $tax_percents = substr($tax_percents, 0, -2);
+		// $tax_percents = !$tax_percents ? '-' : $tax_percents;
 	}
 
 	$controller_name = strtolower(get_class($CI));
@@ -427,8 +432,10 @@ function get_item_data_row($item)
 		'company_name' => $item->company_name,
 		'cost_price' => to_currency($item->cost_price),
 		'unit_price' => to_currency($item->unit_price),
+		'mrp_price' => to_currency($item->mrp_price),
 		'quantity' => to_quantity_decimals($item->quantity),
-		'tax_percents' => !$tax_percents ? '-' : $tax_percents,
+		'tax_percents' => $item->tax_percentage . " " . '%',
+		// $item->tax_percentage
 		'item_pic' => $image
 	);
 

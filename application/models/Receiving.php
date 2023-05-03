@@ -59,7 +59,7 @@ class Receiving extends CI_Model
 		return $this->db->update('receivings', $receiving_data);
 	}
 
-	public function save($items, $supplier_id, $employee_id, $comment, $reference, $payment_type, $paid_amount, $due_amount, $purchase_amount, $opening_bal, $closing_balance, $receiving_id = FALSE)
+	public function save($items, $supplier_id, $employee_id, $comment, $reference, $payment_type,  $supplier_inv_amount, $invoice_no, $paid_amount, $due_amount, $purchase_amount, $opening_bal, $closing_balance, $receiving_id = FALSE)
 	{
 		if(count($items) == 0)
 		{
@@ -72,6 +72,8 @@ class Receiving extends CI_Model
 			'employee_id' => $employee_id,
 			'payment_type' => $payment_type,
 			'paid_amount' => $paid_amount,
+			'supplier_inv_amount' => $supplier_inv_amount,
+			'invoice_no' => $invoice_no,
 			'due_amount' => $due_amount,
 			'purchase_amount' => $purchase_amount,
 			'opening_balance' => $opening_bal,
@@ -111,7 +113,7 @@ class Receiving extends CI_Model
 				'hsn_code' =>  $item['hsn_code'],
 				'tax_percentage' =>  $item['tax_percentage'],
 				'tax_amount' =>  $tax_amount,
-				'item_location' => $item['item_location']
+				'item_location' => $item['item_location'],
 			);
 
 			log_message('debug',print_r($receivings_items_data,TRUE));

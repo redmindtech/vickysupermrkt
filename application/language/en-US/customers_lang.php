@@ -23,7 +23,7 @@ $lang["customers_discount"] = "Discount";
 $lang["customers_discount_fixed"] = "Fixed Discount";
 $lang["customers_discount_percent"] = "Percentage Discount";
 $lang["customers_discount_type"] = "Discount Type";
-$lang["customers_email_duplicate"] = "Email Address is already present in the database.";
+$lang["customers_email_duplicate"] = "Email ID is already present in the database or is not a valid";
 $lang["customers_employee"] = "Employee";
 $lang["customers_error_adding_updating"] = "Customer add or update failed.";
 $lang["customers_import_items_csv"] = "Customer Import from CSV";
@@ -53,3 +53,8 @@ $lang["customers_taxable"] = "Taxable";
 $lang["customers_total"] = "Total spent";
 $lang["customers_update"] = "Update Customer";
 $lang["rewards_package"] = "Rewards Package";
+
+$lang["customers_customer_name"] = "Name";
+$lang["customer_loyalty_points"] = "Loyalty Points";
+$lang['customers_phone_number_valid']="Phone No already present in the database or Invalid Phone Number";
+

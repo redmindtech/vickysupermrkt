@@ -67,6 +67,27 @@
 //validation and submit handling
 $(document).ready(function()
 {
+
+	$('#first_name').keypress(function (e) {
+			var regex = new RegExp("^[a-zA-Z]+$");
+			var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+			if (regex.test(str)) {
+
+                $('#first_name').css('border-color','green');
+				return true;
+			}
+			else
+			{
+			e.preventDefault();
+			$('#first_name').show();
+			$('#first_name').attr('placeholder',
+                'Please Enter Alphabets');
+
+                
+			return false;
+			}
+		});
+
 	$('#supplier_form').validate($.extend({
 		submitHandler: function(form) {
 			$(form).ajaxSubmit({
@@ -85,16 +106,33 @@ $(document).ready(function()
 		{
 			company_name: 'required',
 			first_name: 'required',
-			last_name: 'required',
+			// last_name: 'required',
 			email: 'email'
    		},
+		   phone_number:
+			{
+				minlength: 10,
+				maxlength: 13,
+				number: true,
+
+				remote:
+				{ 
+					url: "<?php echo site_url($controller_name . '/ajax_check_phone_no') ?>",
+					type: 'POST',
+					data: {
+						'person_id': "<?php echo $person_info->person_id; ?>"
+						// phone_number is posted by default
+					}
+				}
+			},
 
 		messages: 
 		{
 			company_name: "<?php echo $this->lang->line('suppliers_company_name_required'); ?>",
 			first_name: "<?php echo $this->lang->line('common_first_name_required'); ?>",
-			last_name: "<?php echo $this->lang->line('common_last_name_required'); ?>",
-			email: "<?php echo $this->lang->line('common_email_invalid_format'); ?>"
+			// last_name: "<?php //echo $this->lang->line('common_last_name_required'); ?>",
+			email: "<?php echo $this->lang->line('common_email_invalid_format'); ?>",
+			phone_number: "<?php echo $this->lang->line('customers_phone_number_valid'); ?>",
 		}
 	}, form_support.error));
 });

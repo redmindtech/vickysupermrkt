@@ -120,6 +120,7 @@ class Receivings extends Secure_Controller
 		$data = array();
 
 		$this->form_validation->set_rules('price', 'lang:items_price', 'required|callback_numeric');
+		$this->form_validation->set_rules('unit_price', 'lang:items_price', 'required|callback_numeric');
 		$this->form_validation->set_rules('quantity', 'lang:items_quantity', 'required|callback_numeric');
 		$this->form_validation->set_rules('discount', 'lang:items_discount', 'required|callback_numeric');
 		$this->form_validation->set_rules('expire_date', 'lang:expire_date', 'required|callback_numeric');
@@ -135,6 +136,7 @@ class Receivings extends Secure_Controller
 		$description = $this->input->post('description');
 		$serialnumber = $this->input->post('serialnumber');
 		$price = parse_decimals($this->input->post('price'));
+		$unit_price = parse_decimals($this->input->post('unit_price'));
 		$quantity = parse_quantity($this->input->post('quantity'));
 		$discount_type = $this->input->post('discount_type');
 		$discount = $discount_type ? parse_quantity($this->input->post('discount')) : parse_decimals($this->input->post('discount'));
@@ -143,7 +145,7 @@ class Receivings extends Secure_Controller
 
 		if($this->form_validation->run() != FALSE)
 		{
-			$this->receiving_lib->edit_item($item_id, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $receiving_quantity, $expire_date);
+			$this->receiving_lib->edit_item($item_id, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $unit_price, $receiving_quantity, $expire_date);
 		}
 		else
 		{
@@ -223,12 +225,14 @@ class Receivings extends Secure_Controller
 		$data['reference'] = $this->receiving_lib->get_reference();
 		$data['payment_type'] = $this->input->post('payment_type');
 		$data['paid_amount'] = $this->input->post('paid_amount');
+		$data['supplier_inv_amount'] = $this->input->post('supplier_inv_amount');
+		$data['invoice_no'] = $this->input->post('invoice_no');
 		$data['due_amount'] = $this->input->post('due_amount');
 		
 		
 		$data['purchase_amount'] = $this->input->post('amount_tendered');
 
-		// log_message('debug',print_r($data['cart'],TRUE));
+		log_message('debug',print_r($data['cart'],TRUE));
 		// log_message('debug',print_r($data['expire_date'],TRUE));
 
 		$data['show_stock_locations'] = $this->Stock_location->show_locations('receivings');
@@ -271,7 +275,7 @@ class Receivings extends Secure_Controller
 
 		log_message('debug',print_r($closing_balance ,TRUE));
 		//SAVE receiving to database
-		$data['receiving_id'] = 'RECV ' . $this->Receiving->save($data['cart'], $supplier_id, $employee_id, $data['comment'], $data['reference'], $data['payment_type'], $data['paid_amount'], $data['due_amount'], $data['purchase_amount'], $opening_bal, $closing_balance, $data['stock_location']);
+		$data['receiving_id'] = 'RECV ' . $this->Receiving->save($data['cart'], $supplier_id, $employee_id, $data['comment'], $data['reference'], $data['payment_type'], $data['supplier_inv_amount'], $data['invoice_no'], $data['paid_amount'], $data['due_amount'], $data['purchase_amount'], $opening_bal, $closing_balance, $data['stock_location']);
 
 		$data = $this->xss_clean($data);
 
@@ -342,6 +346,9 @@ class Receivings extends Secure_Controller
 		$data['payment_type'] = $receiving_info['payment_type'];
 		$data['paid_amount'] = $receiving_info['paid_amount'];
 		$data['due_amount'] = $receiving_info['due_amount'];
+
+		log_message('debug',print_r($receiving_info ,TRUE));
+		log_message('debug',print_r($data['cart'] ,TRUE));
 		
 		$data['reference'] = $this->receiving_lib->get_reference();
 		$data['receiving_id'] = 'RECV ' . $receiving_id;
@@ -396,6 +403,8 @@ class Receivings extends Secure_Controller
 		$data['comment'] = $this->receiving_lib->get_comment();
 		$data['reference'] = $this->receiving_lib->get_reference();
 		$data['payment_options'] = $this->Receiving->get_payment_options();
+
+		// log_message('debug',print_r($data ,TRUE));
 
 		$supplier_id = $this->receiving_lib->get_supplier();
 		$supplier_info = '';

@@ -133,6 +133,27 @@ class Supplier extends Person
 
 		return $this->db->update('suppliers', array('deleted' => 1));
 	}
+
+	public function check_phone_no_exists($phone_number, $customer_id = '')
+	{
+		// if the email is empty return like it is not existing
+		if(empty($phone_number))
+		{
+			return FALSE;
+		}
+
+		$this->db->from('suppliers');
+		$this->db->join('people', 'people.person_id = suppliers.person_id');
+		$this->db->where('people.phone_number', $phone_number);
+		$this->db->where('suppliers.deleted', 0);
+
+		if(!empty($customer_id))
+		{
+			$this->db->where('customers.person_id !=', $customer_id);
+		}
+
+		return ($this->db->get()->num_rows() == 1);
+	}
 	
 	/*
 	Deletes a list of suppliers

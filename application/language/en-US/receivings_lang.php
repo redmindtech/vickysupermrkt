@@ -22,7 +22,9 @@ $lang["receivings_total_amount"] = "Total Purchase Amount (Rs.)";
 $lang["receivings_pending_amount"] = "Due Amount";
 $lang["receivings_payed_amount"] = "Paid Amount";
 $lang["receivings_batch_no"] = "Batch No";
-
+$lang["receivings_invoice_no"] = "Invoice No";
+$lang["receivings_purchase_amt"] = "Invoice Purchase Amount";
+$lang["receivings_roi"] = "R.O.I";
 
 $lang["receivings_daily"] = "";
 $lang["receivings_date"] = "Receiving Date";

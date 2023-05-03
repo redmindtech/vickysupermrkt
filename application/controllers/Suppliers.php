@@ -148,6 +148,13 @@ class Suppliers extends Persons
 							'id' => -1));
 		}
 	}
+
+	public function ajax_check_phone_no()
+	{
+		$exists = $this->Supplier->check_phone_no_exists(strtolower($this->input->post('phone_number')), $this->input->post('person_id'));
+
+		echo !$exists ? 'true' : 'false';
+	}
 	
 	/*
 	This deletes suppliers from the suppliers table

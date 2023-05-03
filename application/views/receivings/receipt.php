@@ -65,21 +65,36 @@
 
 	<table id="receipt_items">
 		<tr>
-			<th style="width:40%;"><?php echo $this->lang->line('items_item'); ?></th>
-			<th style="width:20%;"><?php echo $this->lang->line('common_price'); ?></th>
-			<th style="width:20%;"><?php echo $this->lang->line('sales_quantity'); ?></th>
-			<th style="width:15%;text-align:right;"><?php echo $this->lang->line('sales_total'); ?></th>
+			<th style="width:5%;"><?php echo $this->lang->line('common_serial_number'); ?></th>
+			<th style="width:10%;"><?php echo $this->lang->line('receivings_hsn_code_item'); ?></th>
+			<th style="width:20%;"><?php echo $this->lang->line('items_item'); ?></th>
+			<th style="width:10%;"><?php echo $this->lang->line('sales_quantity'); ?></th>
+			<th style="width:10%;"><?php echo $this->lang->line('receivings_purchase_price'); ?></th>
+			<th style="width:10%;"><?php echo $this->lang->line('receivings_sale_price'); ?></th>
+			<th style="width:10%;"><?php echo $this->lang->line('receivings_mrp_price');?></th>
+			<th style="width:10%;"><?php echo $this->lang->line('receivings_tax_percentage');?></th>
+			<th style="width:10%;"><?php echo $this->lang->line('receivings_tax_amount');?></th>
+			<th style="width:20%;text-align:right;"><?php echo $this->lang->line('sales_total'); ?></th>
 		</tr>
 
 		<?php
+		$count = 0;
 		foreach(array_reverse($cart, TRUE) as $line=>$item)
 		{
+			$count+=1;
 		?>
 			<tr>
+				<td  style='text-align:left;border-bottom:none;border-top:none;'><?php echo "$count"; ?></td>
+				<td><?php echo ($item['hsn_code']); ?></td>
 				<td><?php echo $item['name'] . ' ' . $item['attribute_values']; ?></td>
-				<td><?php echo to_currency($item['price']); ?></td>
 				<td><?php echo to_quantity_decimals($item['quantity']) . " " . ($show_stock_locations ? " [" . $item['stock_name'] . "]" : ""); 
 				?>&nbsp;&nbsp;&nbsp;x <?php echo $item['receiving_quantity'] != 0 ? to_quantity_decimals($item['receiving_quantity']) : 1; ?></td>
+				
+				<td><?php echo to_currency($item['price']); ?></td>
+				<td><?php echo to_currency($item['unit_price']); ?></td>
+				<td><?php echo to_currency($item['mrp_price']); ?></td>
+				<td><?php echo to_currency($item['tax_percentage']); ?></td>
+				<td><?php echo to_currency($item['total']*$item['tax_percentage']/100); ?></td>
 				<td><div class="total-value"><?php echo to_currency($item['total']); ?></div></td>
 			</tr>
 			<tr>
@@ -112,7 +127,7 @@
 		}
 		?>	
 		<tr>
-			<td colspan="3" style='text-align:right;border-top:2px solid #000000;'><?php echo $this->lang->line('sales_total'); ?></td>
+			<td colspan="9" style='text-align:right;border-top:2px solid #000000;'><?php echo $this->lang->line('sales_total'); ?></td>
 			<td style='border-top:2px solid #000000;'><div class="total-value"><?php echo to_currency($total); ?></div></td>
 		</tr>
 		<?php 
@@ -120,7 +135,7 @@
 		{
 		?>
 			<tr>
-				<td colspan="3" style='text-align:right;'><?php echo $this->lang->line('sales_payment'); ?></td>
+				<td colspan="9" style='text-align:right;'><?php echo $this->lang->line('sales_payment'); ?></td>
 				<td><div class="total-value"><?php echo $payment_type; ?></div></td>
 			</tr>
 
@@ -128,12 +143,12 @@
 			{
 			?>
 				<tr>
-					<td colspan="3" style='text-align:right;'><?php echo $this->lang->line('sales_amount_tendered'); ?></td>
+					<td colspan="9" style='text-align:right;'><?php echo $this->lang->line('sales_amount_tendered'); ?></td>
 					<td><div class="total-value"><?php echo to_currency($amount_tendered); ?></div></td>
 				</tr>
 
 				<tr>
-					<td colspan="3" style='text-align:right;'><?php echo $this->lang->line('sales_change_due'); ?></td>
+					<td colspan="9" style='text-align:right;'><?php echo $this->lang->line('sales_change_due'); ?></td>
 					<td><div class="total-value"><?php echo $amount_change; ?></div></td>
 				</tr>
 			<?php

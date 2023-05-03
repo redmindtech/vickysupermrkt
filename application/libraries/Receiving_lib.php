@@ -161,13 +161,15 @@ class Receiving_lib
 
 	
 
-	public function add_item($item_id, $quantity = 1, $item_location = NULL, $discount = 0, $tax_percentage = 0, $discount_type = 0, $price = NULL, $mrp_price = NULL, $unit_price = NULL, $hsn_code = NULL, $expire_date = NULL, $description = NULL, $serialnumber = NULL, $receiving_quantity = NULL, $receiving_id = NULL, $include_deleted = FALSE)
+	public function add_item($item_id, $quantity = 1, $item_location = NULL, $discount = 0, $tax_percentage = 0, $discount_type = 0, $price = NULL, $mrp_price = NULL, $roi_price=NULL, $unit_price = NULL, $sell_price = NULL, $hsn_code = NULL, $expire_date = NULL, $description = NULL, $serialnumber = NULL, $receiving_quantity = NULL, $receiving_id = NULL, $include_deleted = FALSE)
 	{
 		//make sure item exists in database.
 		if(!$this->CI->Item->exists($item_id, $include_deleted))
 		{
 			//try to get item id given an item_number
 			$item_id = $this->CI->Item->get_item_id($item_id, $include_deleted);
+
+			log_message('debug',print_r($item_id ,TRUE));
 
 			if(!$item_id)
 			{
@@ -219,11 +221,18 @@ class Receiving_lib
 		
 		$item_info = $this->CI->Item->get_info($item_id,$item_location,$item_tax_info);
 		
+		log_message('debug',print_r($item_info,TRUE));
+
 		//array records are identified by $insertkey and item_id is just another field.
 		$price = $price != NULL ? $price : $item_info->cost_price;
 
-		$mrp_price = $mrp_price != NULL ? $mrp_price : $item_info->mrp_price;
-		$unit_price = $unit_price != NULL ? $unit_price : $item_info->unit_price;
+		$mrp_price =  $item_info->mrp_price;
+		$unit_price = $item_info->unit_price;
+		
+
+		// $roi_price = $sell_price != NULL ? $roi_price : $item_info->roi_price;
+		log_message('debug',print_r($roi_price ,TRUE));
+		
 
 		$date = date('Y-m-d\TH:i');
 	//$randam=rand(1, $count);
@@ -279,8 +288,10 @@ class Receiving_lib
 				'mrp_price' => $mrp_price,
 				'unit_price' => $unit_price,
 				'hsn_code' => $hsn_code,
+				'sell_price' => $unit_price,
 				'expire_date' => $newDate,
 				'tax_percentage' =>$tax_percentage,
+				'roi_price' =>$roi_price,
 				'receiving_quantity' => $receiving_quantity,
 				'receiving_quantity_choices' => $receiving_quantity_choices,
 				'total' => $this->get_item_total($quantity, $price, $discount, $discount_type, $receiving_quantity)
@@ -304,7 +315,7 @@ class Receiving_lib
 		return TRUE;
 	}
 
-	public function edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $receiving_quantity, $expire_date)
+	public function edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $unit_price, $receiving_quantity, $expire_date)
 	{
 		$items = $this->get_cart();
 		if(isset($items[$line]))
@@ -324,6 +335,7 @@ class Receiving_lib
 				$line['discount_type'] = $discount_type;
 			}
 			$line['price'] = $price;
+			$line['unit_price'] = $unit_price;
 			$line['total'] = $this->get_item_total($quantity, $price, $discount, $discount_type, $receiving_quantity);
 			$this->set_cart($items);
 		}
