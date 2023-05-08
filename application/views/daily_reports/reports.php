@@ -1,6 +1,6 @@
 <?php $this->load->view('partial/header'); ?>
 <style>
-	#customer_table_cash_table thead tr,#customer_table_bank_table thead tr {
+	#customer_table_cash_table thead tr,#customer_table_bank_table thead tr,#customer_table_expense_table thead tr,#customer_table_total_table thead tr{
 		padding:5px;
 		background:#0ad;
 		color:#fff;
@@ -12,6 +12,15 @@
 		padding:5px;
 		border:1px solid #999 !important;
 	}
+    #customer_table_expense_table, #customer_table_expense_table td, #customer_table_expense_table th{
+        padding:5px;
+        border:1px solid #999!important;
+    }
+    #customer_table_total_table, #customer_table_total_table td, #customer_table_total_table th{
+        padding:5px;
+        border:1px solid #999!important;
+    }
+    
 	
 @media (min-width: 768px)
 {
@@ -28,37 +37,68 @@
         echo form_input(array('name'=>'daterangepicker', 'class'=>'form-control input-sm', 'id'=>'daterangepicker')); ?>
           
     </div>
-    </div>
+</div>
+
+
+
+
+<div>
     <br><br><br><h4>PURCHASE BY CASH</h4>
-    <table id="customer_table_cash_table" class="table table-striped "style="width: 25%;"><thead>
+    <table id="customer_table_cash_table" class="table table-striped "style="width: 100%;"><thead>
 		<tr bgcolor="#CCC">					
         <th style="width: 50%" ><?php echo 'supplier' ?></th>
             <th style="width:50%"><?php echo 'purchase amount' ?></th>		
 		</tr>
 	</thead>
 	<tbody>	
-</tbody>
-</table>
+    </tbody>
+    </table>
+</div>
+
+
+<div>
 <h4>PURCHASE BY BANK</h4>
-    <table id="customer_table_bank_table" class="table table-striped "style="width: 25%;"><thead>
+    <table id="customer_table_bank_table" class="table table-striped "style="width: 100%;"><thead>
 		<tr bgcolor="#CCC">					
         <th style="width: 50%" ><?php echo 'supplier' ?></th>
             <th style="width:50%"><?php echo 'purchase amount' ?></th>		
 		</tr>
 	</thead>
 	<tbody>	
+    </tbody>
+    </table>
+</div>
+
+<div>
+<h4>EXPENSE</h4>
+    <table id="customer_table_expense_table" class="table table-striped "style="width: 100%;"><thead>
+		<tr bgcolor="#CCC">					
+        <th style="width: 50%" ><?php echo 'Expense category' ?></th>
+            <th style="width:50%"><?php echo 'expense amount' ?></th>		
+		</tr>
+	</thead>
+	<tbody>	
+
 </tbody>
 </table>
-<!-- <h4>EXPENSE</h4>
-    <table id="customer_table_expense_table" class="table table-striped "style="width: 25%;"><thead>
+<div>
+
+<h4>TOTAL AMOUNT</h4>
+    <table id="customer_table_total_table" class="table table-striped "style="width: 100%;"><thead>
 		<tr bgcolor="#CCC">					
-        <th style="width: 50%" ><?php echo 'supplier' ?></th>
-            <th style="width:50%"><?php echo 'purchase amount' ?></th>		
+        <th style="width: 50%" ><?php echo 'Categories' ?></th>
+            <th style="width:50%"><?php echo 'Amount' ?></th>		
 		</tr>
 	</thead>
 	<tbody>	
+        <!-- <tr>
+            <td></td>
+            <td></td>
+        </tr> -->
 </tbody>
-</table> -->
+</table>
+<div>
+
 
 <script type="text/javascript">
 $(document).ready(function()
@@ -78,7 +118,7 @@ $(document).ready(function()
   console.log(startDate);
   console.log(endDate);
 var url= "<?php echo site_url("Daily_reports/supplier_details"); ?>"
-alert(url);
+
 $.ajax({
     type: 'GET',
     url:  "<?php echo site_url("Daily_reports/supplier_details"); ?>",
@@ -91,6 +131,8 @@ $.ajax({
     console.log(response);
     var purchase_cash = response.purchase_cash;
     var purchase_bank = response.purchase_bank;
+    var expenses_amounts = response.expenses_amounts;
+    var total_sales = response.total_sales;
 
     // Handle the purchase_cash data
     var tbody_cash = $('#customer_table_cash_table tbody');
@@ -111,6 +153,36 @@ $.ajax({
     tr_cash += '</tr>';
     tbody_cash.append(tr_cash);
 
+    // Handle the expense_amount data
+
+
+
+    var tbody_expense = $('#customer_table_expense_table tbody');
+    var total_expense = expenses_amounts.reduce(function(sum, row) {
+        return sum + parseFloat(row.expense_amount);
+    }, 0);
+    tbody_expense.empty();
+    $.each(expenses_amounts, function(index, row) {
+        var tr = '<tr>';
+        tr += '<td>' + row.category_name + '</td>';
+        tr += '<td>' + row.expense_amount + '</td>';
+        tr += '</tr>';
+        tbody_expense.append(tr);
+        
+    });
+    var tr_expense = '<tr>';
+    tr_expense += '<td><b>Total<b></td>';
+    tr_expense += '<td><b>' + total_expense + '<b></td>';
+    tr_expense += '</tr>';
+    tbody_expense.append(tr_expense);
+
+
+     
+    
+    
+
+
+
     // Handle the purchase_bank data
     var tbody_bank = $('#customer_table_bank_table tbody');
     var total_bank = purchase_bank.reduce(function(sum, row) {
@@ -129,6 +201,49 @@ $.ajax({
     tr_bank += '<td><b>' + total_bank + '<b></td>';
     tr_bank += '</tr>';
     tbody_bank.append(tr_bank);
+
+    // Handle the total_sales_amount data
+
+    var tbody_sales = $('#customer_table_total_table tbody');
+    
+    tbody_sales.empty();
+   $.each(total_sales, function(index, row) {
+       var tr = '<tr>';
+       tr += '<td>' + "Total Purchase By Cash"+ '</td>';
+       tr += '<td>' +  total_cash + '</td>';
+       tr += '</tr>';
+       tbody_sales.append(tr);
+       var tr = '<tr>';
+       tr += '<td>' + "Total Purchase By Bank"+ '</td>';
+       tr += '<td>' +  total_bank + '</td>';
+       tr += '</tr>';
+       tbody_sales.append(tr);
+       var tr = '<tr>';
+       tr += '<td>' + "Total Expenses"+ '</td>';
+       tr += '<td>' +  total_expense + '</td>';
+       tr += '</tr>';
+       tbody_sales.append(tr);
+       var tr = '<tr>';
+       var row_sales_amount = row.sales_amount;
+       if(row_sales_amount == null)
+       {
+        row_sales_amount = 0;
+       }
+       tr += '<td>' +"Total Sales"+  '</td>';
+
+       tr += '<td>' + row_sales_amount + '</td>';
+       tr += '</tr>';
+       tbody_sales.append(tr);
+       var tr = '<tr>';
+       var total_final_amount = total_cash+ total_bank + total_expense - row.sales_amount;
+       tr += '<td><b>' +"Total Amount"+  '</b></td>';
+       tr += '<td><b>' + total_final_amount + '<b></td>';
+       tr += '</tr>';
+       tbody_sales.append(tr);
+   });
+   
+
+
 }).fail((jqXHR, errorMsg) => {
     alert(jqXHR.responseText, errorMsg);
 });

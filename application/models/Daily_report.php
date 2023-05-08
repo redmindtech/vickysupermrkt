@@ -30,9 +30,29 @@ class Daily_report extends CI_Model
    }
 // expense
 public function expense_amount($startDate, $endDate){
-   
-   //  $query = $this->db->get();
-   //  return $query->result();    
+
+   $this->db->select('ec.category_name, SUM(e.amount) as expense_amount');
+   $this->db->from('expenses e');
+   $this->db->join('expense_categories ec', 'e.expense_id = ec.expense_category_id');
+   $this->db->where('e.date BETWEEN "'.$startDate.'" AND "'.$endDate.'"');
+   $this->db -> group_by('ec.expense_category_id');
+   $query = $this->db->get();
+   return $query->result();
+      
    }
+
+
+   public function total_sales($startDate, $endDate){
+
+
+      $this->db->select('SUM(sp.payment_amount) as sales_amount');
+      $this->db->from('sales_payments sp');
+      $this->db->where('sp.payment_time BETWEEN "'.$startDate.'" AND "'.$endDate.'"');
+      $query = $this->db->get();
+      return $query->result();  
+      
+      
+      
+     }
 	}
 ?>
