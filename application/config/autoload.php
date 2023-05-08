@@ -160,5 +160,7 @@ $autoload['model'] = array(
 	'Tax_category',
 	'Tax_code',
 	'Tax_jurisdiction',
-	'Item_hsn_code'
+	'Item_hsn_code',
+	'Daily_report',
+
 );
