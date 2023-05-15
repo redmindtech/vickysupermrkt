@@ -127,4 +127,4 @@ $lang["items_mrp_price"] = "MRP Price";
 $lang["items_batch_no"] = "Batch No";
 $lang["items_expire_date"] = "Expire Date";
 
-
+$lang["items_roi"] = "R.O.I";

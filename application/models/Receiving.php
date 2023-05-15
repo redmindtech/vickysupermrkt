@@ -59,7 +59,7 @@ class Receiving extends CI_Model
 		return $this->db->update('receivings', $receiving_data);
 	}
 
-	public function save($items, $supplier_id, $employee_id, $comment, $reference, $payment_type,  $supplier_inv_amount, $invoice_no, $paid_amount, $due_amount, $purchase_amount, $opening_bal, $closing_balance, $receiving_id = FALSE)
+	public function save($items, $supplier_id, $employee_id, $comment, $reference, $payment_type,  $supplier_inv_amount, $invoice_no, $paid_amount, $due_amount, $purchase_amount, $opening_bal, $closing_balance, $other_charges, $receiving_id = FALSE)
 	{
 		if(count($items) == 0)
 		{
@@ -78,6 +78,7 @@ class Receiving extends CI_Model
 			'purchase_amount' => $purchase_amount,
 			'opening_balance' => $opening_bal,
 			'closing_balance' => $closing_balance,
+			'other_charges' => $other_charges,
 			'comment' => $comment,
 			'reference' => $reference
 		);
@@ -158,6 +159,23 @@ class Receiving extends CI_Model
 
 		return $receiving_id;
 	}
+
+
+	public function get_expire_date($item_id)
+	{
+				
+		$this->db->select('expire_date, receiving_quantity');
+		$this->db->from('receivings_items');
+		$this->db->where('item_id',$item_id);
+		$query = $this->db->get();			
+		$data_expire_date = $query->result();
+		
+		log_message('debug',print_r($data_expire_date ,TRUE));
+		return $data_expire_date;
+		
+	}
+
+
 
 	public function delete_list($receiving_ids, $employee_id, $update_inventory = TRUE)
 	{
@@ -270,10 +288,10 @@ class Receiving extends CI_Model
 	{
 		return array(
 			$this->lang->line('sales_cash') => $this->lang->line('sales_cash'),
-			$this->lang->line('sales_check') => $this->lang->line('sales_check'),
-			$this->lang->line('sales_debit') => $this->lang->line('sales_debit'),
-			$this->lang->line('sales_credit') => $this->lang->line('sales_credit'),
-			$this->lang->line('sales_due') => $this->lang->line('sales_due')
+			$this->lang->line('sales_check') => $this->lang->line('receivings_upi'),
+			// $this->lang->line('sales_debit') => $this->lang->line('sales_debit'),
+			$this->lang->line('sales_credit') => $this->lang->line('receivings_card'),
+			// $this->lang->line('sales_due') => $this->lang->line('sales_due')
 		);
 	}
 

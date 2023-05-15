@@ -434,6 +434,7 @@ class Items extends Secure_Controller
 			$data['item_quantities'][$location['location_id']] = $quantity;
 		}
 
+
 		$this->load->view('items/form_inventory', $data);
 	}
 
@@ -458,7 +459,8 @@ class Items extends Secure_Controller
 			$data['stock_locations'][$location['location_id']] = $location['location_name'];
 			$data['item_quantities'][$location['location_id']] = $quantity;
 		}
-
+		// log_message('debug',print_r($data,TRUE));
+		// var_dumb($quantity);
 		$this->load->view('items/form_count_details', $data);
 	}
 

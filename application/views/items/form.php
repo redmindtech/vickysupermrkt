@@ -169,7 +169,7 @@
 					<?php echo form_input(array(
 							'name'=>'cost_price',
 							'id'=>'cost_price',
-							'min'=>'1',
+							'min'=>'0.1',
 							'class'=>'form-control input-sm',
 							'onClick'=>'this.select();',
 							'value'=>to_currency_no_money($item_info->cost_price))
@@ -191,7 +191,7 @@
 					<?php echo form_input(array(
 							'name'=>'unit_price',
 							'id'=>'unit_price',
-							'min'=>'1',
+							'min'=>'0.1',
 							'class'=>'form-control input-sm',
 							'onClick'=>'this.select();',
 							'value'=>to_currency_no_money($item_info->unit_price))
@@ -213,7 +213,7 @@
 					<?php echo form_input(array(
 							'name'=>'mrp_price',
 							'id'=>'mrp_price',
-							'min'=>'1',
+							'min'=>'0.1',
 							'class'=>'form-control input-sm',
 							'onClick'=>'this.select();',
 							'value'=>to_currency_no_money($item_info->mrp_price))

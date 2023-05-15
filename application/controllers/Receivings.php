@@ -121,6 +121,7 @@ class Receivings extends Secure_Controller
 
 		$this->form_validation->set_rules('price', 'lang:items_price', 'required|callback_numeric');
 		$this->form_validation->set_rules('unit_price', 'lang:items_price', 'required|callback_numeric');
+		$this->form_validation->set_rules('mrp_price', 'lang:mrp_price', 'required|callback_numeric');
 		$this->form_validation->set_rules('quantity', 'lang:items_quantity', 'required|callback_numeric');
 		$this->form_validation->set_rules('discount', 'lang:items_discount', 'required|callback_numeric');
 		$this->form_validation->set_rules('expire_date', 'lang:expire_date', 'required|callback_numeric');
@@ -137,6 +138,7 @@ class Receivings extends Secure_Controller
 		$serialnumber = $this->input->post('serialnumber');
 		$price = parse_decimals($this->input->post('price'));
 		$unit_price = parse_decimals($this->input->post('unit_price'));
+		$mrp_price = parse_decimals($this->input->post('mrp_price'));
 		$quantity = parse_quantity($this->input->post('quantity'));
 		$discount_type = $this->input->post('discount_type');
 		$discount = $discount_type ? parse_quantity($this->input->post('discount')) : parse_decimals($this->input->post('discount'));
@@ -145,7 +147,7 @@ class Receivings extends Secure_Controller
 
 		if($this->form_validation->run() != FALSE)
 		{
-			$this->receiving_lib->edit_item($item_id, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $unit_price, $receiving_quantity, $expire_date);
+			$this->receiving_lib->edit_item($item_id, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $unit_price, $mrp_price, $receiving_quantity, $expire_date);
 		}
 		else
 		{
@@ -226,6 +228,7 @@ class Receivings extends Secure_Controller
 		$data['payment_type'] = $this->input->post('payment_type');
 		$data['paid_amount'] = $this->input->post('paid_amount');
 		$data['supplier_inv_amount'] = $this->input->post('supplier_inv_amount');
+		$data['other_charges'] = $this->input->post('other_charges');
 		$data['invoice_no'] = $this->input->post('invoice_no');
 		$data['due_amount'] = $this->input->post('due_amount');
 		
@@ -275,7 +278,7 @@ class Receivings extends Secure_Controller
 
 		log_message('debug',print_r($closing_balance ,TRUE));
 		//SAVE receiving to database
-		$data['receiving_id'] = 'RECV ' . $this->Receiving->save($data['cart'], $supplier_id, $employee_id, $data['comment'], $data['reference'], $data['payment_type'], $data['supplier_inv_amount'], $data['invoice_no'], $data['paid_amount'], $data['due_amount'], $data['purchase_amount'], $opening_bal, $closing_balance, $data['stock_location']);
+		$data['receiving_id'] = 'RECV ' . $this->Receiving->save($data['cart'], $supplier_id, $employee_id, $data['comment'], $data['reference'], $data['payment_type'], $data['supplier_inv_amount'], $data['invoice_no'], $data['paid_amount'], $data['due_amount'], $data['purchase_amount'], $opening_bal, $closing_balance, $data['other_charges'], $data['stock_location']);
 
 		$data = $this->xss_clean($data);
 

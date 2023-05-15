@@ -349,14 +349,14 @@ function get_items_manage_table_headers()
 
 	}
 
-	$headers[] = array('item_pic' => $CI->lang->line('items_image'), 'sortable' => FALSE);
+	$headers[] = array('item_pic' => $CI->lang->line('items_roi'), 'sortable' => FALSE);
 
 	foreach($definition_names as $definition_id => $definition_name)
 	{
 		$headers[] = array($definition_id => $definition_name, 'sortable' => FALSE);
 	}
 
-	$headers[] = array('inventory' => '', 'escape' => FALSE);
+	// $headers[] = array('inventory' => '', 'escape' => FALSE);
 	$headers[] = array('stock' => '', 'escape' => FALSE);
 
 	return transform_headers($headers);
@@ -433,16 +433,16 @@ function get_item_data_row($item)
 		'cost_price' => to_currency($item->cost_price),
 		'unit_price' => to_currency($item->unit_price),
 		'mrp_price' => to_currency($item->mrp_price),
-		'quantity' => to_quantity_decimals($item->quantity),
+		'quantity' => round($item->quantity,2),
 		'tax_percents' => $item->tax_percentage . " " . '%',
 		// $item->tax_percentage
-		'item_pic' => $image
+		'item_pic' => to_currency($item->unit_price - $item->cost_price)
 	);
 
 	$icons = array(
-		'inventory' => anchor($controller_name."/inventory/$item->item_id", '<span class="glyphicon glyphicon-pushpin"></span>',
-			array('class' => 'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title' => $CI->lang->line($controller_name.'_count'))
-		),
+		// 'inventory' => anchor($controller_name."/inventory/$item->item_id", '<span class="glyphicon glyphicon-pushpin"></span>',
+		// 	array('class' => 'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title' => $CI->lang->line($controller_name.'_count'))
+		// ),
 		'stock' => anchor($controller_name."/count_details/$item->item_id", '<span class="glyphicon glyphicon-list-alt"></span>',
 			array('class' => 'modal-dlg', 'title' => $CI->lang->line($controller_name.'_details_count'))
 		),

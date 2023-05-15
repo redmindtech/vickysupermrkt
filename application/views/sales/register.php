@@ -106,16 +106,18 @@ if(isset($success))
 	<table class="sales_table_100" id="register">
 		<thead>
 			<tr>
-				<th hidden style="width: 5%; "><?php echo $this->lang->line('common_delete'); ?></th>
-				<th style="width: 15%;"><?php echo $this->lang->line('sales_item_id'); ?></th>
-				<th style="width: 30%;"><?php echo $this->lang->line('sales_item_name'); ?></th>
+				<th style="width: 5%; "><?php echo $this->lang->line('common_delete'); ?></th>
+				<th style="width: 7%;"><?php echo $this->lang->line('sales_item_id'); ?></th>
+				<th style="width: 20%;"><?php echo $this->lang->line('sales_item_name'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('sales_price'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('mrp_price'); ?></th>				
-				<th style="width: 10%;"><?php echo $this->lang->line('sales_quantity'); ?></th>
-				<th style="width: 10%;"><?php echo $this->lang->line('tax_percentage'); ?></th>
+				<th style="width: 8%;"><?php echo $this->lang->line('sales_quantity'); ?></th>
+				<th style="width: 15%;"><?php echo $this->lang->line('sales_expire_date'); ?></th>
+				<th style="width: 7%;"><?php echo $this->lang->line('tax_percentage'); ?></th>
 				<th style="width: 15%;" hidden ><?php echo $this->lang->line('sales_discount'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('sales_total'); ?></th>
 				<th style="width: 5%; "><?php echo $this->lang->line('sales_update'); ?></th>
+				<!-- <th style="width: 5%; "><?php //echo $this->lang->line('sales_item_change'); ?></th> -->
 			</tr>
 		</thead>
 
@@ -125,7 +127,7 @@ if(isset($success))
 			{
 			?>
 				<tr>
-					<td colspan='8'>
+					<td colspan='10'>
 						<div class='alert alert-dismissible alert-info'><?php echo $this->lang->line('sales_no_items_in_cart'); ?></div>
 					</td>
 				</tr>
@@ -138,7 +140,7 @@ if(isset($success))
 			?>
 					<?php echo form_open($controller_name."/edit_item/$line", array('class'=>'form-horizontal', 'id'=>'cart_'.$line)); ?>
 						<tr>
-							<td hidden>
+							<td>
 								<span data-item-id="<?php echo $line; ?>" class="delete_item_button"><span class="glyphicon glyphicon-trash"></span></span>
 								<?php
 								echo form_hidden('location', $item['item_location']);
@@ -162,7 +164,7 @@ if(isset($success))
 								<td style="align: center;">
 									<?php echo $item['name'] . ' '. implode(' ', array($item['attribute_values'], $item['attribute_dtvalues'])); ?>
 									<br/>
-									<?php if ($item['stock_type'] == '0'): echo '[' . to_quantity_decimals($item['in_stock']) . ' in ' . $item['stock_name'] . ']'; endif; ?>
+									<?php if ($item['stock_type'] == '0'): echo '[' . round($item['in_stock'],2) . ' in ' . $item['stock_name'] . ']'; endif; ?>
 								</td>
 							<?php
 							}
@@ -203,10 +205,14 @@ if(isset($success))
 								}
 								else
 								{
-									echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['quantity']), 'tabindex'=>++$tabindex, 'onClick'=>'this.select();'));
+									echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>($item['quantity']), 'tabindex'=>++$tabindex, 'onClick'=>'this.select();'));
 								}
 								?>
 							</td>
+
+							<td><?php echo form_dropdown('expire_date', $item['select_expire_date'], $item['expire_date'], (array('class'=>'selectpicker show-menu-arrow', 'data-style'=>'btn-default btn-sm', 'data-width'=>'fit'))); ?></td>
+							
+							
 							<td><?php echo form_input(array('name'=>'tax_percent', 'class'=>'form-control input-sm','readonly' => 'readonly', 'value'=>$item['tax_percent'].'%', 'tabindex'=>++$tabindex, 'onClick'=>'this.select();'));?></td>
 							<td hidden>
 								<div class="input-group">
@@ -230,7 +236,8 @@ if(isset($success))
 								?>
 							</td>
 
-							<td><a href="javascript:document.getElementById('<?php echo 'cart_'.$line ?>').submit();" title=<?php echo $this->lang->line('sales_update')?> ><span class="glyphicon glyphicon-refresh"></span></a></td>
+							<td><a href="javascript:document.getElementById('<?php echo 'cart_'.$line ?>').submit();" title=<?php echo $this->lang->line('sales_update')?> ><span class="glyphicon glyphicon-arrow-up"></span></a></td>
+						
 						</tr>
 						<tr>
 							<?php
@@ -438,7 +445,7 @@ if(isset($success))
 			foreach($taxes as $tax_group_index=>$tax)
 			{
 			?>
-				<tr>
+				<tr hidden>
 					<th style="width: 55%;"><?php echo (float)$tax['tax_rate'] . '% ' . $tax['tax_group']; ?></th>
 					<th style="width: 45%; text-align: right;"><?php echo to_currency_tax($tax['sale_tax_amount']); ?></th>
 				</tr>
@@ -448,7 +455,7 @@ if(isset($success))
 
 			<tr>
 				<th style="width: 55%; font-size: 150%"><?php echo $this->lang->line('sales_total'); ?></th>
-				<th style="width: 45%; font-size: 150%; text-align: right;"><span id="sale_total"><?php echo to_currency($total); ?></span></th>
+				<th style="width: 45%; font-size: 200%; color:red; text-align: right;"><span id="sale_total"><?php echo to_currency($total); ?></span></th>
 			</tr>
 		</table>
 
@@ -921,7 +928,7 @@ $(document).ready(function()
 		}
 	}
 
-	$('[name="price"],[name="quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="discounted_total"]').change(function() {
+	$('[name="price"],[name="quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="discounted_total"],[name="expire_date"] ').change(function() {
 		$(this).parents('tr').prevAll('form:first').submit()
 	});
 

@@ -25,6 +25,7 @@ $lang["receivings_batch_no"] = "Batch No";
 $lang["receivings_invoice_no"] = "Invoice No";
 $lang["receivings_purchase_amt"] = "Invoice Purchase Amount";
 $lang["receivings_roi"] = "R.O.I";
+$lang["receivings_other_charges"] = "Other Charges";
 
 $lang["receivings_daily"] = "";
 $lang["receivings_date"] = "Receiving Date";
@@ -54,7 +55,7 @@ $lang["receivings_register"] = "Items Receiving";
 $lang["receivings_requisition"] = "Requisition";
 $lang["receivings_return"] = "Return";
 $lang["receivings_select_supplier"] = "Select Supplier Name ";
-$lang["receivings_ship_pack"] = "Ship Pack";
+$lang["receivings_ship_pack"] = "Split Pack";
 $lang["receivings_start_typing_supplier_name"] = "Start Typing Supplier's name...";
 $lang["receivings_stock"] = "Stock";
 $lang["receivings_stock_destination"] = "Stock Destination";
@@ -71,3 +72,6 @@ $lang["receivings_transaction_failed"] = "Receivings transaction(s) failed.";
 $lang["receivings_unable_to_add_item"] = "Item add to Receiving failed.";
 $lang["receivings_unsuccessfully_updated"] = "Receiving update failed.";
 $lang["receivings_update"] = "Update";
+
+$lang["receivings_upi"] = "UPI";
+$lang["receivings_card"] = "Card";

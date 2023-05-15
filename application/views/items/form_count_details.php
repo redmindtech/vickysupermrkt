@@ -88,6 +88,7 @@
 		$inventory_array = $this->Inventory->get_inventory_data_for_item($item_info->item_id)->result_array();
 		$employee_name = array();
 
+		
 		foreach($inventory_array as $row)
 		{
 			$employee = $this->Employee->get_info($row['trans_user']);

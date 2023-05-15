@@ -315,7 +315,7 @@ class Receiving_lib
 		return TRUE;
 	}
 
-	public function edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $unit_price, $receiving_quantity, $expire_date)
+	public function edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $unit_price, $mrp_price, $receiving_quantity, $expire_date)
 	{
 		$items = $this->get_cart();
 		if(isset($items[$line]))
@@ -336,6 +336,7 @@ class Receiving_lib
 			}
 			$line['price'] = $price;
 			$line['unit_price'] = $unit_price;
+			$line['mrp_price'] = $mrp_price;
 			$line['total'] = $this->get_item_total($quantity, $price, $discount, $discount_type, $receiving_quantity);
 			$this->set_cart($items);
 		}

@@ -477,12 +477,14 @@ class Sales extends Secure_Controller
 
 		$this->form_validation->set_rules('price', 'lang:sales_price', 'required|callback_numeric');
 		$this->form_validation->set_rules('quantity', 'lang:sales_quantity', 'required|callback_numeric');
+		$this->form_validation->set_rules('expire_date', 'lang:sales_expire_date', 'required|callback_numeric');
 		$this->form_validation->set_rules('discount', 'lang:sales_discount', 'required|callback_numeric');
 
 		$description = $this->input->post('description');
 		$serialnumber = $this->input->post('serialnumber');
 		$price = parse_decimals($this->input->post('price'));
 		$quantity = parse_quantity($this->input->post('quantity'));
+		$expire_date = $this->input->post('expire_date');
 		$discount_type = $this->input->post('discount_type');
 		$discount = $discount_type ? parse_quantity($this->input->post('discount')) : parse_decimals($this->input->post('discount'));
 
@@ -491,7 +493,7 @@ class Sales extends Secure_Controller
 
 		if($this->form_validation->run() != FALSE)
 		{
-			$this->sale_lib->edit_item($item_id, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $discounted_total);
+			$this->sale_lib->edit_item($item_id, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $discounted_total, $expire_date);
 			
 			$this->sale_lib->empty_payments();
 		}
@@ -540,6 +542,7 @@ class Sales extends Secure_Controller
 		$data['transaction_time'] = to_datetime($__time);
 		$data['transaction_date'] = to_date($__time);
 		$data['show_stock_locations'] = $this->Stock_location->show_locations('sales');
+		$data['expire_date'] = $this->input->post('expire_date');
 		$data['comments'] = $this->sale_lib->get_comment();
 		$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
 		$employee_info = $this->Employee->get_info($employee_id);
@@ -1041,6 +1044,7 @@ class Sales extends Secure_Controller
 		$data['cash_rounding'] = $cash_rounding;
 
 		$data['cart'] = $this->sale_lib->get_cart();
+		
 		$customer_info = $this->_load_customer_data($this->sale_lib->get_customer(), $data, TRUE);
 
 		$data['modes'] = $this->sale_lib->get_register_mode_options();

@@ -769,6 +769,36 @@ class Sale_lib
 		$price = $item_info->unit_price;
 		$cost_price = $item_info->cost_price;
 		$mrp_price=$item_info->mrp_price;
+		$expire_dates = array();
+		$expire_date_get = $this->CI->Receiving->get_expire_date($item_id);
+		
+		$length = count($expire_date_get);
+		
+		$get_item_expire = '';
+		if($length > 0)
+		{
+		foreach ($expire_date_get as $obj) 
+		{
+			$get_item_expire = substr($obj->expire_date, 0, 10);
+			
+			$expire_dates[$obj->expire_date] = $get_item_expire . ' ' . " (" . round($obj->receiving_quantity,2) . ")" ;
+		
+		}
+		
+		$select_expire_date = array();
+
+				foreach ($expire_dates as $date)
+				{
+					$select_expire_date[$date] = $date;
+				}
+			}
+		else{
+			
+			$get_item_expire = $item_info->expire_date;
+			
+			$select_expire_date = $item_info->expire_date;
+		}
+
 		if($price_override != NULL)
 		{
 			$price = $price_override;
@@ -912,8 +942,11 @@ class Sale_lib
 					'item_type' => $item_type,
 					'hsn_code' => $item_info->hsn_code,
 					'tax_category_id' => $item_info->tax_category_id,
-					'mrp_price'=>$mrp_price,
-					'tax_percent'=>$hsn_percent
+					'mrp_price'=> $mrp_price,
+					'tax_percent'=> $hsn_percent,
+					'expire_date'=> $get_item_expire,
+					'select_expire_date' => $select_expire_date
+					// 'data_expire_date_values' => $data_expire_date_values
 				)
 			);
 			//add to existing array
@@ -925,6 +958,7 @@ class Sale_lib
 			$line['quantity'] = $quantity;
 			$line['total'] = $total;
 			$line['discounted_total'] = $discounted_total;
+			$line['expire_date'] = $expire_dates;
 		}
 
 		$this->set_cart($items);
@@ -988,7 +1022,7 @@ class Sale_lib
 		return -1;
 	}
 
-	public function edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $discounted_total=NULL)
+	public function edit_item($line, $description, $serialnumber, $quantity, $discount, $discount_type, $price, $discounted_total=NULL, $expire_date)
 	{
 		$items = $this->get_cart();
 		if(isset($items[$line]))
@@ -1003,6 +1037,7 @@ class Sale_lib
 			$line['serialnumber'] = $serialnumber;
 			$line['quantity'] = $quantity;
 			$line['discount'] = $discount;
+			$line['expire_date'] = $expire_date;
 			if(!is_null($discount_type))
 			{
 				$line['discount_type'] = $discount_type;
