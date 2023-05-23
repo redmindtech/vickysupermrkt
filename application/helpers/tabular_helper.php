@@ -434,7 +434,7 @@ function get_item_data_row($item)
 		'unit_price' => to_currency($item->unit_price),
 		'mrp_price' => to_currency($item->mrp_price),
 		'quantity' => round($item->quantity,2),
-		'tax_percents' => $item->tax_percentage . " " . '%',
+		// 'tax_percents' => $item->tax_percentage . " " . '%',
 		// $item->tax_percentage
 		'item_pic' => to_currency($item->unit_price - $item->cost_price)
 	);

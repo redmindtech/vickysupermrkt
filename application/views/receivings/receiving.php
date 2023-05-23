@@ -585,8 +585,11 @@ $(document).ready(function()
 		else{
 		// alert(id1);
 		// alert(id2);
-
-		$('#finish_receiving_form').submit();
+		if (confirm("Are you sure you want to save this purchase?"))
+		{
+			$('#finish_receiving_form').submit();	
+		}
+		
 		}
 	});
 

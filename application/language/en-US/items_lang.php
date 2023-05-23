@@ -126,5 +126,5 @@ $lang["items_use_inventory_menu"] = "Use Inventory Menu";
 $lang["items_mrp_price"] = "MRP Price";
 $lang["items_batch_no"] = "Batch No";
 $lang["items_expire_date"] = "Expire Date";
-
+$lang["hsn_code_required"] = "HSN Code is required";
 $lang["items_roi"] = "R.O.I";

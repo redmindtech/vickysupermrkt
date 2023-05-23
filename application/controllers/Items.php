@@ -582,7 +582,6 @@ class Items extends Secure_Controller
 			'cost_price' => parse_decimals($this->input->post('cost_price')),
 			'unit_price' => parse_decimals($this->input->post('unit_price')),
 			'mrp_price' => parse_decimals($this->input->post('mrp_price')),
-			// 'batch_no' => parse_decimals($this->input->post('batch_no')),
 			'batch_no' => $this->input->post('batch_no'),
 			'expire_date' => $expire_date_formatter->format('Y-m-d H:i:s'),
 			'reorder_level' => parse_quantity($this->input->post('reorder_level')),
@@ -673,7 +672,8 @@ class Items extends Secure_Controller
 				$location_detail = array(
 						'item_id' => $item_id,
 						'location_id' => $location['location_id'],
-						'quantity' => $updated_quantity);
+						'quantity' => $updated_quantity,
+					    'stock_qty'=> $updated_quantity);
 
 				$item_quantity = $this->Item_quantity->get_item_quantity($item_id, $location['location_id']);
 

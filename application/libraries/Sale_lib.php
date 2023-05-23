@@ -775,28 +775,35 @@ class Sale_lib
 		$length = count($expire_date_get);
 		
 		$get_item_expire = '';
+		
+		$item_stock=$this->CI->Receiving->get_item_expire_date($item_id);
+		log_message('debug',print_r($item_stock,TRUE));
+		$stockQty = $item_stock[0]->stock_qty;
+		
 		if($length > 0)
 		{
 		foreach ($expire_date_get as $obj) 
 		{
 			$get_item_expire = substr($obj->expire_date, 0, 10);
 			
-			$expire_dates[$obj->expire_date] = $get_item_expire . ' ' . " (" . round($obj->receiving_quantity,2) . ")" ;
+			$expire_dates[$obj->expire_date] = $get_item_expire . ' ' . " (" . round($obj->stock_qty,2) . ")" ;
 		
 		}
 		
 		$select_expire_date = array();
-
+		$select_expire_date[$item_info->expire_date] = $item_info->expire_date. ' ' . " (" . round($stockQty,2) . ")" ;
 				foreach ($expire_dates as $date)
 				{
+
+					
 					$select_expire_date[$date] = $date;
 				}
 			}
 		else{
 			
-			$get_item_expire = $item_info->expire_date;
+			$get_item_expire = $item_info->expire_date. ' ' . " (" . round($stockQty,2) . ")" ;
 			
-			$select_expire_date = $item_info->expire_date;
+			$select_expire_date = $item_info->expire_date. ' ' . " (" . round($stockQty,2) . ")" ;
 		}
 
 		if($price_override != NULL)
@@ -1038,6 +1045,18 @@ class Sale_lib
 			$line['quantity'] = $quantity;
 			$line['discount'] = $discount;
 			$line['expire_date'] = $expire_date;
+
+				
+			$mrp=$this->CI->Sale->price_mrp($line['item_id'],$line['expire_date']);
+		
+
+			$price=$mrp[0]['unit_price'];
+			
+			$line['mrp_price']=$mrp[0]['mrp_price'];
+
+		
+			
+
 			if(!is_null($discount_type))
 			{
 				$line['discount_type'] = $discount_type;

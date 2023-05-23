@@ -271,15 +271,15 @@
 
 		<?php if($include_hsn): ?>
 			<div class="form-group form-group-sm">
-				<?php echo form_label($this->lang->line('items_hsn_code_item'), 'category', array('class'=>'control-label col-xs-3')); ?>
+				<?php echo form_label($this->lang->line('items_hsn_code_item'), 'category', array('class'=>'required control-label col-xs-3')); ?>
 				<div class='col-xs-8'>
 					<div class="input-group">
-						<?php echo form_input(array(
+						<?php echo form_input([
 								'name'=>'hsn_code',
 								'id'=>'hsn_code',
 								'class'=>'form-control input-sm',
-								'value'=>$hsn_code
-								)
+								'value'=>$hsn_code 
+							]
 						);?>
 					</div>
 				</div>
@@ -383,8 +383,8 @@
 		}
 		?>
 
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('items_receiving_quantity'), 'receiving_quantity', array('class'=>'required control-label col-xs-3')); ?>
+		<div class="form-group form-group-sm" hidden>
+			<?php echo form_label($this->lang->line('items_receiving_quantity'), 'receiving_quantity', array('class'=>'required control-label col-xs-3'));  ?>
 			<div class='col-xs-4'>
 				<?php echo form_input(array(
 						'name'=>'receiving_quantity',
@@ -396,7 +396,7 @@
 			</div>
 		</div>
 
-		<div class="form-group form-group-sm">
+		<div class="form-group form-group-sm" hidden>
 			<?php echo form_label($this->lang->line('items_reorder_level'), 'reorder_level', array('class'=>'required control-label col-xs-3')); ?>
 			<div class='col-xs-4'>
 				<?php echo form_input(array(
@@ -443,7 +443,7 @@
 			</div>
 		</div>
 
-		<div class="form-group form-group-sm">
+		<div class="form-group form-group-sm" hidden>
 			<?php echo form_label($this->lang->line('items_allow_alt_description'), 'allow_alt_description', array('class'=>'control-label col-xs-3')); ?>
 			<div class='col-xs-1'>
 				<?php echo form_checkbox(array(
@@ -455,7 +455,7 @@
 			</div>
 		</div>
 
-		<div class="form-group form-group-sm">
+		<div class="form-group form-group-sm" hidden >
 			<?php echo form_label($this->lang->line('items_is_serialized'), 'is_serialized', array('class'=>'control-label col-xs-3')); ?>
 			<div class='col-xs-1'>
 				<?php echo form_checkbox(array(
@@ -511,7 +511,7 @@
 		}
 		?>
 
-		<div class="form-group form-group-sm">
+		<div class="form-group form-group-sm" hidden>
 			<?php echo form_label($this->lang->line('items_is_deleted'), 'is_deleted', array('class'=>'control-label col-xs-3')); ?>
 			<div class='col-xs-1'>
 				<?php echo form_checkbox(array(
@@ -685,23 +685,11 @@ $(document).ready(function()
 						}
 					}
 				},
-				// hsn_code:
-				// 	{
-				// 	required: true,
-				// 		remote: 
-				// 		{
-				// 			url: "<?php //echo site_url($controller_name . '/hsn_code_check')?>",
-				// 			type: 'GET',
-				// 			data: {
-								
-				// 				'hsn_code' : function()
-				// 				{		
-				// 					// alert($('#hsn_code').val());
-				// 					return  $('#hsn_code').val();
-				// 				}	
-				// 			},
-				// 		}
-				// 	},
+				hsn_code:
+					{
+					required: true,
+						
+					},
 				mrp_price:
 				{
 					required: true,
@@ -753,11 +741,11 @@ $(document).ready(function()
 				category: "<?php echo $this->lang->line('items_category_required'); ?>",
 				batch_no: "<?php echo $this->lang->line('items_batch_no_required'); ?>",
 				expire_date: "<?php echo $this->lang->line('items_expire_date_required'); ?>",
-				// hsn_code:
-				// {
-				// 	required: "<?php //echo $this->lang->line('hsn_code_required'); ?>",
-				// 	remote:"Your hsn code is not in HSN master please update your HSN code in HSN master"
-				// },
+				hsn_code:
+				{
+					required: "<?php echo $this->lang->line('hsn_code_required'); ?>",
+					// remote:"Your hsn code is not in HSN master please update your HSN code in HSN master"
+				},
 				mrp_price:
 				{
 					required: "<?php echo $this->lang->line('items_cost_price_required'); ?>",
