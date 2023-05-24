@@ -1477,11 +1477,9 @@ class Sale extends CI_Model
 
 	public function price_mrp($item_id,$expire_date)
 	{
-	
-		
 		$date = date('Y-m-d', strtotime(substr($expire_date, 0, 10)));
+		
 
-	
 		$this->db->select('unit_price,mrp_price');
 		$this->db->from('items');
 		$this->db->where('item_id', $item_id);		
@@ -1494,15 +1492,17 @@ class Sale extends CI_Model
 			$result=$row;
 		}
 		 else {
-			$this->db->select('item_unit_price AS unit_price,mrp_price');
+
+			$this->db->select('item_unit_price AS unit_price, mrp_price');
 			$this->db->from('receivings_items');
 			$this->db->where('item_id', $item_id);
 			$this->db->where('expire_date', $date);
 			$query = $this->db->get();
 			$result = $query->result_array();
-		
+			
 		}
-	
+
+		
 			return $result;
 
 	}

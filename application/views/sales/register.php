@@ -211,7 +211,7 @@ if(isset($success))
 								?>
 							</td>
 
-							<td><?php echo form_dropdown('expire_date', $item['select_expire_date'], $item['expire_date'], (array('class'=>'selectpicker show-menu-arrow', 'data-style'=>'btn-default btn-sm', 'data-width'=>'fit'))); ?></td>
+							<td><?php echo form_dropdown('expire_date', $item['select_expire_date'], $item['expire_date'], (array('name'=>'expire_date','class'=>'selectpicker show-menu-arrow', 'data-style'=>'btn-default btn-sm', 'data-width'=>'fit'))); ?></td>
 							
 							
 							<td><?php echo form_input(array('name'=>'tax_percent', 'class'=>'form-control input-sm','readonly' => 'readonly', 'value'=>$item['tax_percent'].'%', 'tabindex'=>++$tabindex, 'onClick'=>'this.select();'));?></td>

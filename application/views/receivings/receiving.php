@@ -181,10 +181,10 @@ if (isset($success))
 <!-- Overall Receiving -->
 
 <div id="overall_sale" class="panel panel-default">
-	<div class="panel-body">
+<div class="panel-body" style="max-height: 200px; overflow-y: auto;">	
 	
 
-		<table class="sales_table_100" id="sale_totals">
+		<table class="sales_table_100">
 			<tr>
 				<?php
 				if($mode != 'requisition')

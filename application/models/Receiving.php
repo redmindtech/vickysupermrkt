@@ -61,6 +61,8 @@ class Receiving extends CI_Model
 
 	public function save($items, $supplier_id, $employee_id, $comment, $reference, $payment_type,  $supplier_inv_amount, $invoice_no, $paid_amount, $due_amount, $purchase_amount, $opening_bal, $closing_balance, $other_charges, $receiving_id = FALSE)
 	{
+		log_message('debug',print_r('$receivings_items_data',TRUE));
+
 		if(count($items) == 0)
 		{
 			return -1;
@@ -104,12 +106,13 @@ class Receiving extends CI_Model
 				'serialnumber' => $item['serialnumber'],
 				'quantity_purchased' => $item['quantity'],
 				'receiving_quantity' => $item['receiving_quantity'],
-				'stock_qty'=>$item['receiving_quantity'],
+				'stock_qty'=>$item['receiving_quantity'] * $item['quantity'],
 				'discount' => $item['discount'],
 				'discount_type' => $item['discount_type'],
 				'item_cost_price' => $cur_item_info->cost_price,
 				'item_unit_price' => $item['unit_price'],
 				'sell_price' =>  $item['unit_price'],
+				
 				'mrp_price' =>  $item['mrp_price'],
 				'expire_date' =>  $item['expire_date'],
 				'hsn_code' =>  $item['hsn_code'],
@@ -169,6 +172,7 @@ class Receiving extends CI_Model
 		$this->db->select('expire_date, stock_qty');
 		$this->db->from('receivings_items');
 		$this->db->where('item_id',$item_id);
+		$this->db->where('stock_qty >', 0);
 		$query = $this->db->get();			
 		$data_expire_date = $query->result();
 		
@@ -182,6 +186,7 @@ class Receiving extends CI_Model
 		$this->db->select('stock_qty');
 		$this->db->from('item_quantities');
 		$this->db->where('item_id',$item_id);
+		$this->db->where('stock_qty >', 0);
 		$query = $this->db->get();			
 		$stock_qty = $query->result();
 		

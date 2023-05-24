@@ -32,7 +32,7 @@
 	<div class="tab-content">
 		<div class="tab-pane fade in active" id="customer_basic_info">
 			<fieldset>
-				<div class="form-group form-group-sm">
+				<div class="form-group form-group-sm" hidden>
 					<?php echo form_label($this->lang->line('customers_consent'), 'consent', array('class' => 'required control-label col-xs-3')); ?>
 					<div class='col-xs-1'>
 						<?php echo form_checkbox('consent', '1', $person_info->consent == '' ? (boolean)!$this->config->item('enforce_privacy') : (boolean)$person_info->consent); ?>
@@ -41,7 +41,7 @@
 
 				<?php $this->load->view("people/form_basic_info"); ?>
 				
-				<div class="form-group form-group-sm">
+				<div class="form-group form-group-sm" hidden>
 					<?php echo form_label($this->lang->line('customers_discount_type'), 'discount_type', array('class'=>'control-label col-xs-3')); ?>
 					<div class="col-xs-8">
 						<label class="radio-inline">
@@ -65,7 +65,7 @@
 					</div>
 				</div>
 
-				<div class="form-group form-group-sm">
+				<div class="form-group form-group-sm" hidden>
 					<?php echo form_label($this->lang->line('customers_discount'), 'discount', array('class' => 'control-label col-xs-3')); ?>
 					<div class='col-xs-3'>
 						<div class="input-group input-group-sm">
@@ -80,7 +80,7 @@
 					</div>	
 				</div>
 
-				<div class="form-group form-group-sm">
+				<div class="form-group form-group-sm" hidden>
 					<?php echo form_label($this->lang->line('customers_company_name'), 'company_name', array('class' => 'control-label col-xs-3')); ?>
 					<div class='col-xs-8'>
 						<?php echo form_input(array(
@@ -92,7 +92,7 @@
 					</div>
 				</div>
 
-				<div class="form-group form-group-sm">
+				<div class="form-group form-group-sm" hidden>
 					<?php echo form_label($this->lang->line('customers_account_number'), 'account_number', array('class' => 'control-label col-xs-3')); ?>
 					<div class='col-xs-4'>
 						<?php echo form_input(array(
@@ -104,7 +104,7 @@
 					</div>
 				</div>
 
-				<div class="form-group form-group-sm">
+				<div class="form-group form-group-sm" hidden>
 					<?php echo form_label($this->lang->line('customers_tax_id'), 'tax_id', array('class' => 'control-label col-xs-3')); ?>
 					<div class='col-xs-4'>
 						<?php echo form_input(array(
@@ -138,7 +138,7 @@
 					</div>
 				<?php endif; ?>
 
-				<div class="form-group form-group-sm">
+				<div class="form-group form-group-sm" hidden>
 					<?php echo form_label($this->lang->line('customers_taxable'), 'taxable', array('class' => 'control-label col-xs-3')); ?>
 					<div class='col-xs-1'>
 						<?php echo form_checkbox('taxable', '1', $person_info->taxable == '' ? TRUE : (boolean)$person_info->taxable); ?>
