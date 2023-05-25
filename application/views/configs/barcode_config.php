@@ -130,7 +130,8 @@
 								'category' => $this->lang->line('items_category'),
 								'cost_price' => $this->lang->line('items_cost_price'),
 								'unit_price' => $this->lang->line('items_unit_price'),
-								'company_name' => $this->lang->line('suppliers_company_name')
+								'company_name' => $this->lang->line('suppliers_company_name'),
+								'expire_date' => $this->lang->line('items_expire_date')
 							),
 							$this->config->item('barcode_first_row'), array('class' => 'form-control input-sm')); ?>
 						</div>
@@ -143,7 +144,8 @@
 								'cost_price' => $this->lang->line('items_cost_price'),
 								'unit_price' => $this->lang->line('items_unit_price'),
 								'item_code' => $this->lang->line('items_item_number'),
-								'company_name' => $this->lang->line('suppliers_company_name')
+								'company_name' => $this->lang->line('suppliers_company_name'),
+								'expire_date' => $this->lang->line('items_expire_date')
 							),
 							$this->config->item('barcode_second_row'), array('class' => 'form-control input-sm')); ?>
 						</div>
@@ -156,10 +158,46 @@
 								'cost_price' => $this->lang->line('items_cost_price'),
 								'unit_price' => $this->lang->line('items_unit_price'),
 								'item_code' => $this->lang->line('items_item_number'),
-								'company_name' => $this->lang->line('suppliers_company_name')
+								'company_name' => $this->lang->line('suppliers_company_name'),
+								'expire_date' => $this->lang->line('items_expire_date')
 							),
 							$this->config->item('barcode_third_row'), array('class' => 'form-control input-sm')); ?>
 						</div>
+						<label class="control-label col-sm-1"><?php echo $this->lang->line('config_barcode_four_row').' '; ?></label>
+						<div class='col-sm-2'>
+							<?php echo form_dropdown('barcode_four_row', array(
+								'not_show' => $this->lang->line('config_none'),
+								'name' => $this->lang->line('items_name'),
+								'category' => $this->lang->line('items_category'),
+								'cost_price' => $this->lang->line('items_cost_price'),
+								'unit_price' => $this->lang->line('items_unit_price'),
+								'item_code' => $this->lang->line('items_item_number'),
+								'company_name' => $this->lang->line('suppliers_company_name'),
+								'expire_date' => $this->lang->line('items_expire_date'),
+								'item_id' => $this->lang->line('items_item_id')
+							),
+							$this->config->item('barcode_four_row'), array('class' => 'form-control input-sm')); ?>
+						</div>
+						<br>
+						<br>
+						<br>
+						<label class="control-label col-sm-1"><?php echo $this->lang->line('config_barcode_five_row').' '; ?></label>
+						<div class='col-sm-2'>
+							<?php echo form_dropdown('barcode_five_row', array(
+								'not_show' => $this->lang->line('config_none'),
+								'name' => $this->lang->line('items_name'),
+								'category' => $this->lang->line('items_category'),
+								'cost_price' => $this->lang->line('items_cost_price'),
+								'unit_price' => $this->lang->line('items_unit_price'),
+								'item_code' => $this->lang->line('items_item_number'),
+								'company_name' => $this->lang->line('suppliers_company_name'),
+								'expire_date' => $this->lang->line('items_expire_date'),
+								'item_id' => $this->lang->line('items_item_id')
+							),
+							$this->config->item('barcode_five_row'), array('class' => 'form-control input-sm')); ?>
+						</div>
+						
+						
 					</div>
 				</div>
 			</div>

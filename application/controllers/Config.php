@@ -764,6 +764,8 @@ class Config extends Secure_Controller
 			'barcode_first_row' => $this->input->post('barcode_first_row'),
 			'barcode_second_row' => $this->input->post('barcode_second_row'),
 			'barcode_third_row' => $this->input->post('barcode_third_row'),
+			'barcode_four_row' => $this->input->post('barcode_four_row'),
+			'barcode_five_row' => $this->input->post('barcode_five_row'),
 			'barcode_num_in_row' => $this->input->post('barcode_num_in_row'),
 			'barcode_page_width' => $this->input->post('barcode_page_width'),
 			'barcode_page_cellspacing' => $this->input->post('barcode_page_cellspacing'),

@@ -128,3 +128,4 @@ $lang["items_batch_no"] = "Batch No";
 $lang["items_expire_date"] = "Expire Date";
 $lang["hsn_code_required"] = "HSN Code is required";
 $lang["items_roi"] = "R.O.I";
+$lang["items_item_id"] = "Item Code";

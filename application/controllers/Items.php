@@ -473,7 +473,8 @@ class Items extends Secure_Controller
 		$config = $this->barcode_lib->get_barcode_config();
 
 		$data['barcode_config'] = $config;
-
+		log_message('debug',print_r('dsfvd$result',true));
+		log_message('debug',print_r($result,true));
 		foreach($result as &$item)
 		{
 			$item = $this->xss_clean($item);
