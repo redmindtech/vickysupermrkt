@@ -660,11 +660,11 @@ class Sale extends CI_Model
 			{
 				$item['discount'] = 0.00;
 			}
-			$date = date('Y-m-d', strtotime(substr($item['expire_date'], 0, 10)));
+			// $date = date('Y-m-d', strtotime(substr($item['expire_date'], 0, 10)));
 			$this->db->select('stock_qty');
 			$this->db->from('receivings_items');
 			$this->db->where('item_id', $item['item_id']);
-			$this->db->where('expire_date', $date);
+			$this->db->where('receiving_id', $item['expire_date']);
 			$query = $this->db->get();
 			$result = $query->result();
 			if (!empty($result)) {
@@ -675,7 +675,7 @@ class Sale extends CI_Model
 				);
 				$this->db->from('receivings_items');
 				$this->db->where('item_id', $item['item_id']);
-				$this->db->where('expire_date', $date);
+				$this->db->where('receiving_id', $item['expire_date']);
 				$this->db->update('receivings_items', $data);
 			} else{
 				
@@ -1477,33 +1477,33 @@ class Sale extends CI_Model
 
 	public function price_mrp($item_id,$expire_date)
 	{
-		$date = date('Y-m-d', strtotime(substr($expire_date, 0, 10)));
-		
-
-		$this->db->select('unit_price,mrp_price');
-		$this->db->from('items');
-		$this->db->where('item_id', $item_id);		
-		$this->db->where('expire_date', $date);
-		$query = $this->db->get();
-		$row = $query->result_array(); 
-
-		if (!empty($row)) {
-
-			$result=$row;
-		}
-		 else {
-
+		if (is_numeric($expire_date)) {
+			
 			$this->db->select('item_unit_price AS unit_price, mrp_price');
 			$this->db->from('receivings_items');
 			$this->db->where('item_id', $item_id);
-			$this->db->where('expire_date', $date);
+			$this->db->where('receiving_id', $expire_date);
 			$query = $this->db->get();
 			$result = $query->result_array();
+			log_message('debug', print_r($result, true));
+			return $result;
+		} else {
 			
+			$this->db->select('unit_price, mrp_price');
+			$this->db->from('items');
+			$this->db->where('item_id', $item_id);
+			$this->db->where('expire_date', $expire_date);
+			$query = $this->db->get();
+			$row = $query->result_array();
+			$result = $row;
+			return $result;
 		}
+		
+		
+		
 
 		
-			return $result;
+			
 
 	}
 }

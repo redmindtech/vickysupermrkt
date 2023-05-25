@@ -169,7 +169,7 @@ class Receiving extends CI_Model
 	public function get_expire_date($item_id)
 	{
 				
-		$this->db->select('expire_date, stock_qty');
+		$this->db->select('expire_date, stock_qty,receiving_id');
 		$this->db->from('receivings_items');
 		$this->db->where('item_id',$item_id);
 		$this->db->where('stock_qty >', 0);
