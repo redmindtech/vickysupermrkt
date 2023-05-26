@@ -112,8 +112,9 @@ if(isset($success))
 				<th style="width: 20%;"><?php echo $this->lang->line('sales_item_name'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('sales_price'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('mrp_price'); ?></th>				
-				<th style="width: 8%;"><?php echo $this->lang->line('sales_quantity'); ?></th>
+
 				<th style="width: 15%;"><?php echo $this->lang->line('sales_expire_date'); ?></th>
+				<th style="width: 8%;"><?php echo $this->lang->line('sales_quantity'); ?></th>
 				<th style="width: 7%;"><?php echo $this->lang->line('tax_percentage'); ?></th>
 				<th style="width: 15%;" hidden ><?php echo $this->lang->line('sales_discount'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('sales_total'); ?></th>
@@ -122,7 +123,7 @@ if(isset($success))
 			</tr>
 		</thead>
 
-		<tbody id="cart_contents">
+		<tbody id="cart_contents" name="cart_contents">
 			<?php
 			if(count($cart) == 0)
 			{
@@ -196,7 +197,8 @@ if(isset($success))
 								}
 								?>
 							</td>
-
+							<td><?php echo form_dropdown('expire_date', $item['select_expire_date'], $item['expire_date'], (array('name'=>'expire_date','class'=>'selectpicker show-menu-arrow', 'data-style'=>'btn-default btn-sm', 'data-width'=>'fit'))); ?></td>
+							
 							<td>
 								<?php
 								if($item['is_serialized'])
@@ -211,7 +213,7 @@ if(isset($success))
 								?>
 							</td>
 
-							<td><?php echo form_dropdown('expire_date', $item['select_expire_date'], $item['expire_date'], (array('name'=>'expire_date','class'=>'selectpicker show-menu-arrow', 'data-style'=>'btn-default btn-sm', 'data-width'=>'fit'))); ?></td>
+						
 							
 							
 							<td><?php echo form_input(array('name'=>'tax_percent', 'class'=>'form-control input-sm','readonly' => 'readonly', 'value'=>$item['tax_percent'].'%', 'tabindex'=>++$tabindex, 'onClick'=>'this.select();'));?></td>
@@ -322,14 +324,14 @@ if(isset($success))
 
 <!-- Overall Sale -->
 
-<div id="overall_sale" class="panel panel-default">
+<div id="overall_sale" class="panel panel-default" >
 	<div class="panel-body">
 		<?php echo form_open($controller_name."/select_customer", array('id'=>'select_customer_form', 'class'=>'form-horizontal')); ?>
 			<?php
 			if(isset($customer))
 			{
 			?>
-				<table class="sales_table_100">
+				<table class="sales_table_100" id="table_id">
 					<tr>
 						<th style="width: 55%;"><?php echo $this->lang->line("sales_customer"); ?></th>
 						<th style="width: 45%; text-align: right;"><?php echo anchor('customers/view/'.$customer_id, $customer, array('class' => 'modal-dlg', 'data-btn-submit' => $this->lang->line('common_submit'), 'title' => $this->lang->line('customers_update'))); ?></th>
@@ -461,6 +463,7 @@ if(isset($success))
 		</table>
 
 		<?php
+			$is_add_payment='0';
 		// Only show this part if there are Items already in the register
 		if(count($cart) > 0)
 		{
@@ -556,6 +559,7 @@ if(isset($success))
 				// Only show this part if there is at least one payment entered.
 				if(count($payments) > 0)
 				{
+					$is_add_payment='1';
 				?>
 					<table class="sales_table_100" id="register">
 						<thead>
@@ -689,7 +693,7 @@ if(isset($success))
 
 <script type="text/javascript">
 $(document).ready(function()
-{
+{ 	var is_add=<?php echo json_encode($is_add_payment);?>;
 	$("#discount").hide();
 	const redirect = function() {
 		window.location.href = "<?php echo site_url('sales'); ?>";
@@ -726,6 +730,19 @@ $(document).ready(function()
 	});
 
 	$("input[name='name']").change(function() {
+		var selectedText = $('[name="expire_date"] option:selected').text();
+			
+			var regex = /\(([^)]+)\)/;
+			var matches = regex.exec(selectedText);
+			var valueInsideParentheses = matches[1];
+	
+			var qty = $('[name="quantity"]').val();
+		
+			if (qty > valueInsideParentheses) {
+			alert("Quantity must be less than or equal to " + valueInsideParentheses);
+			$('[name="item"]').prop('disabled', true);	
+			}
+			else{	
 		var item_id = $(this).parents('tr').find("input[name='item_id']").val();
 		var item_name = $(this).val();
 		$.ajax({
@@ -737,6 +754,7 @@ $(document).ready(function()
 			},
 			dataType: 'json'
 		});
+	}
 	});
 
 	$("input[name='item_description']").change(function() {
@@ -874,7 +892,44 @@ $(document).ready(function()
 	});
 
 	$('#add_payment_button').click(function() {
-		$('#add_payment_form').submit();
+		var cartRows = $('#cart_contents tr:has([name="item_id"])');
+		var duplicateExpireDate = false;
+		var itemIds = [];
+
+		cartRows.each(function() {
+		var itemRow = $(this);
+		var itemId = itemRow.find('[name="item_id"]').val().trim();
+		var expireDate = itemRow.find('[name="expire_date"] option:selected').text().trim();
+
+		// Check if the item ID already exists in the array
+		if (itemIds.indexOf(itemId) !== -1) {
+		// Check if the expire date is the same as a previous row
+		duplicateExpireDate = cartRows.filter(function() {
+			return $(this).find('[name="item_id"]').val().trim() === itemId && $(this).find('[name="expire_date"] option:selected').text().trim() === expireDate;
+		}).length > 1;
+		
+		if (duplicateExpireDate) {
+			return false; // Exit the loop early if duplicate expire date found
+		}
+		} else {
+		// Add the item ID to the array
+		itemIds.push(itemId);
+		}
+  });
+
+  if (duplicateExpireDate) {
+    alert('Expire date must be different for same items Please change the Expire date.');
+  } else {
+	
+     $('#add_payment_form').submit();
+	//  $("#register *").attr("disabled",true);
+	//  $('[name="item"]').prop('disabled', true);
+	 
+  }
+
+
+
+		// $('#add_payment_form').submit();
 	});
 
 	$('#payment_types').change(check_payment_type).ready(check_payment_type);
@@ -919,18 +974,39 @@ $(document).ready(function()
 				$('#item').val(response.id);
 				if(stay_open)
 				{
+					
 					$('#add_item_form').ajaxSubmit();
 				}
 				else
 				{
+				
 					$('#add_item_form').submit();
 				}
 			}
 		}
 	}
 
-	$('[name="price"],[name="quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="discounted_total"],[name="expire_date"] ').change(function() {
-		$(this).parents('tr').prevAll('form:first').submit()
+	$('[name="price"],[name="quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="discounted_total"],[name="expire_date"]').change(function() {
+		
+		var selectedText = $('[name="expire_date"] option:selected').text();
+			var regex = /\(([^)]+)\)/;
+			var matches = regex.exec(selectedText);
+			var valueInsideParentheses = matches[1];
+		
+			var qty = $('[name="quantity"]').val();
+            
+			  if (parseInt(qty) > parseInt(valueInsideParentheses)) {
+				alert("Quantity must be less than or equal to " + valueInsideParentheses);
+				$('[name="item"]').prop('disabled', true);
+				$('#add_payment_button').hide();
+			} else {
+				$('[name="item"]').prop('disabled', false);
+				$('#add_payment_button').show();
+				$(this).parents('tr').prevAll('form:first').submit();
+			}
+			
+		
+		
 	});
 
 	$('[name="discount_toggle"]').change(function() {
@@ -972,6 +1048,8 @@ function check_payment_type()
 		$(".giftcard-input").attr('disabled', true);
 		$(".non-giftcard-input").attr('disabled', false);
 	}
+	// $("#register *").attr("disabled",true);
+	// $('[name="item"]').prop('disabled', true);
 }
 
 // Add Keyboard Shortcuts/Hotkeys to Sale Register

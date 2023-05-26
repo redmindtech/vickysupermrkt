@@ -754,7 +754,7 @@ class Sale_lib
 			return FALSE;
 		}
 
-		log_message('debug',print_r($item_info,TRUE));
+		// log_message('debug',print_r($item_info,TRUE));
 		$applied_discount = $discount;
 		$item_id = $item_info->item_id;
 		$item_type = $item_info->item_type;
@@ -796,13 +796,14 @@ class Sale_lib
 		
 			// Add the default expiration date option
 			$select_expire_date_[$item_info->expire_date] = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
-		
+			
 			// Add the remaining expiration dates
 			foreach ($expire_dates_item as $receiving_id => $expire_date) {
 
 				$select_expire_date_[$receiving_id] = $expire_date;
 			}
 			$select_expire_date=$select_expire_date_;
+			log_message('debug',print_r($item_info,TRUE));
 			
 		} 
 		else {
@@ -867,7 +868,8 @@ class Sale_lib
 		{
 			//We primed the loop so maxkey is 0 the first time.
 			//Also, we have stored the key in the element itself so we can compare.
-
+			log_message('debug',print_r('foreach',TRUE));
+			log_message('debug',print_r($item,TRUE));
 			if($maxkey <= $item['line'])
 			{
 				$maxkey = $item['line'];
@@ -875,12 +877,12 @@ class Sale_lib
 
 			if($item['item_id'] == $item_id && $item['item_location'] == $item_location)
 			{
-				$itemalreadyinsale = TRUE;
+				$itemalreadyinsale = FALSE;//its true i changed because i need new line
 				$updatekey = $item['line'];
-				if(!$item_info->is_serialized)
-				{
-					$quantity = bcadd($quantity, $items[$updatekey]['quantity']);
-				}
+				// if(!$item_info->is_serialized)
+				// {
+				// 	$quantity = bcadd($quantity, $items[$updatekey]['quantity']);
+				// }
 			}
 		}
 
