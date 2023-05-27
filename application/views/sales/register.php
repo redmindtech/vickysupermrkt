@@ -693,8 +693,14 @@ if(isset($success))
 
 <script type="text/javascript">
 $(document).ready(function()
-{ 	var is_add=<?php echo json_encode($is_add_payment);?>;
-	$("#discount").hide();
+
+{ 	
+	$('#suspend_sale_button').hide();
+	$('#show_suspended_sales_button').hide();
+	
+	// $('[name="item"]').prop('readonly', true);
+	var is_add=<?php echo json_encode($is_add_payment);?>;
+	$("#amount_tendered").hide();
 	const redirect = function() {
 		window.location.href = "<?php echo site_url('sales'); ?>";
 	};
@@ -920,10 +926,13 @@ $(document).ready(function()
   if (duplicateExpireDate) {
     alert('Expire date must be different for same items Please change the Expire date.');
   } else {
+	 $("#register *").attr("disabled",true);
+	 $('[name="item"]').prop('disabled', true);
+	 $('#add_payment_form').submit();
 	
-     $('#add_payment_form').submit();
-	//  $("#register *").attr("disabled",true);
-	//  $('[name="item"]').prop('disabled', true);
+    
+
+	
 	 
   }
 
@@ -944,6 +953,7 @@ $(document).ready(function()
 	$('#amount_tendered').keypress(function(event) {
 		if(event.which == 13)
 		{
+			
 			$('#add_payment_form').submit();
 		}
 	});
@@ -1014,7 +1024,7 @@ $(document).ready(function()
 		$('#cart_'+ $(this).attr('data-line')).append($(input));
 		$('#cart_'+ $(this).attr('data-line')).submit();
 	});
-});
+
 
 function check_payment_type()
 {
@@ -1051,6 +1061,7 @@ function check_payment_type()
 	// $("#register *").attr("disabled",true);
 	// $('[name="item"]').prop('disabled', true);
 }
+});
 
 // Add Keyboard Shortcuts/Hotkeys to Sale Register
 document.body.onkeyup = function(e)

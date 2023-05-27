@@ -574,8 +574,9 @@ class Sale extends CI_Model
 	 * The sales_taxes variable needs to be initialized to an empty array before calling
 	 */
 	public function save($sale_id, &$sale_status, &$items, $customer_id, $employee_id, $comment, $invoice_number,
-							$work_order_number, $quote_number, $sale_type, $payments, $dinner_table, &$sales_taxes)
+							$work_order_number, $quote_number, $sale_type, $payments, $dinner_table, &$sales_taxes,$mode)
 	{
+		
 		if($sale_id != -1)
 		{
 			$this->clear_suspended_sale_detail($sale_id);
@@ -661,6 +662,7 @@ class Sale extends CI_Model
 				$item['discount'] = 0.00;
 			}
 			// $date = date('Y-m-d', strtotime(substr($item['expire_date'], 0, 10)));
+		
 			$this->db->select('stock_qty');
 			$this->db->from('receivings_items');
 			$this->db->where('item_id', $item['item_id']);
@@ -693,7 +695,7 @@ class Sale extends CI_Model
 				$this->db->where('item_id', $item['item_id']);
 				$this->db->update('item_quantities', $data);
 			}
-
+		
 			$sales_items_data = array(
 				'sale_id'			=> $sale_id,
 				'item_id'			=> $item['item_id'],

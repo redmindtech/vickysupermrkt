@@ -226,3 +226,10 @@ $lang["tax_percentage"]="Tax";
 
 $lang["sales_item_change"]="Change";
 $lang["sales_expire_date"]="Expire Date";
+$lang["sales_item_change"]="Change";
+$lang["sales_expire_date"]="Expire Date";
+$lang["sales_mrp"]="MRP";
+$lang["sales_itemname"]="Item Name";
+$lang["sales_rate"]="Rate";
+$lang["sales_qty"]="Qty";
+$lang["sales_amt"]="Amount";

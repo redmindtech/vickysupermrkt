@@ -194,6 +194,32 @@ class Receiving extends CI_Model
 		return $stock_qty;
 		
 	}
+	public function get_expire_date_return($item_id)
+	{
+				
+		$this->db->select('expire_date, stock_qty,receiving_id');
+		$this->db->from('receivings_items');
+		$this->db->where('item_id',$item_id);
+		
+		$query = $this->db->get();			
+		$data_expire_date = $query->result();
+		
+	
+		return $data_expire_date;
+		
+	}
+	public function get_item_expire_date_return($item_id)
+	{
+				
+		$this->db->select('stock_qty');
+		$this->db->from('item_quantities');
+		$this->db->where('item_id',$item_id);		
+		$query = $this->db->get();			
+		$stock_qty = $query->result();	
+		return $stock_qty;
+		
+	}
+
 
 
 

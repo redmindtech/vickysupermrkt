@@ -284,8 +284,8 @@ function get_payment_options()
 		$payments[$lang->line('sales_credit')] = $lang->line('sales_credit');
 	}
 
-	$payments[$lang->line('sales_due')] = $lang->line('sales_due');
-	$payments[$lang->line('sales_check')] = $lang->line('sales_check');
+	// $payments[$lang->line('sales_due')] = $lang->line('sales_due');
+	// $payments[$lang->line('sales_check')] = $lang->line('sales_check');
 
 	// If India (list of country codes include India) then include Unified Payment Interface
 	if (stripos(get_instance()->config->item('country_codes'), 'IN') !== false)

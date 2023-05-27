@@ -36,12 +36,12 @@ class Sale_lib
 		else
 		{
 			$register_modes['sale'] = $this->CI->lang->line('sales_receipt');
-			$register_modes['sale_quote'] = $this->CI->lang->line('sales_quote');
-			if($this->CI->config->item('work_order_enable') == '1')
-			{
-				$register_modes['sale_work_order'] = $this->CI->lang->line('sales_work_order');
-			}
-			$register_modes['sale_invoice'] = $this->CI->lang->line('sales_invoice');
+			// $register_modes['sale_quote'] = $this->CI->lang->line('sales_quote');
+			// if($this->CI->config->item('work_order_enable') == '1')
+			// {
+			// 	$register_modes['sale_work_order'] = $this->CI->lang->line('sales_work_order');
+			// }
+			// $register_modes['sale_invoice'] = $this->CI->lang->line('sales_invoice');
 		}
 		$register_modes['return'] = $this->CI->lang->line('sales_return');
 		return $register_modes;
@@ -744,8 +744,9 @@ class Sale_lib
 		$this->CI->session->unset_userdata('sales_rewards_remainder');
 	}
 
-	public function add_item(&$item_id, $quantity = 1, $item_location, &$discount = 0.0, $discount_type = 0, $price_mode = PRICE_MODE_STANDARD, $kit_price_option = NULL, $kit_print_option = NULL, $price_override = NULL, $description = NULL, $serialnumber = NULL, $sale_id = NULL, $include_deleted = FALSE, $print_option = NULL, $line = NULL)
+	public function add_item(&$item_id, $quantity = 1, $item_location, &$discount = 0.0, $discount_type = 0, $price_mode = PRICE_MODE_STANDARD, $kit_price_option = NULL, $kit_print_option = NULL, $price_override = NULL, $description = NULL, $serialnumber = NULL, $sale_id = NULL, $include_deleted = FALSE, $print_option = NULL, $line = NULL,$mode)
 	{
+		
 		$item_info = $this->CI->Item->get_info_by_id_or_number($item_id, $include_deleted);
 		//make sure item exists
 		if(empty($item_info))
@@ -753,7 +754,8 @@ class Sale_lib
 			$item_id = -1;
 			return FALSE;
 		}
-
+		log_message('debug',print_r($item_info,TRUE));
+		 log_message('debug',print_r($mode,TRUE));
 		// log_message('debug',print_r($item_info,TRUE));
 		$applied_discount = $discount;
 		$item_id = $item_info->item_id;
@@ -771,47 +773,97 @@ class Sale_lib
 		$mrp_price=$item_info->mrp_price;
 		 
 		$expire_dates = array();
-		$expire_date_get = $this->CI->Receiving->get_expire_date($item_id);
-		
-
-		$length = count($expire_date_get);
-		$get_item_expire = '';
-		$item_stock = $this->CI->Receiving->get_item_expire_date($item_id);
-		$stockQty = $item_stock[0]->stock_qty;
-		
 		$expire_dates_item = array();
 		$select_expire_date_ = array();
 		$select_expire_date=array();
-		if ($length > 0) {
-			foreach ($expire_date_get as $obj) {
-				$get_item_expire = substr($obj->expire_date, 0, 10);
-				
-				$expire_dates_item[$obj->receiving_id] = $get_item_expire . ' ' . " (" . round($obj->stock_qty, 2) . ")";
-			
-				// $select_expire_date_=$expire_dates_item[$obj->receiving_id];
-			}
-		
-			// Add 'none' option
-			// $select_expire_date['none'] = 'None';
-		
-			// Add the default expiration date option
-			$select_expire_date_[$item_info->expire_date] = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
-			
-			// Add the remaining expiration dates
-			foreach ($expire_dates_item as $receiving_id => $expire_date) {
 
-				$select_expire_date_[$receiving_id] = $expire_date;
-			}
-			$select_expire_date=$select_expire_date_;
-			log_message('debug',print_r($item_info,TRUE));
-			
-		} 
-		else {
-			$get_item_expire = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
-				
-			$select_expire_date[$item_info->expire_date] = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
-		}
 		
+		// 
+		if($mode =='return')
+		{
+			log_message('debug',print_r('return',TRUE));
+			$expire_date_get = $this->CI->Receiving->get_expire_date_return($item_id);
+			$length = count($expire_date_get);
+			$get_item_expire = '';
+			$item_stock = $this->CI->Receiving->get_item_expire_date_return($item_id);
+			
+			// $stockQty = $item_stock[0]->stock_qty;
+			$stockQty = isset($item_stock[0]->stock_qty) ? $item_stock[0]->stock_qty : 0;
+			
+			if ($length > 0) {
+				foreach ($expire_date_get as $obj) {
+					$get_item_expire = substr($obj->expire_date, 0, 10);
+					
+					$expire_dates_item[$obj->receiving_id] = $get_item_expire . ' ' . " (" . round($obj->stock_qty, 2) . ")";
+				
+					// $select_expire_date_=$expire_dates_item[$obj->receiving_id];
+				}			
+				
+				// Add the remaining expiration dates
+				foreach ($expire_dates_item as $receiving_id => $expire_date) {
+	
+					$select_expire_date_[$receiving_id] = $expire_date;
+				}
+				$select_expire_date=$select_expire_date_;
+				// log_message('debug',print_r($item_info,TRUE));
+				
+			} 
+			else {
+				$get_item_expire = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
+					
+				$select_expire_date[$item_info->expire_date] = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
+			}
+
+		}
+		else{
+		 log_message('debug',print_r('else',TRUE));
+			$expire_date_get = $this->CI->Receiving->get_expire_date($item_id);
+			$length = count($expire_date_get);
+			$get_item_expire = '';
+			$item_stock = $this->CI->Receiving->get_item_expire_date($item_id);
+			
+			// $stockQty = $item_stock[0]->stock_qty;
+			$stockQty = isset($item_stock[0]->stock_qty) ? $item_stock[0]->stock_qty : 0;
+	
+			if ($stockQty > 0) {
+				$select_expire_date_[$item_info->expire_date] = $item_info->expire_date . ' (' . round($stockQty, 2) . ')';
+			} else {
+				unset($select_expire_date_[$item_info->expire_date]);
+			}
+			
+			if ($length > 0) {
+				foreach ($expire_date_get as $obj) {
+					$get_item_expire = substr($obj->expire_date, 0, 10);
+					
+					$expire_dates_item[$obj->receiving_id] = $get_item_expire . ' ' . " (" . round($obj->stock_qty, 2) . ")";
+				
+					// $select_expire_date_=$expire_dates_item[$obj->receiving_id];
+				}			
+				
+				// Add the remaining expiration dates
+				foreach ($expire_dates_item as $receiving_id => $expire_date) {
+	
+					$select_expire_date_[$receiving_id] = $expire_date;
+				}
+				$select_expire_date=$select_expire_date_;
+				// log_message('debug',print_r($item_info,TRUE));
+				
+			} 
+			else {
+				if ($stockQty == '0') {
+					$item_info->expire_date ="NO STOCK";
+					$get_item_expire = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
+					
+				$select_expire_date[$item_info->expire_date] = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
+					// $select_expire_date_[$item_info->expire_date] = $item_info->expire_date . ' (' . round($stockQty, 2) . ')';
+				}
+				else{
+				$get_item_expire = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
+					
+				$select_expire_date[$item_info->expire_date] = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
+			}
+		}
+	}
 
 
 		
@@ -1100,7 +1152,7 @@ class Sale_lib
 
 		foreach($this->CI->Sale->get_sale_items_ordered($sale_id)->result() as $row)
 		{
-			$this->add_item($row->item_id, -$row->quantity_purchased, $row->item_location, $row->discount, $row->discount_type, PRICE_MODE_STANDARD, NULL, NULL, $row->item_unit_price, $row->description, $row->serialnumber, NULL, TRUE);
+			$this->add_item($row->item_id, -$row->quantity_purchased, $row->item_location, $row->discount, $row->discount_type, PRICE_MODE_STANDARD, NULL, NULL, $row->item_unit_price, $row->description, $row->serialnumber, NULL, TRUE,null,null,null);
 		}
 
 		$this->set_customer($this->CI->Sale->get_customer($sale_id)->person_id);
@@ -1116,7 +1168,7 @@ class Sale_lib
 
 		foreach($this->CI->Item_kit_items->get_info($item_kit_id) as $item_kit_item)
 		{
-			$result &= $this->add_item($item_kit_item['item_id'], $item_kit_item['quantity'], $item_location, $discount, $discount_type, PRICE_MODE_KIT, $kit_price_option, $kit_print_option);
+			$result &= $this->add_item($item_kit_item['item_id'], $item_kit_item['quantity'], $item_location, $discount, $discount_type, PRICE_MODE_KIT, $kit_price_option, $kit_print_option,null);
 
 			if($stock_warning == NULL)
 			{
@@ -1134,7 +1186,7 @@ class Sale_lib
 
 		foreach($this->CI->Sale->get_sale_items_ordered($sale_id)->result() as $row)
 		{
-			$this->add_item($row->item_id, $row->quantity_purchased, $row->item_location, $row->discount, $row->discount_type, PRICE_MODE_STANDARD, NULL, NULL, $row->item_unit_price, $row->description, $row->serialnumber, $sale_id, TRUE, $row->print_option);
+			$this->add_item($row->item_id, $row->quantity_purchased, $row->item_location, $row->discount, $row->discount_type, PRICE_MODE_STANDARD, NULL, NULL, $row->item_unit_price, $row->description, $row->serialnumber, $sale_id, TRUE, $row->print_option,null,null);
 		}
 
 		$this->CI->session->set_userdata('cash_mode', CASH_MODE_FALSE);
