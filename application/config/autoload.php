@@ -162,5 +162,6 @@ $autoload['model'] = array(
 	'Tax_jurisdiction',
 	'Item_hsn_code',
 	'Daily_report',
+	'Split_item'
 
 );

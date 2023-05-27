@@ -842,5 +842,42 @@ function get_hsn_codes_data_row($hsn_codes, $count)
 		)
 	);
 }
+function get_split_items_manage_table_headers()
+{
+	$CI =& get_instance();
+
+	$headers = array(
+		// array('serial_number' => $CI->lang->line('common_serial_number'), 'sortable' => FALSE),
+		array('id' => $CI->lang->line('common_serial_number')),
+		array('receivings_date' => $CI->lang->line('receivings_date')),
+		array('item_name' => $CI->lang->line('receivings_item_name')),
+		array('receivings_quantity_in_hand' => $CI->lang->line('receivings_quantity_in_hand')),
+		array('stock_qty' => $CI->lang->line('split_items_no_of_pack_kg')),
+	);
+
+	return transform_headers($headers);
+}
+
+/*
+Gets the html data row for the HSN Code
+*/
+function get_split_item_data_row($split_items)
+{
+	$CI =& get_instance();
+
+	$controller_name = strtolower(get_class($CI));
+
+	return array (
+		// 'serial_number'=>$count,
+		'id' => $split_items->receiving_id,
+		'receivings_date' => to_date(strtotime($split_items->receiving_time)),
+		'item_name' => $split_items->name,
+		'receivings_quantity_in_hand' =>to_quantity_decimals($split_items->quantity_purchased),
+		'stock_qty' =>to_quantity_decimals($split_items->stock_qty),
+		'edit' => anchor($controller_name."/view/$split_items->receiving_id", '<span class="glyphicon glyphicon-edit"></span>',
+			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_new'))
+		)
+	);
+}
 
 ?>

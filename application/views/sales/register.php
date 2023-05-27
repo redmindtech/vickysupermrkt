@@ -700,7 +700,7 @@ $(document).ready(function()
 	
 	// $('[name="item"]').prop('readonly', true);
 	var is_add=<?php echo json_encode($is_add_payment);?>;
-	$("#amount_tendered").hide();
+	// $("#amount_tendered").hide();
 	const redirect = function() {
 		window.location.href = "<?php echo site_url('sales'); ?>";
 	};
