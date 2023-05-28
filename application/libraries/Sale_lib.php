@@ -785,6 +785,8 @@ class Sale_lib
 			$expire_date_get = $this->CI->Receiving->get_expire_date_return($item_id);
 			$length = count($expire_date_get);
 			$get_item_expire = '';
+			$select_expire_date_[""] = "None";
+			
 			$item_stock = $this->CI->Receiving->get_item_expire_date_return($item_id);
 			
 			// $stockQty = $item_stock[0]->stock_qty;
@@ -809,6 +811,7 @@ class Sale_lib
 				
 			} 
 			else {
+				$select_expire_date[""] = "None";
 				$get_item_expire = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
 					
 				$select_expire_date[$item_info->expire_date] = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
@@ -817,21 +820,25 @@ class Sale_lib
 		}
 		else{
 		 log_message('debug',print_r('else',TRUE));
+		 
 			$expire_date_get = $this->CI->Receiving->get_expire_date($item_id);
 			$length = count($expire_date_get);
 			$get_item_expire = '';
 			$item_stock = $this->CI->Receiving->get_item_expire_date($item_id);
-			
+			$select_expire_date_[""] = "None";
+		
 			// $stockQty = $item_stock[0]->stock_qty;
+
 			$stockQty = isset($item_stock[0]->stock_qty) ? $item_stock[0]->stock_qty : 0;
-	
+			
 			if ($stockQty > 0) {
 				$select_expire_date_[$item_info->expire_date] = $item_info->expire_date . ' (' . round($stockQty, 2) . ')';
 			} else {
 				unset($select_expire_date_[$item_info->expire_date]);
 			}
-			
+			// $select_expire_date["nono"] = "nono";
 			if ($length > 0) {
+				
 				foreach ($expire_date_get as $obj) {
 					$get_item_expire = substr($obj->expire_date, 0, 10);
 					
@@ -846,10 +853,11 @@ class Sale_lib
 					$select_expire_date_[$receiving_id] = $expire_date;
 				}
 				$select_expire_date=$select_expire_date_;
-				// log_message('debug',print_r($item_info,TRUE));
+				 log_message('debug',print_r($item_info,TRUE));
 				
 			} 
 			else {
+				$select_expire_date[""] = "None";
 				if ($stockQty == '0') {
 					$item_info->expire_date ="NO STOCK";
 					$get_item_expire = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";

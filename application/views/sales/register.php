@@ -736,19 +736,7 @@ $(document).ready(function()
 	});
 
 	$("input[name='name']").change(function() {
-		var selectedText = $('[name="expire_date"] option:selected').text();
-			
-			var regex = /\(([^)]+)\)/;
-			var matches = regex.exec(selectedText);
-			var valueInsideParentheses = matches[1];
-	
-			var qty = $('[name="quantity"]').val();
 		
-			if (qty > valueInsideParentheses) {
-			alert("Quantity must be less than or equal to " + valueInsideParentheses);
-			$('[name="item"]').prop('disabled', true);	
-			}
-			else{	
 		var item_id = $(this).parents('tr').find("input[name='item_id']").val();
 		var item_name = $(this).val();
 		$.ajax({
@@ -760,7 +748,7 @@ $(document).ready(function()
 			},
 			dataType: 'json'
 		});
-	}
+	
 	});
 
 	$("input[name='item_description']").change(function() {
@@ -780,6 +768,7 @@ $(document).ready(function()
 	$('#item').focus();
 
 	$('#item').blur(function() {
+		
 		$(this).val("<?php echo $this->lang->line('sales_start_typing_item_name'); ?>");
 	});
 
@@ -796,6 +785,7 @@ $(document).ready(function()
 	});
 
 	$('#item').keypress(function (e) {
+		
 		if(e.which == 13) {
 			$('#add_item_form').submit();
 			return false;
@@ -999,6 +989,7 @@ $(document).ready(function()
 	$('[name="price"],[name="quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="discounted_total"],[name="expire_date"]').change(function() {
 		
 		var selectedText = $('[name="expire_date"] option:selected').text();
+		alert(selectedText);
 			var regex = /\(([^)]+)\)/;
 			var matches = regex.exec(selectedText);
 			var valueInsideParentheses = matches[1];
@@ -1024,7 +1015,19 @@ $(document).ready(function()
 		$('#cart_'+ $(this).attr('data-line')).append($(input));
 		$('#cart_'+ $(this).attr('data-line')).submit();
 	});
-
+	$('[name="item"]').on('click change', function() {
+    var selectedText = $('[name="expire_date"] option:selected').text();
+    
+    if (selectedText.toLowerCase().indexOf("none") !== -1) {
+        // Handle "none" expire date case here
+        alert("Please select a valid expire date.");
+		$('[name="item"]').prop('disabled', true);
+        $('#add_payment_button').hide();
+    } else {
+		$('[name="item"]').prop('disabled', false);
+        $('#add_payment_button').show();
+    }
+});
 
 function check_payment_type()
 {

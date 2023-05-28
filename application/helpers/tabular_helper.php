@@ -234,7 +234,7 @@ function get_customer_manage_table_headers()
 
 	if($CI->Employee->has_grant('messages', $CI->session->userdata('person_id')))
 	{
-		$headers[] = array('messages' => '', 'sortable' => FALSE);
+		// $headers[] = array('messages' => '', 'sortable' => FALSE);
 	}
 
 	return transform_headers($headers);
@@ -258,8 +258,8 @@ function get_customer_data_row($person, $stats)
 		'phone_number' => $person->phone_number,
 		'total' => to_currency($stats->total),
 		'loyalty_points' => $person->points,
-		'messages' => empty($person->phone_number) ? '' : anchor("Messages/view/$person->person_id", '<span class="glyphicon glyphicon-phone"></span>',
-			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line('messages_sms_send'))),
+		// 'messages' => empty($person->phone_number) ? '' : anchor("Messages/view/$person->person_id", '<span class="glyphicon glyphicon-phone"></span>',
+		// 	array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line('messages_sms_send'))),
 		'edit' => anchor($controller_name."/view/$person->person_id", '<span class="glyphicon glyphicon-edit"></span>',
 			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_update'))
 	));
@@ -286,7 +286,7 @@ function get_suppliers_manage_table_headers()
 
 	if($CI->Employee->has_grant('messages', $CI->session->userdata('person_id')))
 	{
-		$headers[] = array('messages' => '');
+		// $headers[] = array('messages' => '');
 	}
 
 	return transform_headers($headers);
@@ -310,8 +310,8 @@ function get_supplier_data_row($supplier)
 		'customer_name' => $supplier->first_name . " " . $supplier->last_name ,
 		'email' => empty($supplier->email) ? '' : mailto($supplier->email, $supplier->email),
 		'phone_number' => $supplier->phone_number,
-		'messages' => empty($supplier->phone_number) ? '' : anchor("Messages/view/$supplier->person_id", '<span class="glyphicon glyphicon-phone"></span>',
-			array('class'=>"modal-dlg", 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line('messages_sms_send'))),
+		// 'messages' => empty($supplier->phone_number) ? '' : anchor("Messages/view/$supplier->person_id", '<span class="glyphicon glyphicon-phone"></span>',
+		// 	array('class'=>"modal-dlg", 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line('messages_sms_send'))),
 		'edit' => anchor($controller_name."/view/$supplier->person_id", '<span class="glyphicon glyphicon-edit"></span>',
 			array('class'=>"modal-dlg", 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_update')))
 	);
