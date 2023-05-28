@@ -989,7 +989,7 @@ $(document).ready(function()
 	$('[name="price"],[name="quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="discounted_total"],[name="expire_date"]').change(function() {
 		
 		var selectedText = $('[name="expire_date"] option:selected').text();
-		alert(selectedText);
+		// alert(selectedText);
 			var regex = /\(([^)]+)\)/;
 			var matches = regex.exec(selectedText);
 			var valueInsideParentheses = matches[1];
