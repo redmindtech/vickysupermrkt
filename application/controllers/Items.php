@@ -425,8 +425,11 @@ class Items extends Secure_Controller
 		$data['stock_locations'] = [];
 		$stock_locations = $this->Stock_location->get_undeleted_all()->result_array();
 
+		
+
 		foreach($stock_locations as $location)
 		{
+			log_message('debug',print_r($stock_locations,TRUE));
 			$location = $this->xss_clean($location);
 			$quantity = $this->xss_clean($this->Item_quantity->get_item_quantity($item_id, $location['location_id'])->quantity);
 

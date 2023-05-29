@@ -3,6 +3,8 @@
 <ul id="error_message_box" class="error_message_box"></ul>
 <?php echo form_open('Split_items/save/'.$split_items_info->receiving_id, array('id'=>'split_items_edit_form', 'class'=>'form-horizontal')); ?>
 
+
+
 <fieldset id="split_items">
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('receivings_date'), 'receivings_date', array('class'=>'control-label col-xs-3')); ?>
@@ -41,13 +43,21 @@
 							'id'=>'old_item_id',
 							'value'=>$split_items_info->item_id)
 							);
+
+							echo form_input(array(
+								'type'=>'hidden',
+								'name'=>'old_line',
+								'id'=>'old_line',
+								'value'=>$split_items_info->line)
+								);
 						?>
+						
 			</div>
 		</div>
 
         
 		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('receivings_new_item_name'), 'new_item_name', array('class'=>'control-label col-xs-3')); ?>
+			<?php echo form_label($this->lang->line('receivings_new_item_name'), 'new_item_name', array('class'=>'required control-label col-xs-3')); ?>
 			<div class='col-xs-8'>
 				<?php echo form_input(array(
 						'name'=>'new_item_name',
@@ -57,8 +67,8 @@
 					);
 					echo form_input(array(
 						'type'=>'hidden',
-						'name'=>'item_id',
-						'id'=>'item_id')
+						'name'=>'new_item_id',
+						'id'=>'new_item_id')
 						);?>
 			</div>
 		
@@ -78,7 +88,7 @@
 		</div>
 
         <div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('receivings_no_split'), 'receivings_no_split', array('class'=>'control-label col-xs-3')); ?>
+			<?php echo form_label($this->lang->line('receivings_no_split'), 'receivings_no_split', array('class'=>'required control-label col-xs-3')); ?>
 			<div class='col-xs-8'>
 				<?php echo form_input(array(
 						'name'=>'receivings_no_split',
@@ -103,7 +113,7 @@
 		</div>
 
         <div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('receivings_no_of_pack_split'), 'receivings_no_of_pack_split', array('class'=>'control-label col-xs-3')); ?>
+			<?php echo form_label($this->lang->line('receivings_no_of_pack_split'), 'receivings_no_of_pack_split', array('class'=>'required control-label col-xs-3')); ?>
 			<div class='col-xs-8'>
 				<?php echo form_input(array(
 						'name'=>'receivings_no_of_pack_split',
@@ -115,7 +125,7 @@
 		</div>
 
 		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('receivings_no_of_packing_split'), 'no_of_packing_split', array('class'=>'control-label col-xs-3')); ?>
+			<?php echo form_label($this->lang->line('receivings_no_of_packing_split'), 'no_of_packing_split', array('class'=>'required control-label col-xs-3')); ?>
 			<div class='col-xs-8'>
 				<?php echo form_input(array(
 						'name'=>'no_of_packing_split',
@@ -125,9 +135,20 @@
 						);?>
 			</div>
 		</div>
+		<div class="form-group form-group-sm" hidden>
+			<?php //echo form_label($this->lang->line('receivings_no_of_packing_split'), 'no_of_packing_split', array('class'=>'control-label col-xs-3')); ?>
+			<div class='col-xs-8'>
+				<?php echo form_input(array(
+						'name'=>'item_quantity_stocl',
+						'id'=>'item_quantity_stocl',
+						'class'=>'form-control input-sm',
+						'value'=>'')
+						);?>
+			</div>
+		</div>
 
         <div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('receivings_split_type'), 'split_type', array('class'=>'control-label col-xs-3')); ?>
+			<?php echo form_label($this->lang->line('receivings_split_type'), 'split_type', array('class'=>'required control-label col-xs-3')); ?>
             <div class='col-xs-8'>
 			<select name="split_type" id="split_type"  class='form-control'>
                 <option value="" hidden>--Select Branch--</option >
@@ -139,7 +160,7 @@
 		</div>
 
         <div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('items_purchase_price'), 'cost_price', array('class'=>'control-label col-xs-3')); ?>
+			<?php echo form_label($this->lang->line('items_purchase_price'), 'cost_price', array('class'=>'required control-label col-xs-3')); ?>
 			<div class="col-xs-4">
 				<div class="input-group input-group-sm">
 					<?php if (!currency_side()): ?>
@@ -181,7 +202,7 @@
 		</div>
 
         <div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('items_sales_price'), 'item_unit_price', array('class'=>'control-label col-xs-3')); ?>
+			<?php echo form_label($this->lang->line('items_sales_price'), 'item_unit_price', array('class'=>'required control-label col-xs-3')); ?>
 			<div class='col-xs-4'>
 				<div class="input-group input-group-sm">
 					<?php if (!currency_side()): ?>
@@ -272,8 +293,8 @@
 				<div class="input-group">
 					<span class="input-group-addon input-sm"><span class="glyphicon glyphicon-calendar"></span></span>
 						<?php echo form_input(array(
-							'name'=>'expire_date',
-							'id'=>'expire_date',
+							'name'=>'new_expire_date',
+							'id'=>'new_expire_date',
 							'class'=>'form-control input-sm datetime',
  							'value'=>to_date(strtotime($split_items_info->expire_date)),
                            )
@@ -407,6 +428,8 @@ $(document).ready(function()
 {
 
 	
+	<?php $this->load->view('partial/datepicker_locale'); ?>
+
 	
 	$('#category').autocomplete({
 		source: "<?php echo site_url('items/suggest_category');?>",
@@ -427,6 +450,7 @@ $(document).ready(function()
 	// 	appendTo: '.modal-content'
 	// });
 
+
 	$('#new_item_name').click(function() {
 		$(this).attr('value', '');
 	});
@@ -436,16 +460,59 @@ $(document).ready(function()
 		minChars:0,
 		delay:10,
 		select: function (event, ui) {
-			$('#item_id').val(ui.item.value);
+			$('#new_item_id').val(ui.item.value);
 			$(this).val(ui.item.label);
-			// $(this).attr('readonly', 'readonly');
-			// $('#remove_supplier_button').css('display', 'inline-block');
+			$(this).attr('readonly', 'readonly');
+			$('#remove_supplier_button').css('display', 'inline-block');
 			return false;
 		}
 	});
 
+	$('#new_item_name').blur(function() {
+		$(this).attr('value',"<?php echo $this->lang->line('receivings_start_typing_item_name'); ?>");
+	});
+
+	$('#remove_supplier_button').css('display', 'none');
+
+	$('#remove_supplier_button').click(function() {
+		$('#new_item_id').val('');
+		$('#new_item_name').removeAttr('');
+		$('#new_item_name').val('');
+		$(this).css('display', 'none');
+	});
+
+	//no_of_packing_split
+
+	$('#new_item_name').change(function()
+{
+		alert('Please select');
 	
-	$('#hsn_code').change(function()
+	$var= $('#new_item_id').text();
+    $new_item_id= $('#new_item_id').val();
+    $('#new_item_id').val($new_item_id); 
+	alert($new_item_id);
+	$.ajax({
+			type: 'POST',
+			url: "<?php echo site_url('Split_items/get_item_quantity_stocl/'); ?>" + $new_item_id,         
+            datatype : 'json',            
+            }).done(function (msg) {
+                
+				$('#item_quantity_stocl').val(msg);
+				alert(msg);
+				// $('#tax_percent_name_2').val(msg);                
+            }).fail(function (errorMsg)
+			{        
+				    
+			   $('#item_quantity_stocl').val('0');
+			//    $('#tax_percent_name_2').val('0');
+        });
+	
+	});
+
+	
+// hsn code autocompletion
+
+$('#hsn_code').change(function()
 {
 		
 	
@@ -469,20 +536,6 @@ $(document).ready(function()
         });
 	
 	});
-	
-
-	
-
-	<?php
-	if(!empty($split_items_info->expense_id))
-	{
-	?>
-		$('#item_id').val('<?php echo $split_items_info->item_id ?>');
-		$('#new_item_name').val('<?php echo $split_items_info->new_item_name ?>').attr('readonly', 'readonly');
-		$('#remove_supplier_button').css('display', 'inline-block');
-	<?php
-	}
-	?>
 
 
 	$('#split_items_edit_form').validate($.extend({
@@ -507,10 +560,49 @@ $(document).ready(function()
 
 		rules:
 		{
-           
-			tax_percentage:{required: true,number:true,maxlength:3,range : [1, 100]},
-           
-            
+			new_item_name:
+			{
+				required: true,
+				
+			},
+
+			receivings_no_split:
+			{
+				required: true,
+				number:true,
+			},
+
+			receivings_no_split:
+			{
+				required: true,
+				number:true,
+			},
+
+			receivings_no_of_pack_split:
+			{
+				required: true,
+				number:true,
+			},
+
+			no_of_packing_split:
+			{
+				required: true,
+				number:true,
+			},
+
+			split_type:
+			{
+				required: true,
+				
+			},
+
+			hsn_code:
+			{
+				required: true,
+                number:true,
+				
+			},
+         
 		},
 
 		messages:
@@ -519,7 +611,11 @@ $(document).ready(function()
             {required: "<?php echo $this->lang->line('hsn_code_required'); ?>",
             remote:"<?php echo $this->lang->line('hsn_code_already_in_table'); ?>"
             },
-            tax_percentage: "<?php echo $this->lang->line('hsn_code_percetage_required'); ?>"
+            new_item_name: "<?php echo $this->lang->line('new_item_required'); ?>",
+			receivings_no_split: "<?php echo $this->lang->line('no_of_quantity_is_required'); ?>",
+			receivings_no_of_pack_split: "<?php echo $this->lang->line('receivings_no_of_pack_split_required'); ?>",
+			no_of_packing_split: "<?php echo $this->lang->line('receivings_no_of_packing_split_required'); ?>",
+			split_type :"<?php echo $this->lang->line('receivings_split_type_required'); ?>",
 		}
 	}, form_support.error));
 });

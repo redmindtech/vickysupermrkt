@@ -69,18 +69,102 @@ class Split_items extends Secure_Controller
 	public function save($id = -1)
 	{
 
+		$item_id = $this->input->post('new_item_id');
+		$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
+		
+		$split_items_info = $this->Split_item->get_info($item_id);
+		
+		$item_info = $this->Item->get_info($item_id);
+		
+
+		$item_quantity = $this->input->post('item_quantity_stocl');
+		
+
+		$old_cost_price = $item_info->cost_price;
+		$old_unit_price = $item_info->unit_price;
+		$old_expire_date = date('d/m/Y', strtotime($item_info->expire_date));
+		
+
+		$new_cost_price = $this->input->post('new_cost_price');
+		$new_unit_price = $this->input->post('new_unit_price');
+		$new_expire_date = $this->input->post('new_expire_date');
+		$new_quantity = $this->input->post('no_of_packing_split');
+
+		if($old_cost_price == $new_cost_price && $old_unit_price == $new_unit_price && $old_expire_date == $new_expire_date){
+			
+			
+			$stock_locations = $this->Stock_location->get_undeleted_all()->result_array();
+			foreach($stock_locations as $location)
+			{
+				$updated_quantity = parse_quantity($this->input->post('quantity_' . $location['location_id']));
+				
+
+				$item_type = $item_info->item_type;
+				
+				
+				$no_pack_kg_split = $this->input->post('item_quantity_stocl') + $this->input->post('no_of_packing_split');
+
+				$data = array(
+					'stock_qty' => $no_pack_kg_split,
+					'quantity' => $no_pack_kg_split
+				);
+
+				$success &= $this->Split_item->update_stock_qty($item_id, $data);
+			
+				$old_item_quantity = $item_quantity;
+				
+				if($item_quantity->quantity != $updated_quantity || $new_item)
+				{
+					// $success &= $this->Item_quantity->save($location_detail, $item_id);
+
+					$inv_data = array(
+						'trans_date' => date('Y-m-d H:i:s'),
+						'trans_items' => $item_id,
+						'trans_user' => $employee_id,
+						'trans_location' => '1',
+						'trans_comment' => $this->lang->line('receivings_split_items'),
+						'trans_inventory' => $this->input->post('item_quantity_stocl')
+					);
+				
+					$success &= $this->Inventory->insert($inv_data);
+				}
+
+			$receiving_id = $this->input->post('receiving_id');
+			$item_id = $this->input->post('old_item_id');
+			$line = $this->input->post('line');
+
+			$update_qty_in_hand = $this->input->post('quantity_in_hand') - $this->input->post('receivings_no_split');
+
+			$no_pack_kg_split = $this->input->post('split_items_no_of_pack_kg') - $this->input->post('receivings_no_of_pack_split');
+
+			$receiving_data = array(				
+				'quantity_purchased' => $update_qty_in_hand,
+				'stock_qty' => $no_pack_kg_split,				
+			);
+			
+			$success &= $this->Split_item->update($receiving_id, $item_id, $line, $receiving_data,$data);
+			
+			echo json_encode(array('success' => FALSE, 'message' => $this->lang->line('hsn_code_error_adding_updating') . ' ' . $hsn_code_data['hsn_code'], 'id' => -1));
+		
+
+			}
+		}
+
+		else
+		{
+		
+			log_message('debug',print_r('if fail '.$old_cost_price,TRUE));
+	
 		$newdate = $this->input->post('receivings_date');
 
 		$date_formatter = date_create_from_format($this->config->item('dateformat'), $newdate);
 
 
-		$expire_date = $this->input->post('expire_date');
+		$expire_date = $this->input->post('new_expire_date');
 
 		$expire_date_formatter = date_create_from_format($this->config->item('dateformat'), $expire_date);
 
 
-		// log_message('debug',print_r('sabefore'.$newdate,TRUE));
-		// log_message('debug',print_r('savebefore'.$date_formatter,TRUE));
 		$split_item_data = array(
 			'receiving_id' => $this->input->post('receiving_id'),
 			'item_id' => $this->input->post('old_item_id'),
@@ -98,11 +182,9 @@ class Split_items extends Secure_Controller
 			'hsn_code' => $this->input->post('hsn_code'),
 			'description' => $this->input->post('description'),
 			'expire_date' => $expire_date_formatter->format('Y-m-d'),
+			
 		);
-
-		log_message('debug',print_r($split_item_data,TRUE));
-
-		$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
+	
 		
 		if($this->Split_item->save($split_item_data, $id))
 		{
@@ -132,9 +214,9 @@ class Split_items extends Secure_Controller
 			'tax_category_id' => '0',
 			'low_sell_item_id' => $this->input->post('old_item_id'),
 			'deleted' => '0',
-			'hsn_code' => $this->input->post('hsn_code')
+			'hsn_code' => $this->input->post('hsn_code'),
+			
 		);
-		log_message('debug',print_r($item_data,TRUE));
 
 		$item_id = NEW_ITEM;
 
@@ -172,7 +254,6 @@ class Split_items extends Secure_Controller
 
 					$tax_name_index++;
 				}
-				log_message('debug',print_r($items_taxes_data,TRUE));
 
 				
 				$success &= $this->Item_taxes->save($items_taxes_data, $item_id);
@@ -193,7 +274,6 @@ class Split_items extends Secure_Controller
 						'quantity' => $this->input->post('no_of_packing_split'),
 					    'stock_qty'=> $this->input->post('no_of_packing_split'));
 
-						log_message('debug',print_r($location_detail,TRUE));
 
 				$item_quantity = $this->Item_quantity->get_item_quantity($item_id, $location['location_id']);
 
@@ -209,11 +289,33 @@ class Split_items extends Secure_Controller
 						'trans_comment' => $this->lang->line('items_manually_editing_of_quantity'),
 						'trans_inventory' => $updated_quantity - $item_quantity->quantity
 					);
-					log_message('debug',print_r($inv_data,TRUE));
+
 					$success &= $this->Inventory->insert($inv_data);
 				}
 			}
 
+			$receiving_id = $this->input->post('receiving_id');
+			$item_id = $this->input->post('old_item_id');
+			$line = $this->input->post('line');
+
+			$update_qty_in_hand = $this->input->post('quantity_in_hand') - $this->input->post('receivings_no_split');
+
+			$no_pack_kg_split = $this->input->post('split_items_no_of_pack_kg') - $this->input->post('receivings_no_of_pack_split');
+
+			
+
+			$receiving_data = array(				
+				'quantity_purchased' => $update_qty_in_hand,
+				'stock_qty' => $no_pack_kg_split,				
+			);
+			
+			$data = array(
+				'stock_qty' => $no_pack_kg_split
+			);
+
+			$success &= $this->Split_item->update($receiving_id, $item_id, $line, $receiving_data,$data);
+			$success &= $this->Split_item->update_stock_qty($item_id, $data);
+				
 				if($id == -1)
 			{
 				echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('hsn_code_successful_adding'), 'id' => $split_item_data['id']));	
@@ -221,12 +323,12 @@ class Split_items extends Secure_Controller
 		
 		}
 	}
-		//failure
+	//failure
 		else
 		{
 			echo json_encode(array('success' => FALSE, 'message' => $this->lang->line('hsn_code_error_adding_updating') . ' ' . $hsn_code_data['hsn_code'], 'id' => -1));
 		}
-
+	}
 			
 	}
 
@@ -251,6 +353,28 @@ class Split_items extends Secure_Controller
 
 		echo json_encode($suggestions);
 	}
+
+	public function get_item_quantity_stocl($new_item_id)
+    {
+
+        $result = $this->Split_item->get_item_quantity_stocl($new_item_id);
+        $pending = 0;
+        if ($result != null) {
+            foreach ($result as $row) {
+               
+				
+				// $pending = 
+				$hsn_code_tax = $row->stock_qty;
+				// var_dumb($pending);
+				
+            }
+        }
+        if ($hsn_code_tax == null || $result == null) {
+            $hsn_code_tax = 0;
+			
+        }
+        echo ($hsn_code_tax);
+    }
 
 
 

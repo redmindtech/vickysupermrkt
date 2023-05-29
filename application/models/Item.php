@@ -1010,6 +1010,24 @@ class Item extends CI_Model
 		$this->db->update('items', array('description'=>$item_description));
 	}
 
+	public function get_item_name_suggestions($search)
+	{
+		$suggestions = [];
+		$this->db->distinct();
+		$this->db->select('name, item_id');
+		$this->db->from('items');
+		$this->db->like('name', $search);
+		$this->db->or_like('item_id', $search);
+		$this->db->where('deleted', 0);
+		$this->db->order_by('name', 'asc');
+		foreach($this->db->get()->result() as $row)
+		{
+			$suggestions[] = array('value' => $row->item_id, 'label' => $row->name);
+		}
+
+		return $suggestions;
+	}
+
 	/**
 	 * Determine the item name to use taking into consideration that
 	 * for a multipack environment then the item name should have the

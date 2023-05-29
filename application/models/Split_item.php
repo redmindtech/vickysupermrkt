@@ -66,6 +66,7 @@ class Split_item extends CI_Model
 			$this->db->select('receivings_items.mrp_price AS mrp_price');
 			$this->db->select('receivings_items.expire_date AS expire_date');
 			$this->db->select('receivings_items.stock_qty AS stock_qty');
+			$this->db->select('receivings_items.line AS line');
 
 
 			$this->db->select('items.item_id AS item_id');
@@ -79,12 +80,22 @@ class Split_item extends CI_Model
 			$this->db->select('items.reorder_level AS reorder_level');
 			$this->db->select('items.receiving_quantity AS receiving_quantity');
 			$this->db->select('items.hsn_code AS hsn_code');
+			$this->db->select('items.expire_date AS old_expire_date');
+
+				$this->db->select('MAX(item_quantities.item_id) AS qty_item_id');
+				$this->db->select('MAX(item_quantities.location_id) AS location_id');
+				$this->db->select('MAX(item_quantities.quantity) AS quantity');
+				$this->db->select('MAX(item_quantities.stock_qty) AS item_quantities_stock_qty');
+			
 
 			
 
 		$this->db->from('receivings');
 		$this->db->join('receivings_items AS receivings_items', 'receivings_items.receiving_id = receivings.receiving_id', 'inner');
 		$this->db->join('items AS items', 'items.item_id = receivings_items.item_id', 'left');
+		$this->db->join('item_quantities AS item_quantities', 'item_quantities.item_id = receivings_items.item_id');
+			// $this->db->where('location_id', $filters['stock_location_id']);
+		
 		
 		$this->db->where('receivings.receiving_id', $receiving_id);
 		$this->db->group_by('receivings.receiving_id');
@@ -110,6 +121,42 @@ class Split_item extends CI_Model
 			return $split_items_obj;
 		}
 	}
+
+	public function get_item_quantity_stocl($new_item_id)
+		{	
+			$this->db->select ('item_quantities.stock_qty') ;
+			$this->db->from ('item_quantities'); 
+			$this->db->where('item_quantities.item_id',$new_item_id);
+			$query=$this->db->get();		
+			$hsn_code_tax=$query->result();
+	    	return  $hsn_code_tax;
+
+			
+		}
+
+
+	public function unit_price_get($new_item_id)
+		{	
+			$this->db->select ('items.unit_price') ;
+			$this->db->from ('items'); 
+			$this->db->where('items.item_id',$new_item_id);
+			$query=$this->db->get();		
+			$hsn_code_tax=$query->result();
+
+	    	return  $hsn_code_tax;	
+		}
+
+		public function old_expire_date_data_get($new_item_id)
+    {
+        $this->db->select('items.expire_date');
+        $this->db->from('items');
+        $this->db->where('items.item_id', $new_item_id);
+        $query = $this->db->get();
+        $result = $query->result();
+
+        return $result;
+    }
+		
 
 	/*
 	Returns all the item_categories
@@ -144,6 +191,33 @@ class Split_item extends CI_Model
 		return $this->db->get();
 	}
 
+	// Receving updates update stock_qty
+
+	public function update($receiving_id, $item_id, $line, $receiving_data, $data)
+	{
+		$this->db->where_in('receiving_id', $receiving_id);
+		$this->db->where_in('item_id', $item_id);
+		$this->db->where_in('line', $line);
+
+		
+		return $this->db->update('receivings_items', $receiving_data);
+ 	}
+
+	 public function update_stock_qty($item_id, $data)
+	 {		
+		 $this->db->where_in('item_id', $item_id);
+		
+		 return $this->db->update('item_quantities', $data);
+	  }
+
+	  public function update_split_item_quantity($new_item_id, $new_item_update)
+	  {		
+		  $this->db->where_in('item_id', $new_item_id);
+		 
+		  return $this->db->update('items', $new_item_update);
+	   }
+	
+
 	/*
 	Inserts or updates an item_category
 	*/
@@ -164,7 +238,7 @@ class Split_item extends CI_Model
 
 		$this->db->where('id', $id);
 
-		// return $this->db->update('split_items', $split_item_data);
+		return $this->db->update('receivings_items', $receiving_data);
 	}
 
 	/*
