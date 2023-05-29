@@ -481,6 +481,18 @@ $(document).ready(function()
 			return false;
 			}
 		});
+		$('#phone_number').on('blur', function() {
+    var regex = /^[6-9]\d{9}$/;
+    var phoneNumber = $(this).val();
+    
+    if (regex.test(phoneNumber)) {
+        $(this).css('border-color', 'green');
+    } else {
+        $(this).css('border-color', 'red');
+        $(this).val('');
+        $(this).attr('placeholder', 'Phone number starts with 6,7,8,9');
+    }
+});
 
 	$('#sales_tax_code_name').autocomplete({
 		source: "<?php echo site_url('taxes/suggest_tax_codes'); ?>",
@@ -524,11 +536,12 @@ $(document).ready(function()
 				}
 			},
 			phone_number:
-			{
+			 {  
+				required:true,
 				minlength: 10,
-				maxlength: 13,
+				maxlength: 10,
 				number: true,
-
+				//   regex:/^[6-9]\d{9}$/,
 				remote:
 				{ 
 					url: "<?php echo site_url($controller_name . '/ajax_check_phone_no') ?>",
@@ -557,9 +570,18 @@ $(document).ready(function()
 		{
 			first_name: "<?php echo $this->lang->line('common_first_name_required'); ?>",
 			// last_name: "<?php //echo $this->lang->line('common_last_name_required'); ?>",
+
 			consent: "<?php echo $this->lang->line('customers_consent_required'); ?>",
 			email: "<?php echo $this->lang->line('customers_email_duplicate'); ?>",
-			phone_number: "<?php echo $this->lang->line('customers_phone_number_valid'); ?>",
+			phone_number: {
+			required: "<?php echo 'Please enter a mobile number.' ?>",
+			minlength: "<?php echo 'Phone number should be 10 digits.' ?>",
+			maxlength: "<?php echo 'Phone number should be 10 digits.' ?>",
+			number: "<?php echo 'Please enter a valid mobile number.' ?>",
+	  		// regex: /^[6-9]\d{9}$/,
+			remote: "<?php echo 'This phone number is already in use.' ?>",
+			
+		},
 			account_number: "<?php echo $this->lang->line('customers_account_number_duplicate'); ?>"
 		}
 	}, form_support.error));
