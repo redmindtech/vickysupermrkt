@@ -93,5 +93,4 @@ $lang["receivings_no_of_pack_split_required"] = "No of Pack / Kg Split In Hand i
 $lang["receivings_no_of_packing_split_required"] = "No of Packing Split is Required Field";
 $lang["receivings_split_type_required"] = "Split Type is Required Field";
 $lang["receivings_new_cost_price_required"] = "Purchase Price is Required Field";
-$lang["receivings_no_receivings_to_display "] = "No purchases to display";
 
