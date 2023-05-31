@@ -347,7 +347,7 @@ if (isset($success))
 				<th style="width:11%;"><?php echo $this->lang->line('receivings_expire_date'); ?></th>
 				<th style="width:8%;"><?php echo $this->lang->line('receivings_hsn_code_item'); ?></th>
 				<th style="width:5%;"><?php echo $this->lang->line('receivings_tax_percentage'); ?></th>
-				<th style="width:6%;"><?php echo $this->lang->line('receivings_tax_amount'); ?></th>
+				<!-- <th style="width:6%;"><?php //echo $this->lang->line('receivings_tax_amount'); ?></th> -->
 				<th style="width:10%;"><?php echo $this->lang->line('receivings_total'); ?></th>
 				<th style="width:5%;"><?php echo $this->lang->line('receivings_update'); ?></th>
 			</tr>
@@ -433,7 +433,7 @@ if (isset($success))
 							
 							<td><?php echo form_input(array('name'=>'hsn_code', 'readonly'=>'readonly', 'id'=>'hsn_code', 'class'=>'form-control input-sm', 'value'=>$item['hsn_code'],'onClick'=>'this.select();'));?></td>
 							<td><?php echo $item['tax_percentage']; ?></td>
-							<td><?php echo to_currency($item['price']*$item['quantity']*$item['receiving_quantity'] * $item['tax_percentage'] /100,3); //$item['tax_percentage']; ?></td>
+							<!-- <td><?php //echo to_currency($item['price']*$item['quantity']*$item['receiving_quantity'] * $item['tax_percentage'] /100,3); //$item['tax_percentage']; ?></td> -->
 							<td>
 							<?php echo to_currency(($item['discount_type'] == PERCENT) ? $item['price']*$item['quantity']*$item['receiving_quantity'] - $item['price'] * $item['quantity'] * $item['receiving_quantity'] * $item['discount'] / 100 : $item['price']*$item['quantity']*$item['receiving_quantity'] - $item['discount']); ?></td> 
 							<td><a href="javascript:$('#<?php echo 'cart_'.$line ?>').submit();" title=<?php echo $this->lang->line('receivings_update')?> ><span class="glyphicon glyphicon-refresh"></span></a></td>
