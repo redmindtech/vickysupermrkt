@@ -31,6 +31,9 @@ if (isset($success))
 					<?php echo form_dropdown('mode', $modes, $mode, array('onchange'=>"$('#mode_form').submit();", 'class'=>'selectpicker show-menu-arrow', 'data-style'=>'btn-default btn-sm', 'data-width'=>'fit')); ?>
 				</li>
 				<li class="pull-right">
+				<?php echo anchor($controller_name."/manage", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Daily Purchases',
+									array('class'=>'btn btn-primary btn-sm', 'id'=>'daily_purchases_button', 'title'=>$this->lang->line('sales_takings'))); ?>
+				
 				<button id='new_supplier_button' class='btn btn-info btn-sm modal-dlg' data-btn-submit='<?php echo $this->lang->line('common_submit') ?>' data-href='<?php echo site_url("suppliers/view"); ?>'
 							title='<?php echo $this->lang->line('receivings_new_supplier'); ?>'>
 						<span class="glyphicon glyphicon-user">&nbsp</span><?php echo $this->lang->line('receivings_new_supplier'); ?>
