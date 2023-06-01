@@ -65,133 +65,29 @@ class Split_items extends Secure_Controller
 
 		$this->load->view("split_items/form", $data);
 	}
+
+
 	//Save new form
 	public function save($id = -1)
 	{
 
-		$item_id = $this->input->post('new_item_id');
-		$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
-		
-		$split_items_info = $this->Split_item->get_info($item_id);
-		
-		$item_info = $this->Item->get_info($item_id);
-		
+		$new_item_id = $this->input->post('new_item_id');
+		// log_message('debug',print_r('item_data '.$new_item_id,TRUE));
 
-		$item_quantity = $this->input->post('item_quantity_stocl');
-		
+		$item_id = NEW_ITEM;
 
-		$old_cost_price = $item_info->cost_price;
-		$old_unit_price = $item_info->unit_price;
-		$old_expire_date = date('d/m/Y', strtotime($item_info->expire_date));
-		
-
-		$new_cost_price = $this->input->post('new_cost_price');
-		$new_unit_price = $this->input->post('new_unit_price');
-		$new_expire_date = $this->input->post('new_expire_date');
-		$new_quantity = $this->input->post('no_of_packing_split');
-
-		if($old_cost_price == $new_cost_price && $old_unit_price == $new_unit_price && $old_expire_date == $new_expire_date){
-			
-			
-			$stock_locations = $this->Stock_location->get_undeleted_all()->result_array();
-			foreach($stock_locations as $location)
-			{
-				$updated_quantity = parse_quantity($this->input->post('quantity_' . $location['location_id']));
-				
-
-				$item_type = $item_info->item_type;
-				
-				
-				$no_pack_kg_split = $this->input->post('item_quantity_stocl') + $this->input->post('no_of_packing_split');
-
-				$data = array(
-					'stock_qty' => $no_pack_kg_split,
-					'quantity' => $no_pack_kg_split
-				);
-
-				$success &= $this->Split_item->update_stock_qty($item_id, $data);
-			
-				$old_item_quantity = $item_quantity;
-				
-				if($item_quantity->quantity != $updated_quantity || $new_item)
-				{
-					// $success &= $this->Item_quantity->save($location_detail, $item_id);
-
-					$inv_data = array(
-						'trans_date' => date('Y-m-d H:i:s'),
-						'trans_items' => $item_id,
-						'trans_user' => $employee_id,
-						'trans_location' => '1',
-						'trans_comment' => $this->lang->line('receivings_split_items'),
-						'trans_inventory' => $this->input->post('item_quantity_stocl')
-					);
-				
-					$success &= $this->Inventory->insert($inv_data);
-				}
-
-			$receiving_id = $this->input->post('receiving_id');
-			$item_id = $this->input->post('old_item_id');
-			$line = $this->input->post('line');
-
-			$update_qty_in_hand = $this->input->post('quantity_in_hand') - $this->input->post('receivings_no_split');
-
-			$no_pack_kg_split = $this->input->post('split_items_no_of_pack_kg') - $this->input->post('receivings_no_of_pack_split');
-
-			$receiving_data = array(				
-				'quantity_purchased' => $update_qty_in_hand,
-				'stock_qty' => $no_pack_kg_split,				
-			);
-			
-			$success &= $this->Split_item->update($receiving_id, $item_id, $line, $receiving_data,$data);
-			
-			echo json_encode(array('success' => FALSE, 'message' => $this->lang->line('hsn_code_error_adding_updating') . ' ' . $hsn_code_data['hsn_code'], 'id' => -1));
-		
-
-			}
-		}
-
-		else
-		{
-		
-			log_message('debug',print_r('if fail '.$old_cost_price,TRUE));
-	
 		$newdate = $this->input->post('receivings_date');
 
 		$date_formatter = date_create_from_format($this->config->item('dateformat'), $newdate);
 
-
-		$expire_date = $this->input->post('new_expire_date');
-
-		$expire_date_formatter = date_create_from_format($this->config->item('dateformat'), $expire_date);
-
-
-		$split_item_data = array(
-			'receiving_id' => $this->input->post('receiving_id'),
-			'item_id' => $this->input->post('old_item_id'),
-			'receivings_date' => $date_formatter->format('Y-m-d'),
-			'new_item_name' => $this->input->post('new_item_name'),
-			'quantity_in_hand' => $this->input->post('quantity_in_hand'),
-			'receivings_no_split' => $this->input->post('receivings_no_split'),
-			'receivings_no_of_pack_split' => $this->input->post('receivings_no_of_pack_split'),
-			'no_of_packing_split' => $this->input->post('no_of_packing_split'),
-			'split_type' => $this->input->post('split_type'),
-			'new_cost_price' => $this->input->post('new_cost_price'),
-			'new_unit_price' => $this->input->post('new_unit_price'),
-			'new_mrp_price' => $this->input->post('new_mrp_price'),
-			'category' => $this->input->post('category'),
-			'hsn_code' => $this->input->post('hsn_code'),
-			'description' => $this->input->post('description'),
-			'expire_date' => $expire_date_formatter->format('Y-m-d'),
-			
-		);
-	
 		
-		if($this->Split_item->save($split_item_data, $id))
-		{
-			$split_item_data = $this->xss_clean($split_item_data);
+		$expire_date = $this->input->post('new_expire_date');
+		$expire_date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $expire_date);
 
-			// New master_category_id
-			
+		
+		if($new_item_id == null){
+			log_message('debug',print_r('if success '.$new_item_id,TRUE));
+
 		$item_data = array(
 			'name' => $this->input->post('new_item_name'),
 			'description' => $this->input->post('description'),
@@ -218,11 +114,9 @@ class Split_items extends Secure_Controller
 			
 		);
 
-		$item_id = NEW_ITEM;
-
+		// log_message('debug',print_r('item_data '.$item_data,TRUE));
 		if($this->Item->save($item_data, $item_id))
 		{
-			
 			$success = TRUE;
 			$new_item = FALSE;
 
@@ -231,107 +125,268 @@ class Split_items extends Secure_Controller
 				$item_id = $item_data['item_id'];
 				$new_item = TRUE;
 			}
-		}
 
-		$use_destination_based_tax = (boolean)$this->config->item('use_destination_based_tax');
+			// Split Item tables Split item information Save
 
-			if(!$use_destination_based_tax)
-			{
-				$items_taxes_data = [];
-				$tax_names = $this->input->post('tax_names');
-				$tax_percents = $this->input->post('tax_percents');
-
-				$tax_name_index = 0;
-
-				foreach($tax_percents as $tax_percent)
-				{
-					$tax_percentage = parse_tax($tax_percent);
-
-					if(is_numeric($tax_percentage))
-					{
-						$items_taxes_data[] = array('name' => $tax_names[$tax_name_index], 'percent' => $tax_percentage);
-					}
-
-					$tax_name_index++;
-				}
-
+			$split_item_data = array(
+				'receiving_id' => $this->input->post('receiving_id'),
+				'item_id' => $this->input->post('old_item_id'),
+				'receivings_date' => $date_formatter->format('Y-m-d'),
+				'new_item_name' => $item_id,
+				// 'quantity_in_hand' => $this->input->post('quantity_in_hand'),
+				// 'receivings_no_split' => $this->input->post('receivings_no_split'),
+				'receivings_no_of_pack_split' => $this->input->post('receivings_no_of_pack_split'),
+				'no_of_packing_split' => $this->input->post('no_of_packing_split'),
+				'split_type' => $this->input->post('split_type'),
+				'new_cost_price' => $this->input->post('new_cost_price'),
+				'new_unit_price' => $this->input->post('new_unit_price'),
+				'new_mrp_price' => $this->input->post('new_mrp_price'),
+				'category' => $this->input->post('category'),
+				'hsn_code' => $this->input->post('hsn_code'),
+				'description' => $this->input->post('description'),
+				'expire_date' => $expire_date_formatter->format('Y-m-d H:i:s'),
 				
-				$success &= $this->Item_taxes->save($items_taxes_data, $item_id);
+			);
+			// log_message('debug',print_r('split_item_data '.$split_item_data,TRUE));
+			$success &= $this->Split_item->save($split_item_data, $id);
 
-				$stock_locations = $this->Stock_location->get_undeleted_all()->result_array();
-			foreach($stock_locations as $location)
+			$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
+			
+			// Inventory tables Split item information Save
+
+			$location_id = '1';
+			$inv_data = array(
+				'trans_date' => date('Y-m-d H:i:s'),
+				'trans_items' => $item_id,
+				'trans_user' => $employee_id,
+				'trans_location' => $location_id,
+				'trans_comment' => 'Split Item Information',
+				'trans_inventory' => parse_quantity($this->input->post('no_of_packing_split'))
+			);
+
+	
+			$this->Inventory->insert($inv_data);
+
+			// Item Quantity tables Split item information Save
+
+			$item_quantity_data = array(
+				'item_id' => $item_id,
+				'location_id' => $location_id,
+				'quantity' =>parse_quantity($this->input->post('no_of_packing_split'))
+			);
+	
+			$this->Item_quantity->save($item_quantity_data, $item_id, $location_id);
+
+			// Item taxes table tax information save
+
+			$items_taxes_data = [];
+			$tax_names = $this->input->post('tax_names');
+			$tax_percents = $this->input->post('tax_percents');
+
+			$tax_name_index = 0;
+
+			foreach($tax_percents as $tax_percent)
 			{
-				$updated_quantity = parse_quantity($this->input->post('no_of_packing_split_' . $location['location_id']));
+				$tax_percentage = parse_tax($tax_percent);
 
-				if($item_data['item_type'] == ITEM_TEMP)
+				if(is_numeric($tax_percentage))
 				{
-					$updated_quantity = 0;
+					$items_taxes_data[] = array('name' => $tax_names[$tax_name_index], 'percent' => $tax_percentage);
 				}
 
-				$location_detail = array(
-						'item_id' => $item_id,
-						'location_id' => $location['location_id'],
-						'quantity' => $this->input->post('no_of_packing_split'),
-					    'stock_qty'=> $this->input->post('no_of_packing_split'));
-
-
-				$item_quantity = $this->Item_quantity->get_item_quantity($item_id, $location['location_id']);
-
-				if($item_quantity->quantity != $updated_quantity || $new_item)
-				{
-					$success &= $this->Item_quantity->save($location_detail, $item_id, $location['location_id']);
-
-					$inv_data = array(
-						'trans_date' => date('Y-m-d H:i:s'),
-						'trans_items' => $item_id,
-						'trans_user' => $employee_id,
-						'trans_location' => $location['location_id'],
-						'trans_comment' => $this->lang->line('items_manually_editing_of_quantity'),
-						'trans_inventory' => $updated_quantity - $item_quantity->quantity
-					);
-
-					$success &= $this->Inventory->insert($inv_data);
-				}
+				$tax_name_index++;
 			}
 
+			
+			$success &= $this->Item_taxes->save($items_taxes_data, $item_id);
+
+
+			/* Item quantity and inventory quantity and 
+			Receving quantity are updated accordingly based Split quantity based on */
+
 			$receiving_id = $this->input->post('receiving_id');
-			$item_id = $this->input->post('old_item_id');
+			$old_item_id = $this->input->post('old_item_id');
 			$line = $this->input->post('line');
 
-			$update_qty_in_hand = $this->input->post('quantity_in_hand') - $this->input->post('receivings_no_split');
+			// $update_qty_in_hand = $this->input->post('quantity_in_hand') - $this->input->post('receivings_no_split');
 
 			$no_pack_kg_split = $this->input->post('split_items_no_of_pack_kg') - $this->input->post('receivings_no_of_pack_split');
 
+			$receiving_data = array(				
+				// 'quantity_purchased' => $update_qty_in_hand,
+				'stock_qty' => $no_pack_kg_split,			
+			);
 			
+			$success &= $this->Split_item->update($receiving_id, $old_item_id, $line, $receiving_data,$data);
+			
+			$item_quantity = $this->Item_quantity->get_item_quantity($old_item_id, $location_id);
+			log_message('debug',print_r('inv_data '.$item_quantity->quantity,TRUE));
+			log_message('debug',print_r('old_item_id '.$old_item_id,TRUE));
+			// Split item quantity minus
+			$data_quantity = array(
+				'item_id' => $old_item_id,
+				'location_id' => $location_id,
+				'quantity' => $item_quantity->quantity - parse_quantity($this->input->post('receivings_no_of_pack_split'))
+			);
+	
+			$this->Split_item->update_stock_qty($data_quantity, $old_item_id, $location_id);
+
+
+			$inv_data = array(
+				'trans_date' => date('Y-m-d H:i:s'),
+				'trans_items' => $old_item_id,
+				'trans_user' => $employee_id,
+				'trans_location' => $location_id,
+				'trans_comment' => 'Items'.' '. parse_quantity($this->input->post('receivings_no_of_pack_split')) . ' '. 'Quantities Splitted',
+				'trans_inventory' => -parse_quantity($this->input->post('receivings_no_of_pack_split'))
+			);
+
+			$this->Inventory->insert($inv_data);
+
+			// New master_category_id
+			if($item_id == -1)
+			{
+				echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('hsn_code_successful_adding'), 'id' => $item_data['item_id']));	
+			}
+			// Existing master Category
+			else 
+			{
+				echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('hsn_code_successful_update'), 'id' => $item_id));
+			}
+		}
+	
+		//failure
+		else
+		{
+			echo json_encode(array('success' => FALSE, 'message' => $this->lang->line('hsn_code_error_adding_updating') . ' ' . $item_data['item_id'], 'id' => -1));
+		}
+	}
+
+	// Exists item name id is available quantity only update
+
+	else {
+		log_message('debug',print_r('else success '.$new_item_id,TRUE));
+
+		$new_item_id = $this->input->post('new_item_id');
+
+		$split_item_data = array(
+			'receiving_id' => $this->input->post('receiving_id'),
+			'item_id' => $this->input->post('old_item_id'),
+			'receivings_date' => $date_formatter->format('Y-m-d'),
+			'new_item_name' => $new_item_id,
+			// 'quantity_in_hand' => $this->input->post('quantity_in_hand'),
+			// 'receivings_no_split' => $this->input->post('receivings_no_split'),
+			'receivings_no_of_pack_split' => $this->input->post('receivings_no_of_pack_split'),
+			'no_of_packing_split' => $this->input->post('no_of_packing_split'),
+			'split_type' => $this->input->post('split_type'),
+			'new_cost_price' => $this->input->post('new_cost_price'),
+			'new_unit_price' => $this->input->post('new_unit_price'),
+			'new_mrp_price' => $this->input->post('new_mrp_price'),
+			'category' => $this->input->post('category'),
+			'hsn_code' => $this->input->post('hsn_code'),
+			'description' => $this->input->post('description'),
+			'expire_date' => $expire_date_formatter->format('Y-m-d H:i:s'),
+			
+		);
+		
+		if($this->Split_item->save($split_item_data, $id))
+		{
+			$split_item_data = $this->xss_clean($split_item_data);
+
+			$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
+			
+			// Inventory tables Split item information Save
+
+			$location_id = '1';
+			$inv_data = array(
+				'trans_date' => date('Y-m-d H:i:s'),
+				'trans_items' => $new_item_id,
+				'trans_user' => $employee_id,
+				'trans_location' => $location_id,
+				'trans_comment' => 'Items'.' '. parse_quantity($this->input->post('receivings_no_of_pack_split')) . ' '. 'Quantities Splitted',
+				'trans_inventory' => parse_quantity($this->input->post('no_of_packing_split'))
+			);
+
+			$this->Inventory->insert($inv_data);
+
+			// Get Item Quantity Data
+
+			$item_quantity = $this->Item_quantity->get_item_quantity($new_item_id, $location_id);
+			log_message('debug',print_r('inv_data '.$item_quantity->quantity,TRUE));
+			log_message('debug',print_r('old_item_id '.$old_item_id,TRUE));
+			
+			
+			// Split item quantity minus
+			$new_data_quantity = array(
+				'item_id' => $new_item_id,
+				'location_id' => $location_id,
+				'quantity' => $item_quantity->quantity + parse_quantity($this->input->post('no_of_packing_split'))
+			);
+	
+			$this->Split_item->exiest_update_stock_qty($new_data_quantity, $new_item_id, $location_id);
+
+			// Exiest update
+			// Recevings tables subtracted 
+			$receiving_id = $this->input->post('receiving_id');
+			$old_item_id = $this->input->post('old_item_id');
+			$line = $this->input->post('line');
+
+			// $update_qty_in_hand = $this->input->post('quantity_in_hand') - $this->input->post('receivings_no_split');
+
+			$no_pack_kg_split = $this->input->post('split_items_no_of_pack_kg') - $this->input->post('receivings_no_of_pack_split');
 
 			$receiving_data = array(				
-				'quantity_purchased' => $update_qty_in_hand,
-				'stock_qty' => $no_pack_kg_split,				
+				// 'quantity_purchased' => $update_qty_in_hand,
+				'stock_qty' => $no_pack_kg_split,			
 			);
 			
-			$data = array(
-				'stock_qty' => $no_pack_kg_split
+			$success &= $this->Split_item->update($receiving_id, $old_item_id, $line, $receiving_data,$data);
+
+
+			$item_quantity = $this->Item_quantity->get_item_quantity($old_item_id, $location_id);
+			log_message('debug',print_r('inv_data '.$item_quantity->quantity,TRUE));
+			log_message('debug',print_r('old_item_id '.$old_item_id,TRUE));
+			// Split item quantity minus
+			$data_quantity = array(
+				'item_id' => $old_item_id,
+				'location_id' => $location_id,
+				'quantity' => $item_quantity->quantity - parse_quantity($this->input->post('receivings_no_of_pack_split'))
+			);
+	
+			$this->Split_item->update_stock_qty($data_quantity, $old_item_id, $location_id);
+
+			$inv_data = array(
+				'trans_date' => date('Y-m-d H:i:s'),
+				'trans_items' => $old_item_id,
+				'trans_user' => $employee_id,
+				'trans_location' => $location_id,
+				'trans_comment' => 'Items'.' '. parse_quantity($this->input->post('receivings_no_of_pack_split')) . ' '. 'Quantities Splitted',
+				'trans_inventory' => -parse_quantity($this->input->post('receivings_no_of_pack_split'))
 			);
 
-			$success &= $this->Split_item->update($receiving_id, $item_id, $line, $receiving_data,$data);
-			$success &= $this->Split_item->update_stock_qty($item_id, $data);
-				
-				if($id == -1)
+			$this->Inventory->insert($inv_data);
+
+			// New master_category_id
+			if($id == -1)
 			{
 				echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('hsn_code_successful_adding'), 'id' => $split_item_data['id']));	
 			}
-		
+			// Existing master Category
+			else 
+			{
+				echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('hsn_code_successful_update'), 'id' => $id));
+			}
 		}
+		//failure
+		// else
+		// {
+		// 	echo json_encode(array('success' => FALSE, 'message' => $this->lang->line('hsn_code_error_adding_updating') . ' ' . $hsn_code_data['hsn_code'], 'id' => -1));
+		// }
 	}
-	//failure
-		else
-		{
-			echo json_encode(array('success' => FALSE, 'message' => $this->lang->line('hsn_code_error_adding_updating') . ' ' . $hsn_code_data['hsn_code'], 'id' => -1));
-		}
-	}
-			
 	}
 
+
+	
 	public function ajax_check_item_category_name()
 	{
 		$exists = $this->Split_item->check_category_name_exists(strtolower($this->input->post('split_items')), $this->input->post('id'));
@@ -365,11 +420,12 @@ class Split_items extends Secure_Controller
 				
 				// $pending = 
 				$hsn_code_tax = $row->stock_qty;
+				
 				// var_dumb($pending);
 				
             }
         }
-        if ($hsn_code_tax == null || $result == null) {
+        if  ($hsn_code_tax == null || $result == null) {
             $hsn_code_tax = 0;
 			
         }

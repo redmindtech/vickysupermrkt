@@ -18,26 +18,26 @@ class Split_item extends CI_Model
 	}
 
 
-	// public function check_category_name_exists($hsn_code, $id = '')
-	// {
-	// 	// if the email is empty return like it is not existing
-	// 	if(empty($hsn_code))
-	// 	{
-	// 		return FALSE;
-	// 	}
+	public function check_category_name_exists($new_item_name, $id = '')
+	{
+		// if the email is empty return like it is not existing
+		if(empty($new_item_name))
+		{
+			return FALSE;
+		}
 
-	// 	$this->db->from('item_hsn_code');
-	// 	// $this->db->join('people', 'people.person_id = customers.person_id');
-	// 	$this->db->where('item_hsn_code.hsn_code', $hsn_code);
-	// 	$this->db->where('item_hsn_code.deleted', 0);
+		$this->db->from('split_items');
+		// $this->db->join('people', 'people.person_id = customers.person_id');
+		$this->db->where('split_items.new_item_name', $new_item_name);
+		// $this->db->where('split_items.deleted', 0);
 
-	// 	if(!empty($id))
-	// 	{
-	// 		$this->db->where('item_hsn_code.id !=', $id);
-	// 	}
+		if(!empty($id))
+		{
+			$this->db->where('split_items.id !=', $id);
+		}
 
-	// 	return ($this->db->get()->num_rows() == 1);
-	// }
+		return ($this->db->get()->num_rows() == 1);
+	}
 
 	/*
 	Gets total of rows
@@ -68,6 +68,7 @@ class Split_item extends CI_Model
 			$this->db->select('receivings_items.stock_qty AS stock_qty');
 			$this->db->select('receivings_items.line AS line');
 
+			$this->db->select('MAX(item_hsn_code.tax_percentage) AS tax_percentage');
 
 			$this->db->select('items.item_id AS item_id');
 			$this->db->select('items.name AS name');
@@ -94,7 +95,8 @@ class Split_item extends CI_Model
 		$this->db->join('receivings_items AS receivings_items', 'receivings_items.receiving_id = receivings.receiving_id', 'inner');
 		$this->db->join('items AS items', 'items.item_id = receivings_items.item_id', 'left');
 		$this->db->join('item_quantities AS item_quantities', 'item_quantities.item_id = receivings_items.item_id');
-			// $this->db->where('location_id', $filters['stock_location_id']);
+		$this->db->join('item_hsn_code AS item_hsn_code', 'item_hsn_code.hsn_code = items.hsn_code');
+		// $this->db->where('location_id', $filters['stock_location_id']);
 		
 		
 		$this->db->where('receivings.receiving_id', $receiving_id);
@@ -193,22 +195,30 @@ class Split_item extends CI_Model
 
 	// Receving updates update stock_qty
 
-	public function update($receiving_id, $item_id, $line, $receiving_data, $data)
+	public function update($receiving_id, $old_item_id, $line, $receiving_data, $data)
 	{
 		$this->db->where_in('receiving_id', $receiving_id);
-		$this->db->where_in('item_id', $item_id);
+		$this->db->where_in('item_id', $old_item_id);
 		$this->db->where_in('line', $line);
 
 		
 		return $this->db->update('receivings_items', $receiving_data);
  	}
 
-	 public function update_stock_qty($item_id, $data)
+	 public function update_stock_qty($data_quantity, $old_item_id, $location_id)
 	 {		
-		 $this->db->where_in('item_id', $item_id);
+		 $this->db->where_in('item_id', $old_item_id);
 		
-		 return $this->db->update('item_quantities', $data);
+		 return $this->db->update('item_quantities', $data_quantity);
 	  }
+
+
+	  public function exiest_update_stock_qty($new_data_quantity, $new_item_id, $location_id)
+	  {		
+		  $this->db->where_in('item_id', $new_item_id);
+		 
+		  return $this->db->update('item_quantities', $new_data_quantity);
+	   }
 
 	  public function update_split_item_quantity($new_item_id, $new_item_update)
 	  {		

@@ -79,7 +79,7 @@ $lang["Split_items_no_Split_items_to_display"] = "No Record Found";
 $lang["receivings_quantity_in_hand"] = "Quantity In Hand";
 $lang["receivings_new_item_name"] = "New Item Name";
 $lang["receivings_split_type"] = "Split Type";
-$lang["receivings_no_split"] = "No of Quantity Split";
+$lang["receivings_no_weight"] = "Weights";
 $lang["receivings_no_of_pack_split"] = "No of Pack / Kg Split In Hand";
 $lang["split_items_new"] = "Split Item Form";
 $lang["split_items_no_of_pack_kg"] = "No of Pack / Kg In Hand";
@@ -88,7 +88,7 @@ $lang["receivings_start_typing_item_name"] = "Start Typing Items Name...";
 $lang["receivings_split_items"] = "Split Items Quantity in Receivings";
 
 $lang["new_item_required"] = "New Item Name is Required Field";
-$lang["no_of_quantity_is_required"] = "No of Quantity Split is Required Field";
+$lang["no_of_quantity_is_required"] = "Weights is Required Field";
 $lang["receivings_no_of_pack_split_required"] = "No of Pack / Kg Split In Hand is Required Field";
 $lang["receivings_no_of_packing_split_required"] = "No of Packing Split is Required Field";
 $lang["receivings_split_type_required"] = "Split Type is Required Field";

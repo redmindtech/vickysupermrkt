@@ -74,28 +74,18 @@
 
 		</div>
 
-		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('receivings_quantity_in_hand'), 'quantity_in_hand', array('class' => 'control-label col-xs-3')); ?>
-			<div class='col-xs-8'>
-				<?php echo form_input(array(
-					'name' => 'quantity_in_hand',
-					'id' => 'quantity_in_hand',
-					'class' => 'form-control input-sm',
-					'readonly' => 'true',
-					'value' => $split_items_info->quantity_purchased)
-				); ?>
-			</div>
-		</div>
+		
 
         <div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('receivings_no_split'), 'receivings_no_split', array('class' => 'required control-label col-xs-3')); ?>
+			<?php echo form_label($this->lang->line('receivings_no_weight'), 'receivings_no_weight', array('class' => 'required control-label col-xs-3')); ?>
 			<div class='col-xs-8'>
 				<?php echo form_input(array(
-					'name' => 'receivings_no_split',
-					'id' => 'receivings_no_split',
+					'name' => 'receivings_no_weight',
+					'id' => 'receivings_no_weight',
 					'class' => 'form-control input-sm',
 					'value' => '')
 				); ?>
+				<p>Please mention in Kg or Grams Ex(500g mention in 0.5)</p>
 			</div>
 		</div>
 
@@ -121,6 +111,7 @@
 					'class' => 'form-control input-sm',
 					'value' => '')
 				); ?>
+				<p>Please mention No of Kg or Pack Splitted in No of Quantity / Kg In Hand</p>
 			</div>
 		</div>
 
@@ -131,6 +122,7 @@
 					'name' => 'no_of_packing_split',
 					'id' => 'no_of_packing_split',
 					'class' => 'form-control input-sm',
+					'readonly' => 'true',
 					'value' => '')
 				); ?>
 			</div>
@@ -296,7 +288,7 @@
 							'name' => 'new_expire_date',
 							'id' => 'new_expire_date',
 							'class' => 'form-control input-sm datetime',
-							'value' => to_date(strtotime($split_items_info->expire_date)),
+							'value' => to_datetime(strtotime($split_items_info->expire_date)),
 						)
 						); ?>
 				</div>
@@ -327,12 +319,12 @@
 				<?php echo form_label($this->lang->line('items_hsn_code_item'), 'category', array('class' => 'required control-label col-xs-3')); ?>
 				<div class='col-xs-8'>
 					<div class="input-group">
-						<?php echo form_input([
+						<?php echo form_input(array(
 						'name' => 'hsn_code',
 						'id' => 'hsn_code',
+						'readonly' => 'readonly',
 						'class' => 'form-control input-sm',
-						'value' => '',
-					]
+						'value' => $split_items_info->hsn_code)
 					); ?>
 					</div>
 				</div>
@@ -356,7 +348,7 @@
 						'id' => 'tax_percent_name_1',
 						'class' => 'form-control input-sm',
 						'readonly' => 'readonly',
-						'value' => '0')
+						'value' => $split_items_info->tax_percentage/2)
 					); ?>
 						<span class="input-group-addon input-sm"><b>%</b></span>
 					</div>
@@ -381,7 +373,7 @@
 								'class' => 'form-control input-sm',
 								'id' => 'tax_percent_name_2',
 								'readonly' => 'readonly',
-								'value' => '0')
+								'value' => $split_items_info->tax_percentage/2)
 							); ?>
 						<span class="input-group-addon input-sm"><b>%</b></span>
 					</div>
@@ -456,8 +448,8 @@ $(document).ready(function()
 		select: function (event, ui) {
 			$('#new_item_id').val(ui.item.value);
 			$(this).val(ui.item.label);
-			$(this).attr('readonly', 'readonly');
-			$('#remove_supplier_button').css('display', 'inline-block');
+			// $(this).attr('readonly', 'readonly');
+			// $('#remove_supplier_button').css('display', 'inline-block');
 			return false;
 		}
 	});
@@ -474,6 +466,21 @@ $(document).ready(function()
 		$('#new_item_name').val('');
 		$(this).css('display', 'none');
 	});
+
+
+	$('#receivings_no_weight, #receivings_no_of_pack_split').change(function() {
+    var weight = parseFloat($('#receivings_no_weight').val());
+    var quantity = parseFloat($('#receivings_no_of_pack_split').val());
+
+    if (isNaN(weight) || isNaN(quantity)) {
+        $('#no_of_packing_split').val('');
+    } else {
+        var result =  quantity / weight;
+        $('#no_of_packing_split').val(result);
+    }
+});
+
+
 
 	//no_of_packing_split
 
@@ -554,16 +561,10 @@ $('#hsn_code').change(function()
 			new_item_name:
 			{
 				required: true,
-
+				
 			},
 
-			receivings_no_split:
-			{
-				required: true,
-				number:true,
-			},
-
-			receivings_no_split:
+			receivings_no_weight:
 			{
 				required: true,
 				number:true,
@@ -596,12 +597,9 @@ $('#hsn_code').change(function()
 
 		messages:
 		{
-			hsn_code:
-            {required: "<?php echo $this->lang->line('hsn_code_required'); ?>",
-            remote:"<?php echo $this->lang->line('hsn_code_already_in_table'); ?>"
-            },
+			
             new_item_name: "<?php echo $this->lang->line('new_item_required'); ?>",
-			receivings_no_split: "<?php echo $this->lang->line('no_of_quantity_is_required'); ?>",
+			receivings_no_weight: "<?php echo $this->lang->line('no_of_quantity_is_required'); ?>",
 			receivings_no_of_pack_split: "<?php echo $this->lang->line('receivings_no_of_pack_split_required'); ?>",
 			no_of_packing_split: "<?php echo $this->lang->line('receivings_no_of_packing_split_required'); ?>",
 			split_type :"<?php echo $this->lang->line('receivings_split_type_required'); ?>",
