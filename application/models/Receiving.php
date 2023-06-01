@@ -341,6 +341,86 @@ class Receiving extends CI_Model
 		);
 	}
 
+	
+/*
+	Gets rows
+	*/
+	public function get_found_rows($search, $filters)
+	{
+		return $this->search($search, $filters, 0, 0, 'receivings.receiving_id', 'desc', TRUE);
+	}
+
+	/*
+	Perform a search on Receiving manage table	*/
+
+	public function search($search, $filters, $rows = 0, $limit_from = 0, $sort = 'receivings.receiving_id', $order='asc', $count_only = FALSE)
+	{
+		// get_found_rows case
+		if($count_only == TRUE)
+		{
+			$this->db->select('COUNT(receivings_items.receiving_id) as count');
+			$this->db->select('receivings.receiving_id AS receiving_id');
+			$this->db->select('receivings.receiving_time AS receiving_time');
+
+			
+			$this->db->select('receivings_items.quantity_purchased AS quantity_purchased');
+			$this->db->select('receivings_items.item_cost_price AS item_cost_price');
+			$this->db->select('receivings_items.item_unit_price AS item_unit_price');
+			$this->db->select('receivings_items.mrp_price AS mrp_price');
+			$this->db->select('receivings_items.expire_date AS expire_date');
+			$this->db->select('receivings_items.stock_qty AS stock_qty');
+
+
+			$this->db->select('items.item_id AS item_id');
+			$this->db->select('items.name AS name');
+			$this->db->select('items.category AS category');
+			$this->db->select('items.supplier_id AS supplier_id');
+			$this->db->select('items.item_number AS item_number');
+			$this->db->select('items.description AS description');
+			$this->db->select('items.cost_price AS cost_price');
+			$this->db->select('items.unit_price AS unit_price');
+			$this->db->select('items.reorder_level AS reorder_level');
+			// $this->db->select('items.receiving_quantity AS receiving_quantity');
+			$this->db->select('items.hsn_code AS hsn_code');
+		}
+
+		$this->db->from('receivings_items AS receivings_items');
+		$this->db->join('receivings AS receivings', 'receivings_items.receiving_id = receivings.receiving_id', 'inner');
+		$this->db->join('items AS items', 'items.item_id = receivings_items.item_id', 'left');
+		$this->db->order_by('receivings_items.receiving_id', 'desc');
+		$this->db->group_start();
+		$this->db->or_like('receivings_items.receiving_id', $search);
+		$this->db->or_like('receivings_items.item_id', $search);
+		$this->db->group_end();
+		$this->db->where('stock_qty >', 0);
+
+		if(empty($this->config->item('date_or_time_format')))
+		{
+			$this->db->where('DATE_FORMAT(receivings.receiving_time, "%Y-%m-%d") BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
+		}
+		else
+		{
+			$this->db->where('receivings.receiving_time BETWEEN ' . $this->db->escape(rawurldecode($filters['start_date'])) . ' AND ' . $this->db->escape(rawurldecode($filters['end_date'])));
+		}
+
+		// get_found_rows case
+		if($count_only == TRUE)
+		{
+			return $this->db->get()->row()->count;
+		}
+
+		$this->db->order_by($sort, $order);
+
+		if($rows > 0)
+		{
+			$this->db->limit($rows, $limit_from);
+		}
+
+		return $this->db->get();
+	}
+
+
+
 	/*
 	We create a temp table that allows us to do easy report/receiving queries
 	*/

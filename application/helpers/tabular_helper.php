@@ -52,71 +52,6 @@ function transform_headers($array, $readonly = FALSE, $editable = TRUE)
 	return json_encode($result);
 }
 
-/*
-Get the header for the purchase sales tabular view
-*/
-function get_purchase_sales_manage_table_headers()
-{
-	$CI =& get_instance();
-
-	$headers = array(
-		array('sale_id' => $CI->lang->line('common_id')),
-		array('sale_time' => $CI->lang->line('sales_sale_time')),
-		array('customer_name' => $CI->lang->line('customers_customer')),
-		array('amount_due' => $CI->lang->line('sales_amount_due')),
-		array('amount_tendered' => $CI->lang->line('sales_amount_tendered')),
-		array('change_due' => $CI->lang->line('sales_change_due')),
-		array('payment_type' => $CI->lang->line('sales_payment_type'))
-	);
-
-	if($CI->config->item('invoice_enable') == TRUE)
-	{
-		$headers[] = array('invoice_number' => $CI->lang->line('sales_invoice_number'));
-		$headers[] = array('invoice' => '&nbsp', 'sortable' => FALSE, 'escape' => FALSE);
-	}
-
-	$headers[] = array('receipt' => '&nbsp', 'sortable' => FALSE, 'escape' => FALSE);
-
-	return transform_headers($headers);
-}
-
-/*
-Get the html data row for the purchase sales
-*/
-function get_purchase_sale_data_row($sale)
-{
-	$CI =& get_instance();
-
-	$controller_name = $CI->uri->segment(1);
-
-	$row = array (
-		'sale_id' => $sale->sale_id,
-		'sale_time' => to_datetime(strtotime($sale->sale_time)),
-		'customer_name' => $sale->customer_name,
-		'amount_due' => to_currency($sale->amount_due),
-		'amount_tendered' => to_currency($sale->amount_tendered),
-		'change_due' => to_currency($sale->change_due),
-		'payment_type' => $sale->payment_type
-	);
-
-	if($CI->config->item('invoice_enable'))
-	{
-		$row['invoice_number'] = $sale->invoice_number;
-		$row['invoice'] = empty($sale->invoice_number) ? '' : anchor($controller_name."/invoice/$sale->sale_id", '<span class="glyphicon glyphicon-list-alt"></span>',
-			array('title'=>$CI->lang->line('sales_show_invoice'))
-		);
-	}
-
-	$row['receipt'] = anchor($controller_name."/receipt/$sale->sale_id", '<span class="glyphicon glyphicon-usd"></span>',
-		array('title' => $CI->lang->line('sales_show_receipt'))
-	);
-	$row['edit'] = anchor($controller_name."/edit/$sale->sale_id", '<span class="glyphicon glyphicon-edit"></span>',
-		array('class' => 'modal-dlg print_hide', 'data-btn-delete' => $CI->lang->line('common_delete'), 'data-btn-submit' => $CI->lang->line('common_submit'), 'title' => $CI->lang->line($controller_name.'_update'))
-	);
-
-	return $row;
-}
-
 
 /*
 Get the header for the sales tabular view
@@ -498,7 +433,7 @@ function get_item_data_row($item)
 		'cost_price' => to_currency($item->cost_price),
 		'unit_price' => to_currency($item->unit_price),
 		'mrp_price' => to_currency($item->mrp_price),
-		'quantity' => round($item->quantity,2),
+		'quantity' => to_quantity_decimals($item->quantity),
 		// 'tax_percents' => $item->tax_percentage . " " . '%',
 		// $item->tax_percentage
 		'item_pic' => to_currency($item->unit_price - $item->cost_price)
@@ -907,6 +842,8 @@ function get_hsn_codes_data_row($hsn_codes, $count)
 		)
 	);
 }
+
+
 function get_split_items_manage_table_headers()
 {
 	$CI =& get_instance();
@@ -940,6 +877,44 @@ function get_split_item_data_row($split_items)
 		'receivings_quantity_in_hand' =>to_quantity_decimals($split_items->quantity_purchased),
 		'stock_qty' =>to_quantity_decimals($split_items->stock_qty),
 		'edit' => anchor($controller_name."/view/$split_items->receiving_id", '<span class="glyphicon glyphicon-edit"></span>',
+			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_new'))
+		)
+	);
+}
+
+function get_receiving_items_manage_table_headers()
+{
+	$CI =& get_instance();
+
+	$headers = array(
+		// array('serial_number' => $CI->lang->line('common_serial_number'), 'sortable' => FALSE),
+		array('id' => $CI->lang->line('common_serial_number')),
+		array('receivings_date' => $CI->lang->line('receivings_date')),
+		array('item_name' => $CI->lang->line('receivings_item_name')),
+		array('receivings_quantity_in_hand' => $CI->lang->line('receivings_quantity_in_hand')),
+		array('stock_qty' => $CI->lang->line('split_items_no_of_pack_kg')),
+	);
+
+	return transform_headers($headers);
+}
+
+/*
+Gets the html data row for the HSN Code
+*/
+function get_receiving_item_data_row($receiving_items)
+{
+	$CI =& get_instance();
+
+	$controller_name = strtolower(get_class($CI));
+
+	return array (
+		// 'serial_number'=>$count,
+		'id' => $receiving_items->receiving_id,
+		'receivings_date' => to_date(strtotime($receiving_items->receiving_time)),
+		'item_name' => $receiving_items->name,
+		'receivings_quantity_in_hand' =>to_quantity_decimals($receiving_items->quantity_purchased),
+		'stock_qty' =>to_quantity_decimals($receiving_items->stock_qty),
+		'edit' => anchor($controller_name."/view/$receiving_items->receiving_id", '<span class="glyphicon glyphicon-edit"></span>',
 			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_new'))
 		)
 	);
