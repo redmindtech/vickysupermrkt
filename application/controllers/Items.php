@@ -494,6 +494,64 @@ class Items extends Secure_Controller
 		$this->load->view('barcodes/barcode_sheet', $data);
 	}
 
+	public function generate_barcodes_purchase($receiving_ids)
+	{
+
+		$receiving_ids_all = $receiving_ids;
+		
+
+		$receiving_ids = explode(':',$receiving_ids);
+
+		$receiving_ids = array_reverse($receiving_ids);
+		
+
+		$item_ids = "";
+		$sales_price = "";
+		$expiry_date = "";
+		for($i=0; $i<count($receiving_ids); $i++){
+			$ids = $this->Receiving->get_info_purchase($receiving_ids[$i])->result_array();
+			foreach($ids as $id){
+				if($i<count($receiving_ids)-1){
+					
+					$item_ids = $item_ids.$id['item_id'].":";
+					$sales_price = $sales_price.$id['item_unit_price'].":";
+					$expiry_date=$expiry_date.$id['expire_date'].":";
+				}else{
+					$item_ids = $item_ids.$id['item_id'];
+					$sales_price = $sales_price.$id['item_unit_price'];
+					$expiry_date=$expiry_date.$id['expire_date'];
+				}				
+			}			
+		}
+		$this->load->library('barcode_lib');
+
+		$item_ids = explode(':',$item_ids);
+		
+		$result = $this->Item->get_multiple_info_purchase($item_ids, $this->item_lib->get_item_location())->result_array();
+		$config = $this->barcode_lib->get_barcode_config();
+
+		$data['barcode_config'] = $config;
+		foreach($result as &$item)
+		{
+			$item = $this->xss_clean($item);
+
+			if(empty($item['item_number']) && $this->config->item('barcode_generate_if_empty'))
+			{
+				$barcode_instance = Barcode_lib::barcode_instance($item, $config);
+				$item['item_number'] = $barcode_instance->getData();
+				$save_item = array('item_number' => $item['item_number']);
+
+				$this->Item->save($save_item, $item['item_id']);
+			}
+		}
+		$data['items'] = $result;
+		$data['receiving_ids'] = $receiving_ids_all;
+		$data['sales_price'] = $sales_price;
+		$data['expiry_date'] = $expiry_date;
+
+		$this->load->view('barcodes/barcode_sheet_custom', $data);
+	}
+
 	public function attributes($item_id = NEW_ITEM)
 	{
 		$data['item_id'] = $item_id;

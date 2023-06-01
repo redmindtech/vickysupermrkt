@@ -16,6 +16,15 @@ class Receiving extends CI_Model
 		return $this->db->get();
 	}
 
+
+	public function get_info_purchase($receiving_id)
+	{
+		$this->db->from('receivings_items');
+		
+		$this->db->where('receiving_id', $receiving_id);
+
+		return $this->db->get();
+	}
 	public function get_receiving_by_reference($reference)
 	{
 		$this->db->from('receivings');

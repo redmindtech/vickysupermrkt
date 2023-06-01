@@ -374,6 +374,31 @@ class Item extends CI_Model
 		return $this->db->get();
 	}
 
+
+	/*
+	Gets information about multiple items
+	*/
+	public function get_multiple_info_purchase($item_ids, $location_id)
+	{
+		$format = $this->db->escape(dateformat_mysql());
+		$this->db->select('items.*');
+		$this->db->select('MAX(company_name) AS company_name');
+		$this->db->select('GROUP_CONCAT(DISTINCT CONCAT_WS(\'_\', definition_id, attribute_value) ORDER BY definition_id SEPARATOR \'|\') AS attribute_values');
+		$this->db->select("GROUP_CONCAT(DISTINCT CONCAT_WS('_', definition_id, DATE_FORMAT(attribute_date, $format)) ORDER BY definition_id SEPARATOR '|') AS attribute_dtvalues");
+		$this->db->select('GROUP_CONCAT(DISTINCT CONCAT_WS(\'_\', definition_id, attribute_decimal) ORDER BY definition_id SEPARATOR \'|\') AS attribute_dvalues');
+		$this->db->select('MAX(quantity) as quantity');
+		$this->db->from('items');
+		$this->db->join('suppliers', 'suppliers.person_id = items.supplier_id', 'left');
+		$this->db->join('item_quantities', 'item_quantities.item_id = items.item_id', 'left');
+		$this->db->join('attribute_links', 'attribute_links.item_id = items.item_id AND sale_id IS NULL AND receiving_id IS NULL', 'left');
+		$this->db->join('attribute_values', 'attribute_links.attribute_id = attribute_values.attribute_id', 'left');
+		$this->db->where('location_id', $location_id);
+		$this->db->where_in('items.item_id', $item_ids);
+		$this->db->group_by('items.item_id');
+
+		return $this->db->get();
+	}
+
 	/*
 	Inserts or updates a item
 	*/

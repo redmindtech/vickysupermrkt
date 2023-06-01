@@ -38,7 +38,7 @@ $(document).ready(function()
 		resource: '<?php echo "receivings";?>',
 		headers: <?php echo $table_headers; ?>,
 		pageSize: <?php echo $this->config->item('lines_per_page'); ?>,
-		uniqueId: 'sale_id',
+		uniqueId: 'id',
 		onLoadSuccess: function(response) {
 			if($("#table tbody tr").length > 1) {
 				$("#payment_summary").html(response.payment_summary);

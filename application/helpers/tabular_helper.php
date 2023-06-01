@@ -889,6 +889,7 @@ function get_receiving_items_manage_table_headers()
 	$headers = array(
 		// array('serial_number' => $CI->lang->line('common_serial_number'), 'sortable' => FALSE),
 		array('id' => $CI->lang->line('common_serial_number')),
+		array('item_id' => "Item id"),
 		array('receivings_date' => $CI->lang->line('receivings_date')),
 		array('item_name' => $CI->lang->line('receivings_item_name')),
 		array('receivings_quantity_in_hand' => $CI->lang->line('receivings_quantity_in_hand')),
@@ -910,6 +911,7 @@ function get_receiving_item_data_row($receiving_items)
 	return array (
 		// 'serial_number'=>$count,
 		'id' => $receiving_items->receiving_id,
+		'item_id' => $receiving_items->item_id,
 		'receivings_date' => to_date(strtotime($receiving_items->receiving_time)),
 		'item_name' => $receiving_items->name,
 		'receivings_quantity_in_hand' =>to_quantity_decimals($receiving_items->quantity_purchased),
