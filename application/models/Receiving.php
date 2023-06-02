@@ -17,11 +17,11 @@ class Receiving extends CI_Model
 	}
 
 
-	public function get_info_purchase($receiving_id)
+	public function get_info_purchase($unique_id)
 	{
 		$this->db->from('receivings_items');
 		
-		$this->db->where('receiving_id', $receiving_id);
+		$this->db->where('unique_id', $unique_id);
 
 		return $this->db->get();
 	}

@@ -38,7 +38,23 @@ $(document).ready(function()
 		resource: '<?php echo "receivings";?>',
 		headers: <?php echo $table_headers; ?>,
 		pageSize: <?php echo $this->config->item('lines_per_page'); ?>,
-		uniqueId: 'id',
+		uniqueId: 'unique_id',
+		enableActions: function()
+		{
+			
+			
+			$('#table').find('tr').each(function(){ 
+			
+				
+			
+			
+			$(this).find('td').eq(1).hide();
+			$(this).find('th').eq(1).hide();
+			
+			
+			}); 
+			
+		} ,
 		onLoadSuccess: function(response) {
 			if($("#table tbody tr").length > 1) {
 				$("#payment_summary").html(response.payment_summary);

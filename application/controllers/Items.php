@@ -494,24 +494,24 @@ class Items extends Secure_Controller
 		$this->load->view('barcodes/barcode_sheet', $data);
 	}
 
-	public function generate_barcodes_purchase($receiving_ids)
+	public function generate_barcodes_purchase($unique_ids)
 	{
 
-		$receiving_ids_all = $receiving_ids;
+		$unique_ids_all = $unique_ids;
 		
 
-		$receiving_ids = explode(':',$receiving_ids);
+		$unique_ids = explode(':',$unique_ids);
 
-		$receiving_ids = array_reverse($receiving_ids);
+		//$unique_ids = array_reverse($unique_ids);
 		
 
 		$item_ids = "";
 		$sales_price = "";
 		$expiry_date = "";
-		for($i=0; $i<count($receiving_ids); $i++){
-			$ids = $this->Receiving->get_info_purchase($receiving_ids[$i])->result_array();
+		for($i=0; $i<count($unique_ids); $i++){
+			$ids = $this->Receiving->get_info_purchase($unique_ids[$i])->result_array();
 			foreach($ids as $id){
-				if($i<count($receiving_ids)-1){
+				if($i<count($unique_ids)-1){
 					
 					$item_ids = $item_ids.$id['item_id'].":";
 					$sales_price = $sales_price.$id['item_unit_price'].":";
@@ -545,7 +545,7 @@ class Items extends Secure_Controller
 			}
 		}
 		$data['items'] = $result;
-		$data['receiving_ids'] = $receiving_ids_all;
+		$data['receiving_ids'] = $unique_ids_all;
 		$data['sales_price'] = $sales_price;
 		$data['expiry_date'] = $expiry_date;
 
