@@ -662,7 +662,8 @@ class Sale extends CI_Model
 				$item['discount'] = 0.00;
 			}
 			// $date = date('Y-m-d', strtotime(substr($item['expire_date'], 0, 10)));
-		
+			if (is_numeric($item['expire_date']))
+			{
 			$this->db->select('stock_qty');
 			$this->db->from('receivings_items');
 			$this->db->where('item_id', $item['item_id']);
@@ -679,7 +680,34 @@ class Sale extends CI_Model
 				$this->db->where('item_id', $item['item_id']);
 				$this->db->where('receiving_id', $item['expire_date']);
 				$this->db->update('receivings_items', $data);
-			} else{
+			} 
+		}
+		else if(preg_match("/A$/", $item['expire_date'])){
+
+			$newValue2 = str_replace("A", "", $item['expire_date']);
+			$this->db->select('stock_qty');
+			$this->db->from('split_items');
+			$this->db->where('new_item_name',$item['item_id']);
+			$this->db->where('id', $newValue2);
+			$query = $this->db->get();
+			$result = $query->result();
+			log_message('debug',print_r($result,TRUE));
+			
+			if (!empty($result)) {
+				$stock_quantity = $result[0]->stock_qty;
+				$update_stock=$stock_quantity-$item['quantity'];
+				$data = array(
+					'stock_qty' => $update_stock
+				);
+				$this->db->from('split_items');
+				$this->db->where('new_item_name', $item['item_id']);
+				$this->db->where('id',$newValue2);
+				$this->db->update('split_items', $data);
+			} 
+	
+
+		}
+		else{
 				
 			$this->db->select('stock_qty');
 			$this->db->from('item_quantities');
@@ -1479,18 +1507,36 @@ class Sale extends CI_Model
 
 	public function price_mrp($item_id,$expire_date)
 	{
+	
+		
 		if (is_numeric($expire_date)) {
-			
+		
 			$this->db->select('item_unit_price AS unit_price, mrp_price');
 			$this->db->from('receivings_items');
 			$this->db->where('item_id', $item_id);
 			$this->db->where('receiving_id', $expire_date);
 			$query = $this->db->get();
 			$result = $query->result_array();
-			log_message('debug', print_r($result, true));
-			return $result;
-		} else {
 			
+			return $result;
+		} 
+		else if(preg_match("/A$/", $expire_date)){
+			
+			$newValue2 = str_replace("A", "", $expire_date);
+
+			$this->db->select('new_unit_price AS unit_price, new_mrp_price As mrp_price');
+			$this->db->from('split_items');
+			$this->db->where('new_item_name', $item_id);
+			$this->db->where('id', $newValue2);
+			$query = $this->db->get();
+			$result = $query->result_array();
+		
+			return $result;
+
+
+		}
+		else
+		 {
 			$this->db->select('unit_price, mrp_price');
 			$this->db->from('items');
 			$this->db->where('item_id', $item_id);
@@ -1500,13 +1546,6 @@ class Sale extends CI_Model
 			$result = $row;
 			return $result;
 		}
-		
-		
-		
-
-		
-			
-
 	}
 }
 ?>

@@ -888,48 +888,50 @@ $(document).ready(function()
 	});
 
 	$('#add_payment_button').click(function() {
-		var cartRows = $('#cart_contents tr:has([name="item_id"])');
-		var duplicateExpireDate = false;
-		var itemIds = [];
+  var cartRows = $('#cart_contents tr:has([name="item_id"])');
+  var duplicateExpireDate = false;
+  var noneExpireDate = false;
+  var itemIds = [];
 
-		cartRows.each(function() {
-		var itemRow = $(this);
-		var itemId = itemRow.find('[name="item_id"]').val().trim();
-		var expireDate = itemRow.find('[name="expire_date"] option:selected').text().trim();
+  cartRows.each(function() {
+    var itemRow = $(this);
+    var itemId = itemRow.find('[name="item_id"]').val().trim();
+    var expireDate = itemRow.find('[name="expire_date"] option:selected').text().trim();
 
-		// Check if the item ID already exists in the array
-		if (itemIds.indexOf(itemId) !== -1) {
-		// Check if the expire date is the same as a previous row
-		duplicateExpireDate = cartRows.filter(function() {
-			return $(this).find('[name="item_id"]').val().trim() === itemId && $(this).find('[name="expire_date"] option:selected').text().trim() === expireDate;
-		}).length > 1;
-		
-		if (duplicateExpireDate) {
-			return false; // Exit the loop early if duplicate expire date found
-		}
-		} else {
-		// Add the item ID to the array
-		itemIds.push(itemId);
-		}
+    // Check if the item ID already exists in the array
+    if (itemIds.indexOf(itemId) !== -1) {
+      // Check if the expire date is the same as a previous row
+      duplicateExpireDate = cartRows.filter(function() {
+        return $(this).find('[name="item_id"]').val().trim() === itemId && $(this).find('[name="expire_date"] option:selected').text().trim() === expireDate;
+      }).length > 1;
+
+      if (duplicateExpireDate) {
+        return false; // Exit the loop early if duplicate expire date found
+      }
+    } else {
+      // Add the item ID to the array
+      itemIds.push(itemId);
+    }
+
+    // Check if the expiration date is "None"
+    if (expireDate === "None") {
+      noneExpireDate = true;
+      return false; // Exit the loop early if "None" expire date found
+    }
   });
 
   if (duplicateExpireDate) {
-    alert('Expire date must be different for same items Please change the Expire date.');
+    alert('Expire date must be different for the same items. Please change the expiration date.');
+  } else if (noneExpireDate) {
+    alert('Expire date cannot be "None". Please select a valid expiration date.');
   } else {
-	 $("#register *").attr("disabled",true);
-	 $('[name="item"]').prop('disabled', true);
-	 $('#add_payment_form').submit();
-	
-    
-
-	
-	 
+    $("#register *").attr("disabled", true);
+    $('[name="item"]').prop('disabled', true);
+    $('#add_payment_form').submit();
   }
+});
 
 
-
-		// $('#add_payment_form').submit();
-	});
 
 	$('#payment_types').change(check_payment_type).ready(check_payment_type);
 

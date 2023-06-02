@@ -182,6 +182,7 @@ class Receiving extends CI_Model
 		$this->db->from('receivings_items');
 		$this->db->where('item_id',$item_id);
 		$this->db->where('stock_qty >', 0);
+		$this->db->where('expire_date >=', date('Y-m-d')); 
 		$query = $this->db->get();			
 		$data_expire_date = $query->result();
 		
@@ -196,10 +197,24 @@ class Receiving extends CI_Model
 		$this->db->from('item_quantities');
 		$this->db->where('item_id',$item_id);
 		$this->db->where('stock_qty >', 0);
+		// $this->db->where('expire_date >=', date('Y-m-d')); 
 		$query = $this->db->get();			
 		$stock_qty = $query->result();
 		
 	
+		return $stock_qty;
+		
+	}
+	public function get_item_split_expire_date($item_id)
+	{
+				
+		$this->db->select('stock_qty,expire_date,id');
+		$this->db->from('split_items');
+		$this->db->where('new_item_name',$item_id);
+		$this->db->where('stock_qty >', 0);
+		$this->db->where('expire_date >=', date('Y-m-d')); 
+		$query = $this->db->get();			
+		$stock_qty = $query->result();
 		return $stock_qty;
 		
 	}

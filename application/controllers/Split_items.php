@@ -137,6 +137,7 @@ class Split_items extends Secure_Controller
 				// 'receivings_no_split' => $this->input->post('receivings_no_split'),
 				'receivings_no_of_pack_split' => $this->input->post('receivings_no_of_pack_split'),
 				'no_of_packing_split' => $this->input->post('no_of_packing_split'),
+				'stock_qty' => $this->input->post('no_of_packing_split'),
 				'split_type' => $this->input->post('split_type'),
 				'new_cost_price' => $this->input->post('new_cost_price'),
 				'new_unit_price' => $this->input->post('new_unit_price'),
@@ -172,7 +173,8 @@ class Split_items extends Secure_Controller
 			$item_quantity_data = array(
 				'item_id' => $item_id,
 				'location_id' => $location_id,
-				'quantity' =>parse_quantity($this->input->post('no_of_packing_split'))
+				'quantity' =>parse_quantity($this->input->post('no_of_packing_split')),
+				'stock_qty' =>parse_quantity($this->input->post('no_of_packing_split'))
 			);
 	
 			$this->Item_quantity->save($item_quantity_data, $item_id, $location_id);
@@ -278,6 +280,7 @@ class Split_items extends Secure_Controller
 			// 'receivings_no_split' => $this->input->post('receivings_no_split'),
 			'receivings_no_of_pack_split' => $this->input->post('receivings_no_of_pack_split'),
 			'no_of_packing_split' => $this->input->post('no_of_packing_split'),
+			'stock_qty' => $this->input->post('no_of_packing_split'),
 			'split_type' => $this->input->post('split_type'),
 			'new_cost_price' => $this->input->post('new_cost_price'),
 			'new_unit_price' => $this->input->post('new_unit_price'),

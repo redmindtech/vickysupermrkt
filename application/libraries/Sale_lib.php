@@ -779,64 +779,119 @@ class Sale_lib
 
 		
 		// 
-		if($mode =='return')
-		{
-			log_message('debug',print_r('return',TRUE));
-			$expire_date_get = $this->CI->Receiving->get_expire_date_return($item_id);
-			$length = count($expire_date_get);
-			$get_item_expire = '';
-			$select_expire_date_[""] = "None";
+		// if($mode =='return')
+		// {
+		// 	log_message('debug',print_r('return',TRUE));
+		// 	$expire_date_get = $this->CI->Receiving->get_expire_date_return($item_id);
+		// 	$length = count($expire_date_get);
 			
-			$item_stock = $this->CI->Receiving->get_item_expire_date_return($item_id);
 			
-			// $stockQty = $item_stock[0]->stock_qty;
-			$stockQty = isset($item_stock[0]->stock_qty) ? $item_stock[0]->stock_qty : 0;
-			
-			if ($length > 0) {
-				foreach ($expire_date_get as $obj) {
-					$get_item_expire = substr($obj->expire_date, 0, 10);
-					
-					$expire_dates_item[$obj->receiving_id] = $get_item_expire . ' ' . " (" . round($obj->stock_qty, 2) . ")";
-				
-					// $select_expire_date_=$expire_dates_item[$obj->receiving_id];
-				}			
-				
-				// Add the remaining expiration dates
-				foreach ($expire_dates_item as $receiving_id => $expire_date) {
-	
-					$select_expire_date_[$receiving_id] = $expire_date;
-				}
-				$select_expire_date=$select_expire_date_;
-				// log_message('debug',print_r($item_info,TRUE));
-				
-			} 
-			else {
-				$select_expire_date[""] = "None";
-				$get_item_expire = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
-					
-				$select_expire_date[$item_info->expire_date] = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
-			}
+		// 	$item_split_table=$this->CI->Receiving->get_item_split_expire_date($item_id);
+		// 	$lenght_item=count($item_split_table);
+		// 	log_message('debug',print_r($item_split_table,TRUE));
+		// 	log_message('debug',print_r($lenght_item,TRUE));
 
-		}
-		else{
-		 log_message('debug',print_r('else',TRUE));
-		 
+		// 	$item_expire_date = $item_info->expire_date;
+		// 	$current_date = date('Y-m-d');
+		// 	$get_item_expire = '';
+		// 	$select_expire_date_[""] = "None";
+			
+		// 	$item_stock = $this->CI->Receiving->get_item_expire_date_return($item_id);
+			
+		// 	// $stockQty = $item_stock[0]->stock_qty;
+		// 	$stockQty = isset($item_stock[0]->stock_qty) ? $item_stock[0]->stock_qty : 0;
+		// 	// split_item
+		// 	if($lenght_item > 0){
+
+		// 		foreach ($item_split_table as $obj) {
+		// 			log_message('debug',print_r('obj',TRUE));
+		// 			log_message('debug',print_r($obj,TRUE));
+		// 			$get_item_expire = substr($obj->expire_date, 0, 10);
+		// 			log_message('debug',print_r($get_item_expire,TRUE));
+		// 			$expire_dates_item_split[$obj->id] = $get_item_expire. ' ' . " (" . round($obj->no_of_packing_split, 2) . ")";
+				
+		// 			// $select_expire_date_=$expire_dates_item[$obj->receiving_id];
+		// 		}			
+				
+		// 		// Add the remaining expiration dates
+		// 		foreach ($expire_dates_item_split as $id => $expire_date) {
+	
+		// 			$select_expire_date_[$id.'A'] = $expire_date;
+		// 		}
+		// 		  $select_expire_date=$select_expire_date_;
+		
+		// 	}
+		// 	if ($length > 0) {
+		// 		foreach ($expire_date_get as $obj) {
+		// 			$get_item_expire = substr($obj->expire_date, 0, 10);
+					
+		// 			$expire_dates_item[$obj->receiving_id] = $get_item_expire . ' ' . " (" . round($obj->stock_qty, 2) . ")";
+				
+		// 			// $select_expire_date_=$expire_dates_item[$obj->receiving_id];
+		// 		}			
+				
+		// 		// Add the remaining expiration dates
+		// 		foreach ($expire_dates_item as $receiving_id => $expire_date) {
+	
+		// 			$select_expire_date_[$receiving_id] = $expire_date;
+		// 		}
+		// 		$select_expire_date=$select_expire_date_;
+		// 		// log_message('debug',print_r($item_info,TRUE));
+				
+		// 	} 
+		// 	else {
+		// 		$select_expire_date[""] = "None";
+		// 		$get_item_expire = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
+					
+		// 		$select_expire_date[$item_info->expire_date] = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
+		// 	}
+
+		// }
+		// else{
+		
+		 $select_expire_date_[""] = "None";
 			$expire_date_get = $this->CI->Receiving->get_expire_date($item_id);
 			$length = count($expire_date_get);
 			$get_item_expire = '';
 			$item_stock = $this->CI->Receiving->get_item_expire_date($item_id);
-			$select_expire_date_[""] = "None";
+			$item_split_table=$this->CI->Receiving->get_item_split_expire_date($item_id);
+			$lenght_item=count($item_split_table);
+			$item_expire_date = $item_info->expire_date;
+			$current_date = date('Y-m-d');
 		
-			// $stockQty = $item_stock[0]->stock_qty;
-
 			$stockQty = isset($item_stock[0]->stock_qty) ? $item_stock[0]->stock_qty : 0;
-			
+			// item_table
 			if ($stockQty > 0) {
+				if (strtotime($item_expire_date) >= strtotime($current_date)){
 				$select_expire_date_[$item_info->expire_date] = $item_info->expire_date . ' (' . round($stockQty, 2) . ')';
+				}
 			} else {
 				unset($select_expire_date_[$item_info->expire_date]);
 			}
-			// $select_expire_date["nono"] = "nono";
+			// split item table
+			if($lenght_item > 0){
+
+				foreach ($item_split_table as $obj) {
+					log_message('debug',print_r('obj',TRUE));
+					log_message('debug',print_r($obj,TRUE));
+					$get_item_expire = substr($obj->expire_date, 0, 10);
+					log_message('debug',print_r($get_item_expire,TRUE));
+					$expire_dates_item_split[$obj->id] = $get_item_expire. ' ' . " (" . round($obj->stock_qty, 2) . ")";
+				
+					// $select_expire_date_=$expire_dates_item[$obj->receiving_id];
+				}			
+				
+				// Add the remaining expiration dates
+				foreach ($expire_dates_item_split as $id => $expire_date) {
+	
+					$select_expire_date_[$id.'A'] = $expire_date;
+				}
+				  $select_expire_date=$select_expire_date_;
+		
+			}
+			// $select_expire_date=$select_expire_date_;
+			//  log_message('debug',print_r($select_expire_date,TRUE));
+			// Receiving item_table
 			if ($length > 0) {
 				
 				foreach ($expire_date_get as $obj) {
@@ -853,7 +908,7 @@ class Sale_lib
 					$select_expire_date_[$receiving_id] = $expire_date;
 				}
 				$select_expire_date=$select_expire_date_;
-				 log_message('debug',print_r($item_info,TRUE));
+				 log_message('debug',print_r($select_expire_date,TRUE));
 				
 			} 
 			else {
@@ -866,12 +921,14 @@ class Sale_lib
 					// $select_expire_date_[$item_info->expire_date] = $item_info->expire_date . ' (' . round($stockQty, 2) . ')';
 				}
 				else{
+					if (strtotime($item_expire_date) >= strtotime($current_date)){
 				$get_item_expire = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
 					
 				$select_expire_date[$item_info->expire_date] = $item_info->expire_date . ' ' . " (" . round($stockQty, 2) . ")";
 			}
 		}
-	}
+		}
+	
 
 
 		
@@ -1116,6 +1173,7 @@ class Sale_lib
 			$line['discount'] = $discount;
 			$line['expire_date'] = $expire_date;
 			 $mrp=$this->CI->Sale->price_mrp($line['item_id'],$line['expire_date']);
+			 
 			$price=$mrp[0]['unit_price'];
 			
 			$line['mrp_price']=$mrp[0]['mrp_price'];
