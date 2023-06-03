@@ -925,4 +925,43 @@ function get_receiving_item_data_row($receiving_items, $count)
 	);
 }
 
+function get_split_items_barcode_manage_table_headers()
+{
+	$CI =& get_instance();
+
+	$headers = array(
+		
+		array('split_id' => "Split Id"),
+		array('dummy' => "Item Id"),
+		array('split_item_id' => "Item Id"),		
+		array('split_item_name' => "Item Name"),
+		array('split_sales_price' => "Sales Price"),
+		array('split_expiry_date' =>"Expiry Date"),
+		
+	);
+
+	return transform_headers($headers);
+}
+
+/*
+Gets the html data row for the HSN Code
+*/
+function get_split_item_barcode_data_row($split_items,  $count)
+{
+	$CI =& get_instance();
+
+	$controller_name = strtolower(get_class($CI));
+
+	return array (
+		
+		'split_id' => $split_items->id,
+		'split_item_id' =>  $split_items->item_id,
+		'split_item_name' => $split_items->new_item_name,
+		'split_sales_price' =>$split_items->new_unit_price,
+		'split_expiry_date' =>$split_items->expire_date,
+		
+	
+	);
+}
+
 ?>
