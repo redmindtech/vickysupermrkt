@@ -16,11 +16,13 @@
 	  $receiving_ids = array_reverse($receiving_ids);
 	  $sales_price = explode(':',$sales_price);
 	 
-	  $expiry_date = explode(':',$expiry_date);
+	  $expiry_date = explode('%',$expiry_date);
 
 	
 	  
 	  ?>
+
+	 
 	  
 	<table cellspacing=<?php echo $barcode_config['barcode_page_cellspacing']; ?> width='<?php echo $barcode_config['barcode_page_width']."%"; ?>' >
 		<tr>

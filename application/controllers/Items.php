@@ -509,20 +509,22 @@ class Items extends Secure_Controller
 		$sales_price = "";
 		$expiry_date = "";
 		for($i=0; $i<count($unique_ids); $i++){
-			$ids = $this->Receiving->get_info_purchase($unique_ids[$i])->result_array();
+			$ids = $this->Split_item_new->get_info_purchase($unique_ids[$i])->result_array();
 			foreach($ids as $id){
 				if($i<count($unique_ids)-1){
 					
 					$item_ids = $item_ids.$id['item_id'].":";
-					$sales_price = $sales_price.$id['item_unit_price'].":";
-					$expiry_date=$expiry_date.$id['expire_date'].":";
+					$sales_price = $sales_price.$id['new_unit_price'].":";
+					$expiry_date=$expiry_date.$id['expire_date']."%";
 				}else{
 					$item_ids = $item_ids.$id['item_id'];
-					$sales_price = $sales_price.$id['item_unit_price'];
+					$sales_price = $sales_price.$id['new_unit_price'];
 					$expiry_date=$expiry_date.$id['expire_date'];
 				}				
 			}			
 		}
+
+		
 		$this->load->library('barcode_lib');
 
 		$item_ids = explode(':',$item_ids);

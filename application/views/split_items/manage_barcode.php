@@ -3,6 +3,26 @@
 <script type="text/javascript">
 $(document).ready(function()
 {
+
+	$('#generate_barcodes').click(function()
+    {
+
+
+		ids = table_support.selected_ids().join(':');
+		ids = ids.split(':');
+		
+		if(ids.length<2){
+
+			window.open(
+            'index.php/items/generate_barcodes_purchase/'+table_support.selected_ids().join(':'),
+            '_blank' // <- This is what makes it open in a new window.
+        	);
+		}else{
+
+			alert("You can select only one item at a time.");
+		}
+        
+    });
 	// when any filter is clicked and the dropdown window is closed
 	$('#filters').on('hidden.bs.select', function(e) {
 		table_support.refresh();
@@ -30,7 +50,7 @@ $(document).ready(function()
 		resource: '<?php echo site_url($controller_name);?>',
 		headers: <?php echo $table_headers; ?>,
 		pageSize: <?php echo $this->config->item('lines_per_page'); ?>,
-		uniqueId: 'receiving_id',
+		uniqueId: 'split_id',
 		onLoadSuccess: function(response) {
 		// 	if($("#table tbody tr").length > 1) {
 		// 		$("#payment_summary").html(response.payment_summary);

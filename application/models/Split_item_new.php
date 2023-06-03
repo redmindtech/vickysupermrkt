@@ -144,6 +144,15 @@ class Split_item_new extends CI_Model
 	// 	return $this->db->update('split_items', array('deleted' => 1));
  	// }
 
+
+	 public function get_info_purchase($unique_id)
+	 {
+		 $this->db->from('split_items');
+		 
+		 $this->db->where('id', $unique_id);
+ 
+		 return $this->db->get();
+	 }
 	/*
 	Gets rows
 	*/

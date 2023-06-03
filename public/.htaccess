@@ -17,7 +17,7 @@ RewriteCond %{REQUEST_FILENAME} !-d
 #RewriteRule ^(.*)$ index.php?/$1 [L]
 
 # if in subdir comment above line, uncomment below one and replace <OSPOS path> with your path
- #RewriteRule ^(.*)$ /pos_git/vickysupermrkt/public/index.php?/$1 [L]
+#RewriteRule ^(.*)$ /pos_git/vickysupermrkt/public/index.php?/$1 [L]
 RewriteRule ^(.*)$ /vicky_supermarket/public/index.php?/$1 [L]+
 
 # disable directory browsing
