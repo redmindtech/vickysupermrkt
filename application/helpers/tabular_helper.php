@@ -844,17 +844,18 @@ function get_hsn_codes_data_row($hsn_codes, $count)
 }
 
 
+
 function get_split_items_manage_table_headers()
 {
 	$CI =& get_instance();
 
 	$headers = array(
-		// array('serial_number' => $CI->lang->line('common_serial_number'), 'sortable' => FALSE),
+		array('serial_number' => $CI->lang->line('common_serial_number'), 'sortable' => FALSE),
 		array('id' => $CI->lang->line('common_serial_number')),
 		array('receivings_date' => $CI->lang->line('receivings_date')),
 		array('item_name' => $CI->lang->line('receivings_item_name')),
-		array('receivings_quantity_in_hand' => $CI->lang->line('receivings_quantity_in_hand')),
 		array('stock_qty' => $CI->lang->line('split_items_no_of_pack_kg')),
+		array('expire_date' => $CI->lang->line('receivings_expire_date')),
 	);
 
 	return transform_headers($headers);
@@ -863,20 +864,20 @@ function get_split_items_manage_table_headers()
 /*
 Gets the html data row for the HSN Code
 */
-function get_split_item_data_row($split_items)
+function get_split_item_data_row($split_items,  $count)
 {
 	$CI =& get_instance();
 
 	$controller_name = strtolower(get_class($CI));
 
 	return array (
-		// 'serial_number'=>$count,
-		'id' => $split_items->receiving_id,
+		'serial_number'=>$count,
+		'id' => $split_items->unique_id,
 		'receivings_date' => to_date(strtotime($split_items->receiving_time)),
 		'item_name' => $split_items->name,
-		'receivings_quantity_in_hand' =>to_quantity_decimals($split_items->quantity_purchased),
+		'expire_date' =>to_date(strtotime($split_items->expire_date)),
 		'stock_qty' =>to_quantity_decimals($split_items->stock_qty),
-		'edit' => anchor($controller_name."/view/$split_items->receiving_id", '<span class="glyphicon glyphicon-edit"></span>',
+		'edit' => anchor($controller_name."/view/$split_items->unique_id", '<span class="glyphicon glyphicon-edit"></span>',
 			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_new'))
 		)
 	);
@@ -887,13 +888,13 @@ function get_receiving_items_manage_table_headers()
 	$CI =& get_instance();
 
 	$headers = array(
-		// array('serial_number' => $CI->lang->line('common_serial_number'), 'sortable' => FALSE),
+		array('serial_number' => $CI->lang->line('common_serial_number'), 'sortable' => FALSE),
 		array('unique_id' => "UniqueId"),
 		array('id' => $CI->lang->line('common_serial_number')),
 		array('item_id' => "Item id"),
 		array('receivings_date' => $CI->lang->line('receivings_date')),
 		array('item_name' => $CI->lang->line('receivings_item_name')),
-		array('receivings_quantity_in_hand' => $CI->lang->line('receivings_quantity_in_hand')),
+		array('expire_date' => $CI->lang->line('receivings_expire_date')),
 		array('stock_qty' => $CI->lang->line('split_items_no_of_pack_kg')),
 	);
 
@@ -903,24 +904,24 @@ function get_receiving_items_manage_table_headers()
 /*
 Gets the html data row for the HSN Code
 */
-function get_receiving_item_data_row($receiving_items)
+function get_receiving_item_data_row($receiving_items, $count)
 {
 	$CI =& get_instance();
 
 	$controller_name = strtolower(get_class($CI));
 
 	return array (
-		// 'serial_number'=>$count,
+		'serial_number'=>$count,
 		'unique_id' => $receiving_items->unique_id,
 		'id' => $receiving_items->receiving_id,
 		'item_id' => $receiving_items->item_id,
 		'receivings_date' => to_date(strtotime($receiving_items->receiving_time)),
 		'item_name' => $receiving_items->name,
-		'receivings_quantity_in_hand' =>to_quantity_decimals($receiving_items->quantity_purchased),
+		'expire_date' =>to_date(strtotime($receiving_items->expire_date)),
 		'stock_qty' =>to_quantity_decimals($receiving_items->stock_qty),
-		'edit' => anchor($controller_name."/view/$receiving_items->receiving_id", '<span class="glyphicon glyphicon-edit"></span>',
-			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_new'))
-		)
+		// 'edit' => anchor($controller_name."/view/$receiving_items->receiving_id", '<span class="glyphicon glyphicon-edit" disabled></span>',
+		// 	array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_new'))
+		// )
 	);
 }
 

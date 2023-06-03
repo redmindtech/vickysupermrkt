@@ -31,13 +31,22 @@ $(document).ready(function()
 		headers: <?php echo $table_headers; ?>,
 		pageSize: <?php echo $this->config->item('lines_per_page'); ?>,
 		uniqueId: 'receiving_id',
-		// onLoadSuccess: function(response) {
+		onLoadSuccess: function(response) {
 		// 	if($("#table tbody tr").length > 1) {
 		// 		$("#payment_summary").html(response.payment_summary);
 		// 		$("#table tbody tr:last td:first").html("");
 		// 		$("#table tbody tr:last").css('font-weight', 'bold');
 		// 	}
-		// },
+		$('#table').find('tr').each(function(){ 
+				
+			
+				$(this).find('td').eq(2).hide();
+				$(this).find('th').eq(2).hide();
+				
+				//$(this).find('td').eq(1).html('<td>'+serial_no+'</td>'); 
+				}); 
+		},
+		
 		queryParams: function() {
 			return $.extend(arguments[0], table_support.query_params());
 		},

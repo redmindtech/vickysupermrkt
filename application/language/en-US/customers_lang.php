@@ -54,7 +54,7 @@ $lang["customers_total"] = "Total spent";
 $lang["customers_update"] = "Update Customer";
 $lang["rewards_package"] = "Rewards Package";
 
-$lang["customers_customer_name"] = "Customer Name";
+$lang["customers_customer_name"] = "Name";
 $lang["customer_loyalty_points"] = "Loyalty Points";
 $lang['customers_phone_number_valid']="Phone No already present in the database or Invalid Phone Number";
 

@@ -344,7 +344,7 @@ if (isset($success))
 				<th style="width:7%;"><?php echo $this->lang->line('receivings_sale_price'); ?></th>
 				<th style="width:7%;"><?php echo $this->lang->line('receivings_mrp_price'); ?></th>
 				<th style="width:7%;"><?php echo $this->lang->line('receivings_roi'); ?></th>
-				<!-- <th style="width:7%;"><?php //echo $this->lang->line('receivings_quantity'); ?></th> -->
+				<th style="width:7%;"><?php echo $this->lang->line('receivings_quantity'); ?></th>
 				<th style="width:7%;"><?php echo $this->lang->line('receivings_ship_pack'); ?></th>
 				<th style="width:10%;"><?php echo $this->lang->line('receivings_discount'); ?></th>
 				<th style="width:11%;"><?php echo $this->lang->line('receivings_expire_date'); ?></th>
@@ -405,7 +405,7 @@ if (isset($success))
 							<td><?php echo form_input(array('name'=>'mrp_price', 'id'=>'mrp_price' , 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['mrp_price']),'onClick'=>'this.select();'));?></td>
 							<td><?php echo form_input(array('name'=>'roi_price',  'id'=>'roi_price' , 'readonly'=>'readonly', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['unit_price']-$item['price']),'onClick'=>'this.select();'));?></td>
 							
-							<td hidden><?php echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['quantity']),'onClick'=>'this.select();')); ?></td>
+							<td><?php echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['quantity']),'onClick'=>'this.select();')); ?></td>
 							<td><?php echo form_input(array('name'=>'receiving_quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['receiving_quantity']),'onClick'=>'this.select();'));?></td>
 
 							<?php       

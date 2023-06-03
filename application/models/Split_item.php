@@ -9,10 +9,10 @@ class Split_item extends CI_Model
 	/*
 	Determines if a given item_category_id is an Item_category
 	*/
-	public function exists($receiving_id)
+	public function exists($unique_id)
 	{
 		$this->db->from('receivings_items');
-		$this->db->where('receiving_id', $receiving_id);
+		$this->db->where('unique_id', $unique_id);
 
 		return ($this->db->get()->num_rows() == 1);
 	}
@@ -53,13 +53,15 @@ class Split_item extends CI_Model
 	/*
 	Gets information about a particular category
 	*/
-	public function get_info($receiving_id)
+	public function get_info($unique_id)
 	{
 			$this->db->select('receivings.receiving_id AS receiving_id');
 			$this->db->select('receivings.receiving_time AS receiving_time');
 			$this->db->select('receivings.reference AS reference');
+			$this->db->select('receivings.other_charges AS other_charges');
 
-			
+
+			$this->db->select('receivings_items.unique_id AS unique_id');
 			$this->db->select('receivings_items.quantity_purchased AS quantity_purchased');
 			$this->db->select('receivings_items.item_cost_price AS item_cost_price');
 			$this->db->select('receivings_items.item_unit_price AS item_unit_price');
@@ -99,8 +101,8 @@ class Split_item extends CI_Model
 		// $this->db->where('location_id', $filters['stock_location_id']);
 		
 		
-		$this->db->where('receivings.receiving_id', $receiving_id);
-		$this->db->group_by('receivings.receiving_id');
+		$this->db->where('receivings_items.unique_id', $unique_id);
+		$this->db->group_by('receivings_items.unique_id');
 		// $this->db->where('deleted', 0); split_items
 		$query = $this->db->get();
 		// var_dump( $item_hsn_code_obj);
@@ -187,7 +189,7 @@ class Split_item extends CI_Model
 	public function get_multiple_info($id)
 	{
 		$this->db->from('receivings_items');
-		$this->db->where_in('receiving_id', $receiving_id);
+		$this->db->where_in('unique_id', $unique_id);
 		$this->db->order_by('receiving_time', 'desc');
 
 		return $this->db->get();
@@ -266,18 +268,18 @@ class Split_item extends CI_Model
 	*/
 	public function get_found_rows($search, $filters)
 	{
-		return $this->search($search, $filters, 0, 0, 'receivings.receiving_id', 'desc', TRUE);
+		return $this->search($search, $filters, 0, 0, 'receivings_items.unique_id', 'desc', TRUE);
 	}
 
 	/*
 	Perform a search on item_category
 	*/
-	public function search($search, $filters, $rows = 0, $limit_from = 0, $sort = 'receivings.receiving_id', $order='asc', $count_only = FALSE)
+	public function search($search, $filters, $rows = 0, $limit_from = 0, $sort = 'receivings_items.unique_id', $order='asc', $count_only = FALSE)
 	{
 		// get_found_rows case
 		if($count_only == TRUE)
 		{
-			$this->db->select('COUNT(receivings_items.receiving_id) as count');
+			$this->db->select('COUNT(receivings_items.unique_id) as count');
 			$this->db->select('receivings.receiving_id AS receiving_id');
 			$this->db->select('receivings.receiving_time AS receiving_time');
 
@@ -306,7 +308,7 @@ class Split_item extends CI_Model
 		$this->db->from('receivings_items AS receivings_items');
 		$this->db->join('receivings AS receivings', 'receivings_items.receiving_id = receivings.receiving_id', 'inner');
 		$this->db->join('items AS items', 'items.item_id = receivings_items.item_id', 'left');
-		$this->db->order_by('receivings_items.receiving_id', 'desc');
+		$this->db->order_by('receivings_items.unique_id', 'desc');
 		$this->db->group_start();
 		$this->db->or_like('receivings_items.receiving_id', $search);
 		$this->db->or_like('receivings_items.item_id', $search);

@@ -161,7 +161,7 @@
 
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('items_purchase_price'), 'cost_price', array('class'=>'required control-label col-xs-3')); ?>
-			<div class="col-xs-4">
+			<div class="col-xs-6">
 				<div class="input-group input-group-sm">
 					<?php if (!currency_side()): ?>
 						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
@@ -178,12 +178,13 @@
 						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
 					<?php endif; ?>
 				</div>
+				<p>( Per Pack / Kg Purchase Price )</p>
 			</div>
 		</div>
 
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('items_sales_price'), 'unit_price', array('class'=>'required control-label col-xs-3')); ?>
-			<div class='col-xs-4'>
+			<div class='col-xs-6'>
 				<div class="input-group input-group-sm">
 					<?php if (!currency_side()): ?>
 						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
@@ -200,12 +201,13 @@
 						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
 					<?php endif; ?>
 				</div>
+				<p>( Per Pack / Kg Sales Price )</p>
 			</div>
 		</div>
 
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('items_mrp_price'), 'mrp_price', array('class'=>'required control-label col-xs-3')); ?>
-			<div class='col-xs-4'>
+			<div class='col-xs-6'>
 				<div class="input-group input-group-sm">
 					<?php if (!currency_side()): ?>
 						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
@@ -222,12 +224,13 @@
 						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
 					<?php endif; ?>
 				</div>
+				<p>( Per Pack / Kg MRP Price )</p>
 			</div>
 		</div>
 
 
 		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('items_batch_no'), 'batch_no', array('class'=>'required control-label col-xs-3')); ?>
+			<?php echo form_label($this->lang->line('items_batch_no'), 'batch_no', array('class'=>'control-label col-xs-3')); ?>
 			<div class='col-xs-8'>
 				<?php echo form_input(array(
 						'name'=>'batch_no',
@@ -246,17 +249,17 @@
 		
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('items_expire_date'), 'expire_date', array('class'=>'required control-label col-xs-3')); ?>
+			<div class='col-xs-1'>
+						<?php echo form_checkbox(array(
+							'name'=>'expire_date_show',
+							'id'=>'expire_date_show',
+							'value'=>1,
+							'checked'=>($item_info->expire_date_show) ? 1 : 0)
+						);?>
+			</div>
 			<div class='col-xs-6'>
-				<div class="input-group">
+				<div class="input-group" id="expire_date" style="display: none">
 					<span class="input-group-addon input-sm"><span class="glyphicon glyphicon-calendar"></span></span>
-					<!-- <?php //echo form_input(array(
-							// 'id'=>'expire_date',
-							// 'name'=>'expire_date',
-							// 'class'=>'form-control input-sm datetime expire_date',
-							// 'value'=>to_date(strtotime($item_info->expire_date)),
-                            // )
-							//);?> -->
-
 						<?php echo form_input(array(
 							'name'=>'expire_date',
 							'id'=>'expire_date',
@@ -264,7 +267,9 @@
  							'value'=>to_datetime(strtotime($item_info->expire_date)),
                            )
 							);?>
+							
 				</div>
+				
 			</div>
 		</div>
 
@@ -533,12 +538,37 @@ $(document).ready(function()
 
 	<?php $this->load->view('partial/datepicker_locale'); ?>
 	
-	
-	
-	// $('#expire_date').val(new Date().toJSON().slice(0,10)); 
-	// $('#expire_date').datepicker({ dateFormat: 'dd-mm-yy'}).datepicker("setDate", new Date());
+	$(document).ready(function() {
+  // Function to show input field
+  function showInputField() {
+    $('#expire_date').show();
+  }
 
-	
+  // Function to hide input field
+  function hideInputField() {
+    $('#expire_date').hide();
+  }
+
+  // Check the initial state of the checkbox
+  if ($('#expire_date_show').is(':checked')) {
+    showInputField();
+  } else {
+    hideInputField();
+  }
+
+  // Trigger click event on checkbox for edit form popup
+  // Replace 'your-popup-checkbox-selector' with the actual selector for the checkbox in the edit form popup
+  $('.your-popup-checkbox-selector').click();
+
+  // Handle checkbox click event
+  $("#expire_date_show").click(function() {
+    if ($(this).is(':checked')) {
+      showInputField();
+    } else {
+      hideInputField();
+    }
+  });
+});			
 
 	$('#new').click(function() {
 		stay_open = true;
@@ -667,7 +697,7 @@ $(document).ready(function()
 			{
 				name: 'required',
 				category: 'required',
-				batch_no: 'required',
+				// batch_no: 'required',
 				expire_date:'required',
 				item_number:
 				{
@@ -739,7 +769,7 @@ $(document).ready(function()
 				name: "<?php echo $this->lang->line('items_name_required'); ?>",
 				item_number: "<?php echo $this->lang->line('items_item_number_duplicate'); ?>",
 				category: "<?php echo $this->lang->line('items_category_required'); ?>",
-				batch_no: "<?php echo $this->lang->line('items_batch_no_required'); ?>",
+				// batch_no: "<?php //echo $this->lang->line('items_batch_no_required'); ?>",
 				expire_date: "<?php echo $this->lang->line('items_expire_date_required'); ?>",
 				hsn_code:
 				{

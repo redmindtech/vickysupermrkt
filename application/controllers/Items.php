@@ -643,6 +643,7 @@ class Items extends Secure_Controller
 			'unit_price' => parse_decimals($this->input->post('unit_price')),
 			'mrp_price' => parse_decimals($this->input->post('mrp_price')),
 			'batch_no' => $this->input->post('batch_no'),
+			'expire_date_show' => $this->input->post('expire_date_show') !== NULL,
 			'expire_date' => $expire_date_formatter->format('Y-m-d H:i:s'),
 			'reorder_level' => parse_quantity($this->input->post('reorder_level')),
 			'receiving_quantity' => $receiving_quantity,

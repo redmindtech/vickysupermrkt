@@ -520,7 +520,7 @@ $(document).ready(function()
 
 		rules:
 		{
-			first_name: 'required',
+			// efirst_name: 'required',
 			// last_name: 'required',
 			consent: 'required',
 			email:
@@ -568,7 +568,7 @@ $(document).ready(function()
 
 		messages:
 		{
-			first_name: "<?php echo $this->lang->line('common_first_name_required'); ?>",
+			// first_name: "<?php echo $this->lang->line('common_first_name_required'); ?>",
 			// last_name: "<?php //echo $this->lang->line('common_last_name_required'); ?>",
 
 			consent: "<?php echo $this->lang->line('customers_consent_required'); ?>",

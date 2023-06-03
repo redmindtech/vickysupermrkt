@@ -59,9 +59,9 @@ class Split_items extends Secure_Controller
 	}
 
      //View new form
-	public function view($receiving_id = -1)
+	public function view($unique_id = -1)
 	{
-		$data['split_items_info'] = $this->Split_item->get_info($receiving_id);
+		$data['split_items_info'] = $this->Split_item->get_info($unique_id);
 
 		$this->load->view("split_items/form", $data);
 	}

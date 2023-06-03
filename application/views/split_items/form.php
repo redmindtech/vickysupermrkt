@@ -1,13 +1,13 @@
 <div id="required_fields_message"><?php echo $this->lang->line('common_fields_required_message'); ?></div>
 
 <ul id="error_message_box" class="error_message_box"></ul>
-<?php echo form_open('Split_items/save/' . $split_items_info->receiving_id, array('id' => 'split_items_edit_form', 'class' => 'form-horizontal')); ?>
+<?php echo form_open('Split_items/save/' . $split_items_info->unique_id, array('id' => 'split_items_edit_form', 'class' => 'form-horizontal')); ?>
 
 
 
 <fieldset id="split_items">
 		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('receivings_date'), 'receivings_date', array('class' => 'control-label col-xs-3')); ?>
+			<?php echo form_label($this->lang->line('receivings_purchase_date'), 'receivings_date', array('class' => 'control-label col-xs-3')); ?>
 			<div class='col-xs-8'>
 				<?php echo form_input(array(
 					'name' => 'receivings_date',

@@ -99,7 +99,7 @@ class Suppliers extends Persons
 		$last_name = $this->nameize($last_name);
 
 		$person_data = array(
-			'first_name' => $first_name,
+			'first_name' => $first_name == '' ? NULL : $this->input->post('first_name'),
 			'last_name' => $last_name,
 			'gender' => $this->input->post('gender'),
 			'email' => $email,
