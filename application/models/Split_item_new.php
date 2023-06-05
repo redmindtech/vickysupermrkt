@@ -172,10 +172,13 @@ class Split_item_new extends CI_Model
 			$this->db->select('COUNT(split_items.id) as count');
 		}
 
-		$this->db->from('split_items AS split_items');
-		$this->db->group_start();
-		$this->db->or_like('new_item_name', $search);
-		$this->db->group_end();
+					$this->db->select('split_items.*, items.name');
+			$this->db->from('split_items AS split_items');
+			$this->db->join('items', 'items.item_id = split_items.new_item_name	', 'left');
+			$this->db->group_start();
+			$this->db->or_like('new_item_name', $search);
+			$this->db->group_end();
+
 		
 		if(empty($this->config->item('date_or_time_format')))
 		{
