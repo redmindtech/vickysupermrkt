@@ -707,6 +707,71 @@ class Sale extends CI_Model
 	
 
 		}
+		else if(preg_match("/I$/", $item['expire_date']))
+		{
+			$newValue2 = str_replace("I", "", $item['expire_date']);
+			
+			$this->db->select('stock_qty');
+			$this->db->from('item_quantities');
+			$this->db->where('item_id', $item['item_id']);
+			$query = $this->db->get();
+			$result = $query->result();
+			$stock_quantity = $result[0]->stock_qty;
+				$update_stock=$stock_quantity-$item['quantity'];
+				$data = array(
+					'stock_qty' => $update_stock
+				);
+				$this->db->from('item_quantities');
+				$this->db->where('item_id', $item['item_id']);
+				$this->db->update('item_quantities', $data);
+		}
+		// // // no exprire date for receiving  items
+		else if(preg_match("/R$/", $item['expire_date']))
+		{
+			$newValue2 = str_replace("R", "", $item['expire_date']);
+			log_message('debug',print_r("8529631",TRUE));
+			$this->db->select('stock_qty');
+			$this->db->from('receivings_items');
+			$this->db->where('item_id', $item['item_id']);
+			$this->db->where('receiving_id', $newValue2);
+			$query = $this->db->get();
+			$result = $query->result();
+			if (!empty($result)) {
+				$stock_quantity = $result[0]->stock_qty;
+				$update_stock=$stock_quantity-$item['quantity'];
+				$data = array(
+					'stock_qty' => $update_stock
+				);
+				$this->db->from('receivings_items');
+				$this->db->where('item_id', $item['item_id']);
+				$this->db->where('receiving_id', $newValue2);
+				$this->db->update('receivings_items', $data);
+			}
+		}
+		else if(preg_match("/S$/",$item['expire_date'])){
+			$newValue2 = str_replace("S", "",$item['expire_date']);
+
+			$this->db->select('stock_qty');
+			$this->db->from('split_items');
+			$this->db->where('new_item_name',$item['item_id']);
+			$this->db->where('id', $newValue2);
+			$query = $this->db->get();
+			$result = $query->result();
+			log_message('debug',print_r($result,TRUE));
+			
+			if (!empty($result)) {
+				$stock_quantity = $result[0]->stock_qty;
+				$update_stock=$stock_quantity-$item['quantity'];
+				$data = array(
+					'stock_qty' => $update_stock
+				);
+				$this->db->from('split_items');
+				$this->db->where('new_item_name', $item['item_id']);
+				$this->db->where('id',$newValue2);
+				$this->db->update('split_items', $data);
+			} 
+	
+		}
 		else{
 				
 			$this->db->select('stock_qty');
@@ -1534,6 +1599,44 @@ class Sale extends CI_Model
 			return $result;
 
 
+		}
+		// no exprire date for item from item table
+		else if(preg_match("/I$/", $expire_date))
+		{
+			$newValue2 = str_replace("I", "", $expire_date);
+			$this->db->select('unit_price, mrp_price');
+			$this->db->from('items');
+			$this->db->where('item_id', $item_id);
+			$query = $this->db->get();
+			$row = $query->result_array();
+			$result = $row;
+			return $result;
+		}
+		// // no exprire date for receiving  items
+		else if(preg_match("/R$/", $expire_date))
+		{
+			log_message('debug',print_r("8529631",TRUE));
+			$newValue2 = str_replace("R", "", $expire_date);
+			log_message('debug',print_r("8529631",TRUE));
+			$this->db->select('item_unit_price AS unit_price, mrp_price');
+			$this->db->from('receivings_items');
+			$this->db->where('item_id', $item_id);
+			$this->db->where('receiving_id', $newValue2);
+			$query = $this->db->get();
+			$result = $query->result_array();
+			return $result;
+		}
+		else if(preg_match("/S$/", $expire_date)){
+			$newValue2 = str_replace("S", "", $expire_date);
+
+			$this->db->select('new_unit_price AS unit_price, new_mrp_price As mrp_price');
+			$this->db->from('split_items');
+			$this->db->where('new_item_name', $item_id);
+			$this->db->where('id', $newValue2);
+			$query = $this->db->get();
+			$result = $query->result_array();
+		
+			return $result;
 		}
 		else
 		 {

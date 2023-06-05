@@ -224,7 +224,8 @@ class Receiving extends CI_Model
 		$this->db->select('expire_date, stock_qty,receiving_id');
 		$this->db->from('receivings_items');
 		$this->db->where('item_id',$item_id);
-		
+		$this->db->where('expire_date >=', date('Y-m-d', strtotime('-7 days')));
+    	// $this->db->where('expire_date >=', date('Y-m-d')); // Include all future days
 		$query = $this->db->get();			
 		$data_expire_date = $query->result();
 		
@@ -237,16 +238,80 @@ class Receiving extends CI_Model
 				
 		$this->db->select('stock_qty');
 		$this->db->from('item_quantities');
-		$this->db->where('item_id',$item_id);		
+		$this->db->where('item_id',$item_id);	
+		
+    	// $this->db->where('expire_date >=', date('Y-m-d')); // Include all future days	
 		$query = $this->db->get();			
 		$stock_qty = $query->result();	
 		return $stock_qty;
 		
 	}
+	public function get_item_split_expire_date_return($item_id){
 
+		$this->db->select('stock_qty,expire_date,id');
+		$this->db->from('split_items');
+		$this->db->where('new_item_name',$item_id);
+		$this->db->where('expire_date >=', date('Y-m-d', strtotime('-7 days')));
+    	// $this->db->where('expire_date >=', date('Y-m-d')); // Include all future days
+		
+		$query = $this->db->get();			
+		$stock_qty = $query->result();
+		return $stock_qty;
+	}
+	public function get_expire_date_no($item_id)
+	{
+		$this->db->select('stock_qty,receiving_id,item_unit_price');
+		$this->db->from('receivings_items');
+		$this->db->where('item_id',$item_id);
+		$this->db->where('stock_qty >', 0);
+		
+		$query = $this->db->get();			
+		$data_expire_date = $query->result();
+		
+	
+		return $data_expire_date;
 
+	}
+	public function get_item_split_expire_date_no($item_id)
+	{
+				
+		$this->db->select('stock_qty,expire_date,id,new_unit_price');
+		$this->db->from('split_items');
+		$this->db->where('new_item_name',$item_id);
+		$this->db->where('stock_qty >', 0);
+		
+		$query = $this->db->get();			
+		$stock_qty = $query->result();
+		return $stock_qty;
+		
+	}
+	public function get_expire_date_no_return($item_id)
+	{
+		$this->db->select('stock_qty,receiving_id,item_unit_price');
+		$this->db->from('receivings_items');
+		$this->db->where('item_id',$item_id);
+		$this->db->where('stock_qty >=', 0);
+		
+		$query = $this->db->get();			
+		$data_expire_date = $query->result();
+		
+	
+		return $data_expire_date;
 
-
+	}
+	public function get_item_split_expire_date_no_return ($item_id)
+	{
+				
+		$this->db->select('stock_qty,expire_date,id,new_unit_price');
+		$this->db->from('split_items');
+		$this->db->where('new_item_name',$item_id);
+		$this->db->where('stock_qty >=',0);
+		
+		$query = $this->db->get();			
+		$stock_qty = $query->result();
+		return $stock_qty;
+		
+	}
 	public function delete_list($receiving_ids, $employee_id, $update_inventory = TRUE)
 	{
 		$success = TRUE;

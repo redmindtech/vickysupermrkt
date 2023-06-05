@@ -128,28 +128,28 @@ class Split_items extends Secure_Controller
 
 			// Split Item tables Split item information Save
 
-			$split_item_data = array(
-				'receiving_id' => $this->input->post('receiving_id'),
-				'item_id' => $this->input->post('old_item_id'),
-				'receivings_date' => $date_formatter->format('Y-m-d'),
-				'new_item_name' => $item_id,
-				// 'quantity_in_hand' => $this->input->post('quantity_in_hand'),
-				// 'receivings_no_split' => $this->input->post('receivings_no_split'),
-				'receivings_no_of_pack_split' => $this->input->post('receivings_no_of_pack_split'),
-				'no_of_packing_split' => $this->input->post('no_of_packing_split'),
-				'stock_qty' => $this->input->post('no_of_packing_split'),
-				'split_type' => $this->input->post('split_type'),
-				'new_cost_price' => $this->input->post('new_cost_price'),
-				'new_unit_price' => $this->input->post('new_unit_price'),
-				'new_mrp_price' => $this->input->post('new_mrp_price'),
-				'category' => $this->input->post('category'),
-				'hsn_code' => $this->input->post('hsn_code'),
-				'description' => $this->input->post('description'),
-				'expire_date' => $expire_date_formatter->format('Y-m-d H:i:s'),
+			// $split_item_data = array(
+			// 	'receiving_id' => $this->input->post('receiving_id'),
+			// 	'item_id' => $this->input->post('old_item_id'),
+			// 	'receivings_date' => $date_formatter->format('Y-m-d'),
+			// 	'new_item_name' => $item_id,
+			// 	// 'quantity_in_hand' => $this->input->post('quantity_in_hand'),
+			// 	// 'receivings_no_split' => $this->input->post('receivings_no_split'),
+			// 	'receivings_no_of_pack_split' => $this->input->post('receivings_no_of_pack_split'),
+			// 	'no_of_packing_split' => $this->input->post('no_of_packing_split'),
+			// 	'stock_qty' => $this->input->post('no_of_packing_split'),
+			// 	'split_type' => $this->input->post('split_type'),
+			// 	'new_cost_price' => $this->input->post('new_cost_price'),
+			// 	'new_unit_price' => $this->input->post('new_unit_price'),
+			// 	'new_mrp_price' => $this->input->post('new_mrp_price'),
+			// 	'category' => $this->input->post('category'),
+			// 	'hsn_code' => $this->input->post('hsn_code'),
+			// 	'description' => $this->input->post('description'),
+			// 	'expire_date' => $expire_date_formatter->format('Y-m-d H:i:s'),
 				
-			);
-			// log_message('debug',print_r('split_item_data '.$split_item_data,TRUE));
-			$success &= $this->Split_item->save($split_item_data, $id);
+			// );
+			// // log_message('debug',print_r('split_item_data '.$split_item_data,TRUE));
+			// $success &= $this->Split_item->save($split_item_data, $id);
 
 			$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
 			
