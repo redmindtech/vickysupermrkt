@@ -541,18 +541,21 @@ $(document).ready(function()
 	$(document).ready(function() {
   // Function to show input field
   function showInputField() {
-    $('#expire_date').show();
+	    $('#expire_date').show();
   }
 
   // Function to hide input field
   function hideInputField() {
+	
     $('#expire_date').hide();
+	
   }
 
   // Check the initial state of the checkbox
   if ($('#expire_date_show').is(':checked')) {
     showInputField();
   } else {
+	$('#expire_date').val('0');
     hideInputField();
   }
 
@@ -682,6 +685,7 @@ $(document).ready(function()
 						}
 						else
 						{
+						
 							dialog_support.hide();
 						}
 						table_support.handle_submit('<?php echo site_url('items'); ?>', response, stay_open);

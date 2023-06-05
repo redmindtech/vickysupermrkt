@@ -279,21 +279,29 @@
 
 		</div>
 
+		
 		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('receivings_expire_date'), 'expire_date', array('class' => 'required control-label col-xs-3')); ?>
-			<div class='col-xs-6'>
-				<div class="input-group">
-					<span class="input-group-addon input-sm"><span class="glyphicon glyphicon-calendar"></span></span>
-						<?php echo form_input(array(
-							'name' => 'new_expire_date',
-							'id' => 'new_expire_date',
-							'class' => 'form-control input-sm datetime',
-							'value' => to_datetime(strtotime($split_items_info->expire_date)),
-						)
-						); ?>
-				</div>
-			</div>
-		</div>
+  <?php echo form_label($this->lang->line('receivings_expire_date'), 'expire_date', array('class' => 'required control-label col-xs-3')); ?>
+  <div class='col-xs-6'>
+    <?php if ($split_items_info->expire_date !== '0000-00-00'): ?>
+      <div class="input-group">
+        <span class="input-group-addon input-sm"><span class="glyphicon glyphicon-calendar"></span></span>
+        <?php
+        echo form_input(array(
+          'name' => 'new_expire_date',
+          'id' => 'new_expire_date',
+          'class' => 'form-control input-sm datetime',
+          'value' => to_datetime(strtotime($split_items_info->expire_date)),
+        ));
+        ?>
+      </div>
+    <?php else: ?>
+      <input type="text" name="new_expire_date" id="new_expire_date" readonly class="form-control input-sm" value="No Expire">
+    <?php endif; ?>
+  </div>
+</div>
+
+
 
 
 		<div class="form-group form-group-sm">

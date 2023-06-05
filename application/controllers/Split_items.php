@@ -82,9 +82,14 @@ class Split_items extends Secure_Controller
 
 		
 		$expire_date = $this->input->post('new_expire_date');
+		if($expire_date =="No Expire")
+		{
+			$expire_date_formatter_r=NULL;
+		}
+		else{
 		$expire_date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $expire_date);
-
-		
+		$expire_date_formatter_r =$expire_date_formatter->format('Y-m-d H:i:s');
+		}
 		if($new_item_id == null){
 			log_message('debug',print_r('if success '.$new_item_id,TRUE));
 
@@ -100,7 +105,7 @@ class Split_items extends Secure_Controller
 			'unit_price' => parse_decimals($this->input->post('new_unit_price')),
 			'mrp_price' => parse_decimals($this->input->post('new_mrp_price')),
 			'batch_no' => $this->input->post('batch_no'),
-			'expire_date' => $expire_date_formatter->format('Y-m-d H:i:s'),
+			'expire_date' => $expire_date_formatter_r,
 			'reorder_level' => '1',
 			'receiving_quantity' => $this->input->post('no_of_packing_split'),
 			'allow_alt_description' => '0',
@@ -219,7 +224,7 @@ class Split_items extends Secure_Controller
 				'stock_qty' => $no_pack_kg_split,			
 			);
 			
-			$success &= $this->Split_item->update($receiving_id, $old_item_id, $line, $receiving_data,$data);
+			$success &= $this->Split_item->update($receiving_id, $old_item_id, $line, $receiving_data);
 			
 			$item_quantity = $this->Item_quantity->get_item_quantity($old_item_id, $location_id);
 			log_message('debug',print_r('inv_data '.$item_quantity->quantity,TRUE));
@@ -288,7 +293,7 @@ class Split_items extends Secure_Controller
 			'category' => $this->input->post('category'),
 			'hsn_code' => $this->input->post('hsn_code'),
 			'description' => $this->input->post('description'),
-			'expire_date' => $expire_date_formatter->format('Y-m-d H:i:s'),
+			'expire_date' => $expire_date_formatter_r,
 			
 		);
 		
@@ -316,7 +321,7 @@ class Split_items extends Secure_Controller
 
 			$item_quantity = $this->Item_quantity->get_item_quantity($new_item_id, $location_id);
 			log_message('debug',print_r('inv_data '.$item_quantity->quantity,TRUE));
-			log_message('debug',print_r('old_item_id '.$old_item_id,TRUE));
+			// log_message('debug',print_r('old_item_id '.$old_item_id,TRUE));
 			
 			
 			// Split item quantity minus
@@ -342,8 +347,8 @@ class Split_items extends Secure_Controller
 				// 'quantity_purchased' => $update_qty_in_hand,
 				'stock_qty' => $no_pack_kg_split,			
 			);
-			
-			$success &= $this->Split_item->update($receiving_id, $old_item_id, $line, $receiving_data,$data);
+			$success=true;
+			$success &= $this->Split_item->update($receiving_id, $old_item_id, $line, $receiving_data);
 
 
 			$item_quantity = $this->Item_quantity->get_item_quantity($old_item_id, $location_id);

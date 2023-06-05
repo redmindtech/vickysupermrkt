@@ -189,7 +189,7 @@ class Split_item extends CI_Model
 	public function get_multiple_info($id)
 	{
 		$this->db->from('receivings_items');
-		$this->db->where_in('unique_id', $unique_id);
+		$this->db->where_in('unique_id',$id);
 		$this->db->order_by('receiving_time', 'desc');
 
 		return $this->db->get();
@@ -197,11 +197,11 @@ class Split_item extends CI_Model
 
 	// Receving updates update stock_qty
 
-	public function update($receiving_id, $old_item_id, $line, $receiving_data, $data)
+	public function update($receiving_id, $old_item_id, $line, $receiving_data)
 	{
 		$this->db->where_in('receiving_id', $receiving_id);
 		$this->db->where_in('item_id', $old_item_id);
-		$this->db->where_in('line', $line);
+		 $this->db->where_in('line', $line);
 
 		
 		return $this->db->update('receivings_items', $receiving_data);

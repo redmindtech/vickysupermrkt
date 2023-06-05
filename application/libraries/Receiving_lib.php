@@ -228,16 +228,19 @@ class Receiving_lib
 
 		$mrp_price =  $item_info->mrp_price;
 		$unit_price = $item_info->unit_price;
-		
+		$expire_date_null = $item_info->expire_date;
 
 		// $roi_price = $sell_price != NULL ? $roi_price : $item_info->roi_price;
 		log_message('debug',print_r($roi_price ,TRUE));
 		
-
+if($expire_date_null != null){
 		$date = date('Y-m-d\TH:i');
 	//$randam=rand(1, $count);
 		$newDate = date("Ymd", strtotime($date));
-
+}
+else{
+	$newDate ="NULL";
+}
 		
 		if($this->CI->config->item('multi_pack_enabled') == '1')
 		{

@@ -629,8 +629,18 @@ class Items extends Secure_Controller
 		$default_pack_name = $this->lang->line('items_default_pack_name');
 
 		$expire_date = $this->input->post('expire_date');
-		$expire_date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $expire_date);
-
+		$expire_date_type=$this->input->post('expire_date_show');
+		log_message('debug',print_r($expire_date_type,TRUE));
+		log_message('debug',print_r('expire_date',TRUE));
+		log_message('debug',print_r($expire_date,TRUE));
+	
+		 if($expire_date_type == 1){
+		$expire_date_formatter_R = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $expire_date);
+		$expire_date_formatter=$expire_date_formatter_R->format('Y-m-d H:i:s');
+	}
+	else{
+			$expire_date_formatter=NULL;
+		}
 
 		//Save item data
 		$item_data = array(
@@ -646,7 +656,7 @@ class Items extends Secure_Controller
 			'mrp_price' => parse_decimals($this->input->post('mrp_price')),
 			'batch_no' => $this->input->post('batch_no'),
 			'expire_date_show' => $this->input->post('expire_date_show') !== NULL,
-			'expire_date' => $expire_date_formatter->format('Y-m-d H:i:s'),
+			'expire_date' => $expire_date_formatter,
 			'reorder_level' => parse_quantity($this->input->post('reorder_level')),
 			'receiving_quantity' => $receiving_quantity,
 			'allow_alt_description' => $this->input->post('allow_alt_description') !== NULL,

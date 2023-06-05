@@ -102,7 +102,12 @@ class Receiving extends CI_Model
 		
 		foreach($items as $line=>$item)
 		{
-			
+			log_message('debug',print_r($item['expire_date'],TRUE));
+
+			 if($item['expire_date'] === "No Expire"){
+				$item['expire_date']="";
+			 }
+
 			$tax_amount = $item['price']*$item['quantity']*$item['receiving_quantity'] * $item['tax_percentage'] /100 ;
 			
 			$cur_item_info = $this->Item->get_info($item['item_id']);

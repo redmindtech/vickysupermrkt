@@ -126,15 +126,21 @@ class Receivings extends Secure_Controller
 		$this->form_validation->set_rules('mrp_price', 'lang:mrp_price', 'required|callback_numeric');
 		$this->form_validation->set_rules('quantity', 'lang:items_quantity', 'required|callback_numeric');
 		$this->form_validation->set_rules('discount', 'lang:items_discount', 'required|callback_numeric');
-		$this->form_validation->set_rules('expire_date', 'lang:expire_date', 'required|callback_numeric');
+		// $this->form_validation->set_rules('expire_date', 'lang:expire_date', 'required|callback_numeric');
 
-		$expire_date = $this->input->post('expire_date');
+		$expire_date_1 = $this->input->post('expire_date');
+ log_message('debug',print_r($expire_date_1,TRUE));
+ if($expire_date_1 =="No Expire")
+ {
+	$expire_date ="No Expire";	
+ }
+ else{
+	$item_date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $expire_date_1);
 
-			$item_date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $expire_date);
-
-			$expire_date = $item_date_formatter->format('Y-m-d H:i:s');
-
-			// log_message('debug',print_r($expire_date,TRUE));
+	$expire_date = $item_date_formatter->format('Y-m-d H:i:s');
+	
+ }
+			 log_message('debug',print_r($expire_date,TRUE));
 
 		$description = $this->input->post('description');
 		$serialnumber = $this->input->post('serialnumber');
@@ -330,7 +336,7 @@ class Receivings extends Secure_Controller
         if ($result != null) {
             foreach ($result as $row) {
                 $pending = $row->pending_payables;
-				var_dump($pending);
+				// var_dump($pending);
             }
         }
         if ($pending == null || $result == null) {
@@ -446,9 +452,16 @@ class Receivings extends Secure_Controller
 		$receiving_time = $date_formatter->format('Y-m-d H:i:s');
 
 		$expire_date = $this->input->post('expire_date');
-		$expire_date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $expire_date);
+		if($expire_date == "No Expire"){
+			
+			$expire_date_formatter=NULL;
 
+		}
+		else{
+			$expire_date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $expire_date);
 
+			
+		}
 
 		$receiving_data = array(
 			'receiving_time' => $receiving_time,

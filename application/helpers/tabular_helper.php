@@ -855,7 +855,7 @@ function get_split_items_manage_table_headers()
 		array('receivings_date' => $CI->lang->line('receivings_date')),
 		array('item_name' => $CI->lang->line('receivings_item_name')),
 		array('stock_qty' => $CI->lang->line('split_items_no_of_pack_kg')),
-		array('expire_date' => $CI->lang->line('receivings_expire_date')),
+		// array('expire_date' => $CI->lang->line('receivings_expire_date')),
 	);
 
 	return transform_headers($headers);
@@ -869,13 +869,19 @@ function get_split_item_data_row($split_items,  $count)
 	$CI =& get_instance();
 
 	$controller_name = strtolower(get_class($CI));
-
+if($split_items->expire_date == 0000-00-00)
+{
+	$split_items->expire_date="No Expire";
+}
+else{
+	$split_items->expire_date=to_date(strtotime($split_items->expire_date));
+}
 	return array (
 		'serial_number'=>$count,
 		'id' => $split_items->unique_id,
 		'receivings_date' => to_date(strtotime($split_items->receiving_time)),
 		'item_name' => $split_items->name,
-		'expire_date' =>to_date(strtotime($split_items->expire_date)),
+		// 'expire_date' =>to_date(strtotime($split_items->expire_date)),
 		'stock_qty' =>to_quantity_decimals($split_items->stock_qty),
 		'edit' => anchor($controller_name."/view/$split_items->unique_id", '<span class="glyphicon glyphicon-edit"></span>',
 			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_new'))

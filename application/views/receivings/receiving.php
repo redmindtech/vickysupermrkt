@@ -429,11 +429,38 @@ if (isset($success))
 								<?php echo form_hidden('discount',$item['discount']); ?>
 							<?php
 							}
+							
 							?>
 
 							
-							<td><?php echo form_input(array('name'=>'expire_date', 'id'=>'expire_date', 'class'=>'form-control input-sm datetime', 'value'=>to_datetime(strtotime($item['expire_date'])),'onClick'=>'this.select();'));?></td>
-							
+<?php if (($item['expire_date']) == "NULL" ||  ($item['expire_date'] == "No Expire")): ?>
+  <td>
+  <?php
+    echo form_input(array(
+		'readonly'=>'readonly',
+      'name' => 'expire_date',
+      'id' => 'expire_date',
+      'class' => 'form-control input-sm',
+      'placeholder' => 'No Expire',
+	  'value' => 'No Expire'
+    ));
+    ?>
+    
+  </td>
+<?php else: ?>
+  <td>
+  <?php
+    echo form_input(array(
+      'name' => 'expire_date',
+      'id' => 'expire_date',
+      'class' => 'form-control input-sm datetime',
+      'value' => to_datetime(strtotime($item['expire_date'])),
+      'onClick' => 'this.select();'
+    ));
+    ?> 
+  </td>
+<?php endif; ?>
+					
 							<td><?php echo form_input(array('name'=>'hsn_code', 'readonly'=>'readonly', 'id'=>'hsn_code', 'class'=>'form-control input-sm', 'value'=>$item['hsn_code'],'onClick'=>'this.select();'));?></td>
 							<td><?php echo $item['tax_percentage']; ?></td>
 							<!-- <td><?php //echo to_currency($item['price']*$item['quantity']*$item['receiving_quantity'] * $item['tax_percentage'] /100,3); //$item['tax_percentage']; ?></td> -->
