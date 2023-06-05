@@ -98,63 +98,164 @@
 		$items_number = 0;
 		$qty_count = 0;
 		$saved_amt = 0;
-		foreach($cart as $line=>$item)
+		?>
+
+
+<?php
+
+$final_counter = 0;
+$i_name = array();
+$i_attribute_value = array();
+$i_mrp_price = array();
+$i_price = array();
+$i_quantity = array();
+$i_amount = array();
+$i_quantity_total = 0;
+$i_amount_total = 0;
+foreach($cart as $line=>$item)
 		{
 			if($item['print_option'] == PRINT_YES)
 			{
 			?>
 			
-			<!-- TABLE CONTENTS -->
-				<tr id="table_contents">
-					<td><?php echo ucfirst($item['name'] . ' ' . $item['attribute_values']); ?></td>
-					<td><?php echo to_currency($item['mrp_price']); ?></td>
-					<td><?php echo to_currency($item['price']);
-					$saved_amt =$saved_amt + ($item['quantity'] * $item['mrp_price']) -($item['quantity'] * $item['price']);
-					
-					 ?></td>
-					<td><?php echo to_quantity_decimals($item['quantity']);
+			
+					<?php 
+					//echo ucfirst($item['name'] . ' ' . $item['attribute_values']); 
+					//echo $item['mrp_price']; 
+					//echo $item['price'];
+
+					$saved_amt =$saved_amt + ($item['quantity'] * $item['mrp_price']) -($item['quantity'] * $item['price']);	
+
+					//echo $item['quantity'];
+
 					$items_number++; 
 					$qty_count = $qty_count + $item['quantity'];
-					 ?></td>
-					<td class="total-value"><?php echo to_currency($item[($this->config->item('receipt_show_total_discount') ? 'total' : 'discounted_total')]); ?></td>
-					<?php
-					if($this->config->item('receipt_show_tax_ind'))
-					{
-					?>
-						<td><?php echo $item['taxed_flag'] ?></td>
-					<?php
-					}
-					?>
-				</tr>
+
+					//echo $item[($this->config->item('receipt_show_total_discount') ? 'total' : 'discounted_total')]; 
+					array_push($i_name,$item['name']);
+					array_push($i_attribute_value,$item['attribute_values']);
+					array_push($i_mrp_price,$item['mrp_price']);
+					array_push($i_price,$item['price']);
+					array_push($i_quantity,$item['quantity']);
+					array_push($i_amount,$item[($this->config->item('receipt_show_total_discount') ? 'total' : 'discounted_total')]);
+					
+					 ?>
+					
+				
 
 				
+				
+					
 				<?php
-				if($item['discount'] > 0)
-				{
-				?>
-
-
-				<!-- 2222 -->
-					<tr id="2">
-						<?php
-						if($item['discount_type'] == FIXED)
-						{
-						?>
-							<td colspan="4" class="discount"><?php echo to_currency($item['discount']) . " " . $this->lang->line("sales_discount") ?></td>
-						<?php
-						}
-						elseif($item['discount_type'] == PERCENT)
-						{
-						?>
-							<td colspan="4" class="discount"><?php echo to_decimals($item['discount']) . " " . $this->lang->line("sales_discount_included") ?></td>
-						<?php
-						}	
-						?>
-						<td class="total-value"><?php echo to_currency($item['discounted_total']); ?></td>
-					</tr>
-				<?php
-				}
+				
 			}
+
+			$final_counter++;
+		}
+		?>
+
+
+<?php
+// for($i=0;$i<count($i_quantity);$i++){
+// echo $i_name[$i]." ";
+// echo $i_attribute_value[$i]." ";
+// echo $i_mrp_price[$i]." ";
+// echo $i_price[$i]." ";
+// echo $i_quantity[$i]." ";
+// echo $i_amount[$i]." ";
+// echo "<br>";
+// echo "<br>";
+// }
+?>
+
+
+<?php
+//$splice_pos_arr is used to store indexes of repetitive items and prices.
+$splice_pos_arr = array();
+//this for loop is to iterate every item
+for($i = 0 ; $i< count($i_name);$i++){
+	//take one item and compare with all the remaining items	
+	for($j = $i+1 ; $j <count($i_name);$j++){	
+		//if item name and price match then store the index of the item name.		
+		if(strcmp($i_name[$i],$i_name[$j])==0 && $i_price[$i]==$i_price[$j] && $i_mrp_price[$i]==$i_mrp_price[$j]){						
+			array_push($splice_pos_arr,$j);		
+		}
+	}
+	//add all the prices of repetitive items
+	for($m = 0; $m < count($splice_pos_arr); $m++){
+		$i_quantity[$i] = $i_quantity[$i] + $i_quantity[$splice_pos_arr[$m]];
+		$i_amount[$i] = $i_amount[$i] + $i_amount[$splice_pos_arr[$m]];
+	}
+	
+
+	//remove repetitive items from from back
+	$splice_pos_arr = array_reverse($splice_pos_arr);
+	if(count($splice_pos_arr) > 0){
+		for($k = 0; $k < count($splice_pos_arr); $k++){
+			array_splice($i_name,$splice_pos_arr[$k],1);
+			array_splice($i_mrp_price,$splice_pos_arr[$k],1);
+			array_splice($i_price,$splice_pos_arr[$k],1);
+			array_splice($i_quantity,$splice_pos_arr[$k],1);
+			array_splice($i_amount,$splice_pos_arr[$k],1);
+			
+        }
+		//re initialize $splice_pos_arr variable
+		array_splice($splice_pos_arr,0,count($splice_pos_arr));
+	}	
+}
+//print item name and price
+for($l = 0; $l < count($i_name); $l++){
+	//echo $i_name[$l] ." ".$i_mrp_price[$l]." ".$i_price[$l]." ".$i_quantity[$l]." ".$i_amount[$l];
+	//echo "<br>";
+	$i_quantity_total = $i_quantity_total + $i_quantity[$l];
+	$i_amount_total = $i_amount_total + $i_amount[$l];
+
+}
+
+//echo $i_quantity_total." ".$i_amount_total;
+?>
+
+
+
+
+
+
+
+
+
+		<?php
+		$for_counter =0;
+		foreach($cart as $line=>$item)
+		{
+			if($item['print_option'] == PRINT_YES)
+			{
+			if($for_counter<1)
+			{
+			for($z=0; $z <count($i_name); $z++)
+			{
+			?>
+			<!-- TABLE CONTENTS -->
+				<tr id="table_contents">
+					<td><?php echo ucfirst($i_name[$z]); ?></td>
+					<td><?php echo $i_mrp_price[$z]; ?></td>
+					<td><?php echo $i_price[$z];
+					
+					 ?></td>
+					<td><?php echo $i_quantity[$z];
+					
+					 ?></td>
+					<td class="total-value"><?php echo number_format((float)$i_amount[$z], 4, '.', '');
+					 ?></td>
+					
+				</tr>	
+				
+				<?php
+			}
+			}
+				
+			}
+			$for_counter++;
+			
 		}
 		?>
 
@@ -163,15 +264,9 @@
 		{
 		?>
 		<!-- 3333 -->
-			<tr id="3">
-				<td colspan="4" style='text-align:right;border-top:2px solid #000000;'><?php echo $this->lang->line('sales_sub_total'); ?></td>
-				<td style='text-align:right;border-top:2px solid #000000;'><?php echo to_currency($prediscount_subtotal); ?></td>
-			</tr>
+		
 		<!-- 4444 -->
-			<tr id="4">
-				<td colspan="4" class="total-value"><?php echo $this->lang->line('sales_customer_discount'); ?>:</td>
-				<td class="total-value"><?php echo to_currency($discount * -1); ?></td>
-			</tr>
+			
 		<?php
 		}
 		?>
@@ -189,8 +284,8 @@
 			<td colspan="5"></td>
 		<tr>
 		<tr>
-		<td style="text-align: center"><b><?php echo "Tot.Qty: &nbsp;&nbsp;".$items_number; ?></b></td>
-		<td style="text-align: center" colspan="2"><b><?php echo "Tot Items: &nbsp;&nbsp;".$qty_count; ?></b></td>
+		<td style="text-align: center"><b><?php echo "Tot.Qty: &nbsp;&nbsp;".$i_quantity_total; ?></b></td>
+		<td style="text-align: center" colspan="2"><b><?php echo "Tot Items: &nbsp;&nbsp;".count($i_name); ?></b></td>
 		<td></td>
 		<td></td>
 		</tr>
@@ -199,7 +294,7 @@
 		<!-- 7777 -->
 		<tr id="7">
 			<td colspan="4" style="text-align:right;border-style: dotted;border-left: none;border-right: none;font-size:26px;"><b><?php echo "TOTAL:"; ?></b></td>
-			<td style="text-align:right;border-style: dotted;border-left: none;border-right: none;font-size:26px;"><b><?php echo to_currency($total); ?></b></td>
+			<td style="text-align:right;border-style: dotted;border-left: none;border-right: none;font-size:26px;"><b><?php echo to_currency($i_amount_total); ?></b></td>
 		</tr>
 
 		<!-- 8888 -->
@@ -217,10 +312,7 @@
 			$show_giftcard_remainder |= $splitpayment[0] == $this->lang->line('sales_giftcard');
 		?>
 			<!-- 9999 -->
-			<tr id="9">
-				<td colspan="4" style="text-align:right;"><?php echo $splitpayment[0]; ?> </td>
-				<td class="total-value"><?php echo to_currency( $payment['payment_amount'] * -1 ); ?></td>
-			</tr>
+			
 		<?php
 		}
 		?>
