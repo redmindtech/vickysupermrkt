@@ -19,6 +19,14 @@
 	  $expiry_date = explode('%',$expiry_date);
 
 	
+	  if(!empty($receiving_ids)){
+		$item_name_new = $new_item_name;
+
+	  }else{
+
+		$item_name_new = "";
+	  }
+	 
 	  
 	  ?>
 
@@ -35,7 +43,7 @@
 				{
 					echo '</tr><tr>';
 				}
-				echo '<td>' . $this->barcode_lib->display_barcode_custom($item, $barcode_config,$sales_price[$my_count],$expiry_date[$my_count]) . '</td>';
+				echo '<td>' . $this->barcode_lib->display_barcode_custom($item, $barcode_config,$sales_price[$my_count],$expiry_date[$my_count],$item_name_new) . '</td>';
 				++$count;
 				$my_count++;
 			}

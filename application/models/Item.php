@@ -26,6 +26,17 @@ class Item extends CI_Model
 		return FALSE;
 	}
 
+
+	public function get_info_new_item($item_id)
+	{
+		$this->db->from('items');
+		
+		$this->db->where('item_id', $item_id);
+
+		
+
+		return $this->db->get();
+	}
 	/*
 	Determines if a given item_number exists
 	*/

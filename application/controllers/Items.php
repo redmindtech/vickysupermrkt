@@ -508,6 +508,7 @@ class Items extends Secure_Controller
 		$item_ids = "";
 		$sales_price = "";
 		$expiry_date = "";
+		
 		for($i=0; $i<count($unique_ids); $i++){
 			$ids = $this->Split_item_new->get_info_purchase($unique_ids[$i])->result_array();
 			foreach($ids as $id){
@@ -516,10 +517,12 @@ class Items extends Secure_Controller
 					$item_ids = $item_ids.$id['item_id'].":";
 					$sales_price = $sales_price.$id['new_unit_price'].":";
 					$expiry_date=$expiry_date.$id['expire_date']."%";
+					$item_name_no = $id['new_item_name'];
 				}else{
 					$item_ids = $item_ids.$id['item_id'];
 					$sales_price = $sales_price.$id['new_unit_price'];
 					$expiry_date=$expiry_date.$id['expire_date'];
+					$item_name_no = $id['new_item_name'];
 				}				
 			}			
 		}
@@ -551,7 +554,21 @@ class Items extends Secure_Controller
 		$data['sales_price'] = $sales_price;
 		$data['expiry_date'] = $expiry_date;
 
+		
+		$result_new = $this->Item->get_info_new_item($item_name_no)->result_array();
+		foreach($result_new as &$item)
+		{
+
+			
+			if(!empty($item['name'])){
+				$data['new_item_name']=$item['name'];
+			}
+
+
+
+		}
 		$this->load->view('barcodes/barcode_sheet_custom', $data);
+		
 	}
 
 	public function attributes($item_id = NEW_ITEM)

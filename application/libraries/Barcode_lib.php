@@ -178,14 +178,14 @@ class Barcode_lib
 	}
 
 
-	public function display_barcode_custom($item, $barcode_config,$sales_price,$expiry_date)
+	public function display_barcode_custom($item, $barcode_config,$sales_price,$expiry_date,$item_name_new)
 	{
-		$sales_price_text = "Sales Price:";
+		$sales_price_text = "Price:";
 		$expiry_date_text = "Expiry date:";
 		$display_table = "<table>";
 		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</td></tr>";
 		$barcode = $this->generate_barcode($item, $barcode_config);	
-		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</td></tr>";
+		$display_table .= "<tr><td align='center'>" .$item_name_new . "</td></tr>";
 		$display_table .= "<tr><td align='center'><img src='data:image/png;base64,$barcode' /></td></tr>";
 		$display_table .= "<tr><td align='center'>" .$sales_price_text.$sales_price. "</td></tr>";
 		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_four_row'], $item, $barcode_config) . "</td></tr>";
