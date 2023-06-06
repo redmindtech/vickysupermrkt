@@ -113,7 +113,7 @@ if(isset($success))
 				<th style="width: 10%;"><?php echo $this->lang->line('sales_price'); ?></th>
 				<th style="width: 10%;"><?php echo $this->lang->line('mrp_price'); ?></th>				
 
-				<th style="width: 15%;"><?php echo $this->lang->line('sales_expire_date'); ?></th>
+				<th style="width: 15%;"><?php echo $this->lang->line('sales_expire_date_sales_price'); ?></th>
 				<th style="width: 8%;"><?php echo $this->lang->line('sales_quantity'); ?></th>
 				<th style="width: 7%;"><?php echo $this->lang->line('tax_percentage'); ?></th>
 				<th style="width: 15%;" hidden ><?php echo $this->lang->line('sales_discount'); ?></th>
@@ -1017,6 +1017,7 @@ $(document).ready(function()
 		$('#cart_'+ $(this).attr('data-line')).append($(input));
 		$('#cart_'+ $(this).attr('data-line')).submit();
 	});
+
 	$('[name="item"]').on('click change', function() {
     var selectedText = $('[name="expire_date"] option:selected').text();
     

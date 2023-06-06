@@ -629,6 +629,32 @@ class Items extends Secure_Controller
 		$this->load->view('items/form_bulk', $data);
 	}
 
+	public function item_name_stringcmp()
+	{ 
+		log_message('debug',print_r('expire_date_1',TRUE));
+		
+		$name_change = $this->input->get('name');
+		$name_change_nospace = str_replace(' ', '', $name_change);
+		$name = $this->input->get('item_name');
+		$mode = $this->input->get('mode');
+	
+		$name_nospace = str_replace(' ', '', $name);
+	
+		if($mode == 0)
+		 {
+	      $exists = $this->Item->item_name_exists($name_change_nospace);
+		  echo $exists ;
+		 }
+		 else if($mode==1){
+		 	$exists = $this->Item->item_name_exists_edit($name_change_nospace, $name_nospace);
+		 	echo $exists ;
+		 }
+		 else{
+			echo True;
+		 }
+		
+	}
+
 	public function save($item_id = NEW_ITEM)
 	{
 		$upload_success = $this->handle_image_upload();

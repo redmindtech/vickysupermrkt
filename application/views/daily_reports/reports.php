@@ -57,7 +57,7 @@
 
 
 <div>
-<h4>PURCHASE BY BANK</h4>
+<h4>CASH IN BANK</h4>
     <table id="customer_table_bank_table" class="table table-striped "style="width: 100%;"><thead>
 		<tr bgcolor="#CCC">					
         <th style="width: 50%" ><?php echo 'supplier' ?></th>

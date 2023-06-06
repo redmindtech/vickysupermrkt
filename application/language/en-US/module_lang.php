@@ -48,3 +48,4 @@ $lang["module_timeclocks_desc"] = "";
 $lang["module_daily_reports"]="Daily Reports";
 $lang["module_item_hsn_codes"] = "HSN Code";
 $lang["module_split_items"] = "Split Items";
+$lang["module_split_items_new"] = "Split Barcode";

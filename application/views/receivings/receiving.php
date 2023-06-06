@@ -140,7 +140,7 @@ if (isset($success))
 <?php echo form_close(); ?>
 
 		<!-- add items -->
-	<?php echo form_open($controller_name."/add", array('id'=>'add_item_form', 'class'=>'form-horizontal panel panel-default')); ?>
+	<?php echo form_open($controller_name."/add", array('id'=>'add_item_form', 'name'=>'add_item_form', 'class'=>'form-horizontal panel panel-default')); ?>
 		<div class="panel-body form-group">
 			<ul>
 				<li class="pull-left first_li">
@@ -395,7 +395,7 @@ if (isset($success))
 							?>
 								<td>
 									<?php //echo $item['unit_price']; ?>
-									<?php echo form_input(array('name'=>'unit_price', 'id'=>'unit_price' ,'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['unit_price']),'onClick'=>'this.select();')); ?>
+									<?php echo form_input(array('name'=>'unit_price', 'id'=>'unit_price' ,'class'=>'form-control input-sm compare-input', 'value'=>to_currency_no_money($item['unit_price']),'onClick'=>'this.select();')); ?>
 								</td>
 							<?php
 							// }
@@ -663,6 +663,43 @@ $(document).ready(function()
 			}
 		}
 	}
+
+	
+
+	$('[name="item"]').on('click change', function() {
+		// alert($('#price').val());
+		var costPrice = parseFloat($('#price').val());
+            var unitPrice = parseFloat($('#unit_price').val());
+    
+	if (unitPrice < costPrice) {
+        // Handle "none" expire date case here
+        alert("Sales price cannot be lower than the Purchase price!");
+		$('[name="item"]').prop('disabled', true);
+        $('#add_payment_button').hide();
+    } else {
+		$('[name="item"]').prop('disabled', false);
+        $('#add_payment_button').show();
+    }
+});
+
+
+$('[name="item"]').on('click change', function() {
+		// alert($('#price').val());
+		var unitPrice = parseFloat($('#unit_price').val());
+        var mrp_price = parseFloat($('#mrp_price').val());
+    
+		if (mrp_price < unitPrice) {
+        // Handle "none" expire date case here
+        alert("MRP price cannot be lower than the Sales price!");
+		$('[name="item"]').prop('disabled', true);
+        $('#add_payment_button').hide();
+    } else {
+		$('[name="item"]').prop('disabled', false);
+        $('#add_payment_button').show();
+    }
+});
+
+	
 
 	$('[name="price"],[name="quantity"],[name="receiving_quantity"],[name="discount"],[name="description"],[name="serialnumber"],[name="expire_date"],[name="unit_price"],[name="mrp_price"]').change(function() {
 		$(this).parents("tr").prevAll("form:first").submit()

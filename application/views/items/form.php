@@ -193,7 +193,7 @@
 							'name'=>'unit_price',
 							'id'=>'unit_price',
 							'min'=>'0.1',
-							'class'=>'form-control input-sm',
+							'class'=>'form-control input-sm compare-input',
 							'onClick'=>'this.select();',
 							'value'=>to_currency_no_money($item_info->unit_price))
 							);?>
@@ -216,7 +216,7 @@
 							'name'=>'mrp_price',
 							'id'=>'mrp_price',
 							'min'=>'0.1',
-							'class'=>'form-control input-sm',
+							'class'=>'form-control input-sm compare-input2',
 							'onClick'=>'this.select();',
 							'value'=>to_currency_no_money($item_info->mrp_price))
 							);?>
@@ -248,30 +248,27 @@
 	?>
 		
 		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('items_expire_date'), 'expire_date', array('class'=>'required control-label col-xs-3')); ?>
-			<div class='col-xs-1'>
-						<?php echo form_checkbox(array(
-							'name'=>'expire_date_show',
-							'id'=>'expire_date_show',
-							'value'=>1,
-							'checked'=>($item_info->expire_date_show) ? 1 : 0)
-						);?>
-			</div>
-			<div class='col-xs-6'>
-				<div class="input-group" id="expire_date" style="display: none">
-					<span class="input-group-addon input-sm"><span class="glyphicon glyphicon-calendar"></span></span>
-						<?php echo form_input(array(
-							'name'=>'expire_date',
-							'id'=>'expire_date',
-							'class'=>'form-control input-sm datetime',
- 							'value'=>to_datetime(strtotime($item_info->expire_date)),
-                           )
-							);?>
-							
-				</div>
-				
-			</div>
-		</div>
+    <?php echo form_label($this->lang->line('items_expire_date'), 'expire_date', array('class'=>'required control-label col-xs-3')); ?>
+    <div class='col-xs-1'>
+        <?php echo form_checkbox(array(
+            'name' => 'expire_date_show',
+            'id' => 'expire_date_show',
+            'value' => 1,
+            'checked' => ($item_info->expire_date_show) ? true : false // Update the checked attribute based on the condition
+        )); ?>
+    </div>
+    <div class='col-xs-6'>
+        <div class="input-group" id="expire_date" <?php if (!$item_info->expire_date_show) echo 'style="display: none"'; ?>>
+            <span class="input-group-addon input-sm"><span class="glyphicon glyphicon-calendar"></span></span>
+            <?php echo form_input(array(
+                'name' => 'expire_date',
+                'id' => 'expire_date',
+                'class' => 'form-control input-sm datetime',
+                'value' => to_datetime(strtotime($item_info->expire_date))
+            )); ?>
+        </div>
+    </div>
+</div>
 
 
 		<?php if($include_hsn): ?>
@@ -529,6 +526,50 @@
 		</div>
 
 	</fieldset>
+
+	<?php
+			//echo $item_customer_category_price_fetch;
+
+
+			$one = 0;
+			$check_name = $item_info->name;	
+			$check_null_flag = 2;
+			$check_item_id_null = 2;
+			$f = 0;
+			$customer_category_price_fetched=array();
+			if($check_name == "")
+			{
+				$check_null_flag = 0;//add mode
+			}
+			else
+			{
+				if($item_customer_category_price_fetch == "null"){
+					
+					$check_item_id_null = 1;
+				}else{
+					foreach($item_customer_category_price_fetch as $supplier)
+					{
+					$customer_category_price_fetched[$f] = $supplier['sales_price'];//edit		
+					$f++;				
+					}
+					
+				}
+					
+		
+				$check_null_flag =1;
+				
+			}
+
+			$arg_fun = $check_null_flag."..".$check_name;
+
+			
+			
+			
+			
+
+
+			?>
+
 <?php echo form_close(); ?>
 
 <script type="text/javascript">
@@ -618,6 +659,52 @@ $(document).ready(function()
 		focus: fill_value
 	});
 
+
+	$(document).ready(function() {
+        $('.compare-input').on('change', function() {
+            var costPrice = parseFloat($('#cost_price').val());
+            var unitPrice = parseFloat($('#unit_price').val());
+
+            if (unitPrice < costPrice) {
+                alert('Sales price cannot be lower than the Purchase price!');
+                $(this).val(''); // Clear the unit price input field
+            }
+        });
+
+        $('form').on('submit', function(event) {
+            var costPrice = parseFloat($('#cost_price').val());
+            var unitPrice = parseFloat($('#unit_price').val());
+
+            if (unitPrice < costPrice) {
+                event.preventDefault(); // Prevent form submission if unit price is lower than cost price
+                alert('Sales price cannot be lower than the Purchase price!');
+            }
+        });
+    });
+
+	$(document).ready(function() {
+        $('.compare-input2').on('change', function() {
+            var unitPrice = parseFloat($('#unit_price').val());
+            var mrp_price = parseFloat($('#mrp_price').val());
+
+            if (mrp_price < unitPrice) {
+                alert('MRP price cannot be lower than the Sales price!');
+                $(this).val(''); // Clear the unit price input field
+            }
+        });
+
+        $('form').on('submit', function(event) {
+            var unitPrice = parseFloat($('#unit_price').val());
+            var mrp_price = parseFloat($('#mrp_price').val());
+
+            if (mrp_price < unitPrice) {
+                event.preventDefault(); // Prevent form submission if unit price is lower than cost price
+                alert('MRP price cannot be lower than the Sales price!');
+            }
+        });
+    });
+
+
 	$('#category').autocomplete({
 		source: "<?php echo site_url('items/suggest_category');?>",
 		delay: 10,
@@ -699,7 +786,22 @@ $(document).ready(function()
 
 			rules:
 			{
-				name: 'required',
+				name:
+			{
+			required: true,
+			remote: {
+				url: "<?php echo site_url($controller_name . '/item_name_stringcmp')?>",
+				type: 'GET',
+				data: {
+					'item_name' : "<?php echo $item_info->name; ?>",
+					'mode' : "<?php echo $check_null_flag; ?>",
+					'name' : function()
+					{ 
+						return $('#name').val();
+					},
+				}
+			}
+		},
 				category: 'required',
 				// batch_no: 'required',
 				expire_date:'required',
@@ -770,7 +872,11 @@ $(document).ready(function()
 
 			messages:
 			{
-				name: "<?php echo $this->lang->line('items_name_required'); ?>",
+				name:
+				{ 
+					required:  "<?php echo $this->lang->line('items_name_required'); ?>",
+					remote: "<?php echo $this->lang->line('item_name_message'); ?>",
+				},
 				item_number: "<?php echo $this->lang->line('items_item_number_duplicate'); ?>",
 				category: "<?php echo $this->lang->line('items_category_required'); ?>",
 				// batch_no: "<?php //echo $this->lang->line('items_batch_no_required'); ?>",

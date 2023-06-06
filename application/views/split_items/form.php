@@ -180,7 +180,7 @@
 					<?php echo form_input(array(
 								'name' => 'new_cost_price',
 								'id' => 'new_cost_price',
-								'class' => 'form-control input-sm',
+								'class' => 'form-control input-sm ',
 								'onClick' => 'this.select();',
 
 								'value' => to_currency_no_money(''))
@@ -223,7 +223,7 @@
 					<?php echo form_input(array(
 							'name' => 'new_unit_price',
 							'id' => 'new_unit_price',
-							'class' => 'form-control input-sm',
+							'class' => 'form-control input-sm compare-input',
 							'onClick' => 'this.select();',
 
 							'value' => to_currency_no_money(''))
@@ -267,7 +267,7 @@
 					<?php echo form_input(array(
 							'name' => 'new_mrp_price',
 							'id' => 'new_mrp_price',
-							'class' => 'form-control input-sm',
+							'class' => 'form-control input-sm compare-input2',
 							'onClick' => 'this.select();',
 							'value' => to_currency_no_money(''))
 						); ?>
@@ -489,6 +489,49 @@ $(document).ready(function()
 });
 
 
+$(document).ready(function() {
+        $('.compare-input').on('change', function() {
+            var costPrice = parseFloat($('#new_cost_price').val());
+            var unitPrice = parseFloat($('#new_unit_price').val());
+
+            if (unitPrice < costPrice) {
+                alert('Sales price cannot be lower than the Purchase price!');
+                $(this).val(''); // Clear the unit price input field
+            }
+        });
+
+        $('form').on('submit', function(event) {
+            var costPrice = parseFloat($('#new_cost_price').val());
+            var unitPrice = parseFloat($('#new_unit_price').val());
+
+            if (unitPrice < costPrice) {
+                event.preventDefault(); // Prevent form submission if unit price is lower than cost price
+                alert('Sales price cannot be lower than the Purchase price!');
+            }
+        });
+    });
+
+	$(document).ready(function() {
+        $('.compare-input2').on('change', function() {
+            var unitPrice = parseFloat($('#new_unit_price').val());
+            var mrp_price = parseFloat($('#new_mrp_price').val());
+
+            if (mrp_price < unitPrice) {
+                alert('Sales price cannot be lower than the MRP price!');
+                $(this).val(''); // Clear the unit price input field
+            }
+        });
+
+        $('form').on('submit', function(event) {
+            var unitPrice = parseFloat($('#new_unit_price').val());
+            var mrp_price = parseFloat($('#new_mrp_price').val());
+
+            if (mrp_price < unitPrice) {
+                event.preventDefault(); // Prevent form submission if unit price is lower than cost price
+                alert('Sales price cannot be lower than the MRP price!');
+            }
+        });
+    });
 
 	//no_of_packing_split
 

@@ -241,6 +241,61 @@ class Item extends CI_Model
 		return $this->db->get();
 	}
 
+
+	public function item_name_exists_edit($name_item,$assume)
+	{
+
+
+		$assume = preg_replace('/\s*/', '', $assume);
+		$assume = strtolower($assume);
+		$this->db->select('lower(REPLACE(name," ","")) as name');
+		 $this->db->from('items');
+		 $this->db->where('deleted',0);
+		 $query=$this->db->get();
+		 $item_name=$query->result();
+		 foreach($item_name as $item_name)
+		 { 		
+			$item_name=$item_name->name;
+
+			$name_item = preg_replace('/\s*/', '', $name_item);
+			$name_item = strtolower($name_item);
+			
+			if($item_name ==$name_item)
+			{
+				if($name_item == $assume){
+					return "true";
+				}
+				else{
+				return "false";
+				}
+			}			
+		 }
+		 return "true";		 
+	}
+
+	
+	public function item_name_exists($name_item)
+	{
+		$this->db->select('lower(REPLACE(name," ","")) as name');
+		 $this->db->from('items');
+		 $this->db->where('deleted',0);
+		 $query=$this->db->get();
+		 $item_name=$query->result();
+		 foreach($item_name as $item_name)
+		 { 		
+			$item_name=$item_name->name;
+
+			$name_item = preg_replace('/\s*/', '', $name_item);
+			$name_item = strtolower($name_item);
+			
+			if($item_name ==$name_item)
+			{
+				return "false";
+			}			
+		 }
+		 return "true";		 
+	}
+
 	/*
 	Returns all the items
 	*/
