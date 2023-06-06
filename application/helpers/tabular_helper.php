@@ -961,7 +961,7 @@ function get_split_item_barcode_data_row($split_items,  $count)
 	return array (
 		
 		'split_id' => $split_items->id,
-		'split_item_id' =>  $split_items->item_id,
+		'split_item_id' =>  $split_items->new_item_name,
 		'split_item_name' => $split_items->name,
 		'split_sales_price' =>$split_items->new_unit_price,
 		'split_expiry_date' =>$split_items->expire_date,

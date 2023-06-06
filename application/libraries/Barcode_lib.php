@@ -164,6 +164,9 @@ class Barcode_lib
 
 	public function display_barcode($item, $barcode_config)
 	{
+
+		$expiry_date =$this->manage_display_layout($barcode_config['barcode_five_row'], $item, $barcode_config);
+		
 		$display_table = "<table>";
 		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</td></tr>";
 		$barcode = $this->generate_barcode($item, $barcode_config);	
@@ -171,7 +174,7 @@ class Barcode_lib
 		$display_table .= "<tr><td align='center'><img src='data:image/png;base64,$barcode' /></td></tr>";
 		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</td></tr>";
 		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_four_row'], $item, $barcode_config) . "</td></tr>";
-		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_five_row'], $item, $barcode_config) . "</td></tr>";
+		$display_table .= "<tr><td align='center'>" . $expiry_date . "</td></tr>";
 		$display_table .= "</table>";
 
 		return $display_table;
@@ -180,14 +183,15 @@ class Barcode_lib
 
 	public function display_barcode_custom($item, $barcode_config,$sales_price,$expiry_date,$item_name_new)
 	{
-		$sales_price_text = "Price:";
-		$expiry_date_text = "Expiry date:";
+		$sales_price_text = "Price Rs. ";
+		$expiry_date_text = "Expiry Date ";
+		$expiry_date = substr($expiry_date, 2);
 		$display_table = "<table>";
 		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</td></tr>";
 		$barcode = $this->generate_barcode($item, $barcode_config);	
 		$display_table .= "<tr><td align='center'>" .$item_name_new . "</td></tr>";
 		$display_table .= "<tr><td align='center'><img src='data:image/png;base64,$barcode' /></td></tr>";
-		$display_table .= "<tr><td align='center'>" .$sales_price_text.$sales_price. "</td></tr>";
+		$display_table .= "<tr><td align='center'>" .$sales_price_text.number_format((float)$sales_price, 2, '.', ''). "</td></tr>";
 		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_four_row'], $item, $barcode_config) . "</td></tr>";
 		$display_table .= "<tr><td align='center'>" .$expiry_date_text.$expiry_date. "</td></tr>";
 		$display_table .= "</table>";
@@ -202,7 +206,7 @@ class Barcode_lib
 
 		if($layout_type == 'name')
 		{
-			$result = $this->CI->lang->line('items_name') . " " . $item['name'];
+			$result =  $item['name'];
 		}
 		elseif($layout_type == 'category' && isset($item['category']))
 		{
@@ -214,7 +218,7 @@ class Barcode_lib
 		}
 		elseif($layout_type == 'unit_price' && isset($item['unit_price']))
 		{
-			$result = $this->CI->lang->line('items_unit_price') . " " . to_currency($item['unit_price']);
+			$result = "Price " . to_currency($item['unit_price']);
 		}
 		elseif($layout_type == 'company_name')
 		{
@@ -226,7 +230,7 @@ class Barcode_lib
 		}
 		elseif($layout_type == 'expire_date' && isset($item['expire_date']))
 		{
-			$result = $this->CI->lang->line('items_expire_date') . " " . date('d-m-y', strtotime($item['expire_date']));
+			$result = "Expiry Date ". " " . date('y-m-d', strtotime($item['expire_date']));
 		}
 		elseif($layout_type == 'item_id' && isset($item['item_id']))
 		{

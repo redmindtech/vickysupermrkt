@@ -532,7 +532,7 @@ class Items extends Secure_Controller
 
 		$item_ids = explode(':',$item_ids);
 		
-		$result = $this->Item->get_multiple_info_purchase($item_ids, $this->item_lib->get_item_location())->result_array();
+		$result = $this->Item->get_multiple_info_purchase($item_name_no, $this->item_lib->get_item_location())->result_array();
 		$config = $this->barcode_lib->get_barcode_config();
 
 		$data['barcode_config'] = $config;

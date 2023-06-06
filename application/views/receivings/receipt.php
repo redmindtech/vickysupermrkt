@@ -146,7 +146,10 @@
 					<td colspan="9" style='text-align:right;'><?php echo $this->lang->line('sales_amount_tendered'); ?></td>
 					<td><div class="total-value"><?php echo to_currency($amount_tendered); ?></div></td>
 				</tr>
-
+				<tr>
+					<td colspan="9" style='text-align:right;'><?php echo "Other Charges"; ?></td>
+					<td><div class="total-value"><?php echo to_currency($other_charges); ?></div></td>
+				</tr>
 				<tr>
 					<td colspan="9" style='text-align:right;'><?php echo $this->lang->line('sales_change_due'); ?></td>
 					<td><div class="total-value"><?php echo $amount_change; ?></div></td>
