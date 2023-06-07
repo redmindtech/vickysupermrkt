@@ -106,7 +106,7 @@
 		</div>
 
 		<div class="form-group form-group-sm">
-			<?php echo form_label($this->lang->line('expenses_categories_name'), 'category', array('class'=>'control-label col-xs-3')); ?>
+			<?php echo form_label($this->lang->line('expenses_categories_name'), 'category', array('class'=>'required control-label col-xs-3')); ?>
 			<div class='col-xs-6'>
 				<?php echo form_dropdown('expense_category_id', $expense_categories, $expenses_info->expense_category_id, array('class'=>'form-control', 'id'=>'category')); ?>
 			</div>
