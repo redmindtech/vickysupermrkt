@@ -46,7 +46,7 @@
 			<!-- <th><?php //echo $this->lang->line('supplier_rate_difference'); ?></th> -->
 			<th><?php echo $this->lang->line('supplier_payment_mode'); ?></th>
 			<!-- <th><?php //echo $this->lang->line('supplier_purchase_return_amount'); ?></th> -->
-			<th><?php echo $this->lang->line('supplier_less'); ?></th>
+			<!-- <th><?php //echo $this->lang->line('supplier_less'); ?></th> -->
 			<th><?php echo $this->lang->line('supplier_closing_balance'); ?></th>
 
 		</tr>
@@ -67,7 +67,7 @@
 
 <td><?php echo $supplier['payment_type']; ?></td>
 
-<td><?php echo $supplier['discount']; ?></td>
+<!-- <td><?php //echo $supplier['discount']; ?></td> -->
 <td><?php echo $supplier['closing_balance']; ?></td>
 
 
@@ -118,8 +118,8 @@
 				}
 				?>
 				
-				<th><?php echo $this->lang->line('total_less'); ?></th>
-				<td><?php echo $supplier_summary['discount'];?></td></tr>
+				<!-- <th><?php //echo $this->lang->line('total_less'); ?></th>
+				<td><?php //echo $supplier_summary['discount'];?></td></tr> -->
 
 				</tr>
 
