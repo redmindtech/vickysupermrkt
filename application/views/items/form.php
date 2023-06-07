@@ -574,13 +574,27 @@
 
 <script type="text/javascript">
 //validation and submit handling
+
+check_null_flag =<?php echo $check_null_flag; ?>;
+
 $(document).ready(function()
 {
-
+	
 	<?php $this->load->view('partial/datepicker_locale'); ?>
 	
 	$(document).ready(function() {
+
+	if(check_null_flag == 0){
+		document.getElementById("expire_date_show").checked = true;
+	}
+		
   // Function to show input field
+
+  function showAlert() {
+	    alert("hiii");
+  }
+
+
   function showInputField() {
 	    $('#expire_date').show();
   }
