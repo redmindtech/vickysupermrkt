@@ -129,7 +129,7 @@ class Receivings extends Secure_Controller
 		// $this->form_validation->set_rules('expire_date', 'lang:expire_date', 'required|callback_numeric');
 
 		$expire_date_1 = $this->input->post('expire_date');
- log_message('debug',print_r($expire_date_1,TRUE));
+ log_message('debug',print_r($data,TRUE));
  if($expire_date_1 =="No Expire")
  {
 	$expire_date ="No Expire";	
@@ -185,7 +185,8 @@ class Receivings extends Secure_Controller
 		$data['selected_supplier_name'] = !empty($receiving_info['supplier_id']) ? $receiving_info['company_name'] : '';
 		$data['selected_supplier_id'] = $receiving_info['supplier_id'];
 		$data['receiving_info'] = $receiving_info;
-	
+		
+
 		$this->load->view('receivings/form', $data);
 	}
 
@@ -414,6 +415,7 @@ class Receivings extends Secure_Controller
 		$data['comment'] = $this->receiving_lib->get_comment();
 		$data['reference'] = $this->receiving_lib->get_reference();
 		$data['payment_options'] = $this->Receiving->get_payment_options();
+		
 
 		// log_message('debug',print_r($data ,TRUE));
 
@@ -427,6 +429,9 @@ class Receivings extends Secure_Controller
 			$data['last_name'] = $supplier_info->last_name;
 			$data['supplier_email'] = $supplier_info->email;
 			$data['supplier_address'] = $supplier_info->address_1;
+			$data['new_supplier_close_bal']=$this->Supplier->receiving_due_amount($supplier_id);
+			log_message('debug',print_r($data['new_supplier_close_bal'] ,TRUE));
+
 			if(!empty($supplier_info->zip) or !empty($supplier_info->city))
 			{
 				$data['supplier_location'] = $supplier_info->zip . ' ' . $supplier_info->city;				

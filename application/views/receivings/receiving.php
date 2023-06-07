@@ -298,7 +298,7 @@ if (isset($success))
 									<tr>
 										<td><?php echo $this->lang->line('receivings_pending_amount'); ?></td>
 										<td>
-											<?php echo form_input(array('name'=>'due_amount','value'=>to_currency_no_money(0.00), 'class'=>'form-control input-sm', 'size'=>'5','onClick'=>'this.select();')); ?>
+											<?php echo form_input(array('name'=>'due_amount','readonly'=>true,'value'=>to_currency_no_money($new_supplier_close_bal), 'class'=>'form-control input-sm', 'size'=>'5','onClick'=>'this.select();')); ?>
 										</td>
 									</tr>
 									<tr>

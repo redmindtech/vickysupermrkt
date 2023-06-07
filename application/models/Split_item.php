@@ -312,6 +312,7 @@ class Split_item extends CI_Model
 		$this->db->group_start();
 		$this->db->or_like('receivings_items.receiving_id', $search);
 		$this->db->or_like('receivings_items.item_id', $search);
+		$this->db->or_like('items.name', $search);
 		$this->db->group_end();
 		$this->db->where('stock_qty >', 0);
 

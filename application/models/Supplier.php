@@ -324,5 +324,145 @@ class Supplier extends Person
 			return $this->lang->line('suppliers_cost');
 		}
 	}
+
+	public function supplier_info($id)
+	{ 
+		$this->db->select('supplier_id,receiving_time,opening_balance,reference,purchase_amount,paid_amount,discount, payment_type,closing_balance');
+		$this->db->from('receivings');
+		$this->db->join('receivings_items', 'receivings_items.receiving_id = receivings.receiving_id', 'inner');
+		$this->db->where('supplier_id',$id);
+		$query = $this->db->get();			
+		$supplier_details = $query->result_array();
+		return $supplier_details;
+
+	}
+
+	public function supplier_summary($id)
+	{
+		// SELECT SUM(opening_balance) FROM ospos_ro_receivings_accounts WHERE supplier_id=10;
+		$this->db->select('supplier_id,sum(purchase_amount) as purchase_amount,sum(discount) as discount');
+		$this->db->from('receivings');
+		$this->db->join('receivings_items', 'receivings_items.receiving_id = receivings.receiving_id', 'inner');
+		$this->db->where('supplier_id',$id);
+		$query = $this->db->get()->result();			
+		foreach($query as $row)
+			{
+				$supplier_total_open_balance[$row->supplier_id]=array('purchase_amount'=>$row->purchase_amount,
+				//'purchase_return_amount'=>$row->purchase_return_amount,
+				'discount'=>$row->discount,
+				// 'rate_difference'=>$row->rate_difference,							
+				);
+			}
+		 return $supplier_total_open_balance;
+	}
+
+	public function open_close_bal($supplier_id)
+	{
+		$this->db->select('	opening_balance, closing_balance');
+		$this->db->from('receivings');
+		$this->db->where('supplier_id='.$supplier_id);
+		$query = $this->db->get();			
+		$open_close_bal = $query->result_array();
+		 return $open_close_bal;
+		
+	}
+
+	public function getNegativeValues($supplier_id)
+{
+	$this->db->select('SUM(paid_amount) as paid_amount');
+	$this->db->from('receivings');
+	// $this->db->join('receivings_items', 'receivings_items.receiving_id = receivings.receiving_id', 'inner');
+	$this->db->where('paid_amount <', 0);
+	$query = $this->db->get();			
+	$stock_return= $query->result_array();
+    return $stock_return;
+}
+
+	public function new_open_bal($supplier_id)
+	{
+		$this->db->select('opening_balance');
+		$this->db->from('receivings');
+		$this->db->where("supplier_id=".$supplier_id);
+		$this->db->order_by("receiving_id","desc");
+		$this->db->limit(1);
+		$query = $this->db->get();			
+		$open_close_bal = $query->result_array();
+		 return $open_close_bal;
+		
+	}
+
+	public function new_close_bal($supplier_id)
+	{
+		$this->db->select('closing_balance');
+		$this->db->from('receivings');
+		$this->db->where("supplier_id=".$supplier_id);
+		$this->db->order_by("receiving_id","desc");
+		$this->db->limit(1);
+		$query = $this->db->get();			
+		$open_close_bal = $query->result_array();
+		
+		 return $open_close_bal;
+		
+	}
+
+	public function receiving_due_amount($supplier_id)
+{
+    $this->db->select('closing_balance');
+    $this->db->from('receivings');
+    $this->db->where("supplier_id", $supplier_id);
+    $this->db->order_by("receiving_id", "desc");
+    $this->db->limit(1);
+    $query = $this->db->get();
+    $result = $query->row(); // Use row() instead of result_array()
+    
+    if ($result) {
+        return $result->closing_balance; // Return the closing balance value
+    }
+    
+    return 0; // Default value if no result is found
+}
+
+
+	public function cash($id)
+	{
+		// SELECT  supplier_id,SUM(paid_amount),payment_mode FROM ospos_ro_receivings_accounts 
+		// WHERE payment_mode='Cash' AND supplier_id=10;
+	$this->db->select('SUM(paid_amount) as paid_amount');
+	$this->db->from('receivings');
+	$this->db->where(' payment_type="Cash" and supplier_id='.$id);
+	$query = $this->db->get();			
+	$cash= $query->result_array();
+    return $cash;
+
+	}
+
+	public function cheque($id)
+	{
+		// SELECT  supplier_id,SUM(paid_amount),payment_mode FROM ospos_ro_receivings_accounts 
+		// WHERE payment_mode!='Cash' AND supplier_id=10;
+	$this->db->select('SUM(paid_amount) as paid_amount');
+	$this->db->from('receivings');
+	$this->db->where(' payment_type="Card" and supplier_id='.$id);
+	$query = $this->db->get();			
+	$cheque= $query->result_array();
+	
+    return $cheque;
+
+	}
+
+	public function upi($id)
+	{
+		// SELECT  supplier_id,SUM(paid_amount),payment_mode FROM ospos_ro_receivings_accounts 
+		// WHERE payment_mode!='Cash' AND supplier_id=10;
+	$this->db->select('SUM(paid_amount) as paid_amount');
+	$this->db->from('receivings');
+	$this->db->where(' payment_type="UPI" and supplier_id='.$id);
+	$query = $this->db->get();			
+	$cheque= $query->result_array();
+	
+    return $cheque;
+
+	}
+
 }
 ?>

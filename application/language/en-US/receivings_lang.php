@@ -94,4 +94,21 @@ $lang["receivings_no_of_pack_split_required"] = "No of Pack / Kg Split In Hand i
 $lang["receivings_no_of_packing_split_required"] = "No of Packing Split is Required Field";
 $lang["receivings_split_type_required"] = "Split Type is Required Field";
 $lang["receivings_new_cost_price_required"] = "Purchase Price is Required Field";
-
+$lang["receivings_upi"] = "UPI";
+$lang["receivings_card"] = "Card";
+$lang["total_upi"] = "Total UPI";
+$lang["total_card"] = "Total Card";
+$lang["total_purchase"] = "Total Purchase";
+$lang["supplier_date"] = "Date";
+$lang["supplier_balance"] = "Opening Balance";
+$lang["supplier_purchase_amount"] = "Purchase Amount";
+$lang["supplier_paid_amount"] = "Paid Amount";
+$lang["supplier_payment_mode"] = "Payment Type";
+$lang["supplier_less"] = "Discount";
+$lang["supplier_closing_balance"] = "Pending / Due Amount";
+$lang["total_return"] = "Total Return";
+$lang["total_cash"] = "Total Cash Payment";
+$lang["total_less"] = "Total Discount";
+$lang["last_opening_balance"] = "Opening Balance";
+$lang["last_closing_balance"] = "Closing Balance";
+ 

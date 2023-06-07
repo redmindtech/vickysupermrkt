@@ -275,7 +275,7 @@ function get_suppliers_manage_table_headers()
 
 	$headers = array(
 		array('people.person_id' => $CI->lang->line('common_id')),
-		array('company_name' => $CI->lang->line('suppliers_company_name')),
+		array('company_name' => $CI->lang->line('suppliers_company_name'),'escape' => FALSE),
 		array('agency_name' => $CI->lang->line('suppliers_agency_name')),
 		array('category' => $CI->lang->line('suppliers_category')),
 		// array('last_name' => $CI->lang->line('common_last_name')),
@@ -295,7 +295,7 @@ function get_suppliers_manage_table_headers()
 /*
 Get the html data row for the supplier
 */
-function get_supplier_data_row($supplier)
+function get_supplier_data_row($supplier,$count)
 {
 	$CI =& get_instance();
 
@@ -303,7 +303,9 @@ function get_supplier_data_row($supplier)
 
 	return array (
 		'people.person_id' => $supplier->person_id,
-		'company_name' => $supplier->company_name,
+		// 'company_name' => $supplier->company_name,
+		'company_name' => anchor($controller_name."/suppliers_details/$supplier->person_id/$count", $supplier->company_name,
+			array('class'=>"modal-dlg", 'title'=>"Summary of ".$supplier->company_name)),
 		'agency_name' => $supplier->agency_name,
 		'category' => $supplier->category,
 		// 'last_name' => $supplier->last_name,
