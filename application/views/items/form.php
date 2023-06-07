@@ -536,24 +536,24 @@
 			$check_null_flag = 2;
 			$check_item_id_null = 2;
 			$f = 0;
-			$customer_category_price_fetched=array();
+			// $customer_category_price_fetched=array();
 			if($check_name == "")
 			{
 				$check_null_flag = 0;//add mode
 			}
 			else
 			{
-				if($item_customer_category_price_fetch == "null"){
+				// if($item_customer_category_price_fetch == "null"){
 					
-					$check_item_id_null = 1;
-				}else{
-					foreach($item_customer_category_price_fetch as $supplier)
-					{
-					$customer_category_price_fetched[$f] = $supplier['sales_price'];//edit		
-					$f++;				
-					}
+				// 	$check_item_id_null = 1;
+				// }else{
+				// 	foreach($item_customer_category_price_fetch as $supplier)
+				// 	{
+				// 	$customer_category_price_fetched[$f] = $supplier['sales_price'];//edit		
+				// 	$f++;				
+				// 	}
 					
-				}
+				// }
 					
 		
 				$check_null_flag =1;
