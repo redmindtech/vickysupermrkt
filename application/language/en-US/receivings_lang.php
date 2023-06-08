@@ -111,4 +111,6 @@ $lang["total_cash"] = "Total Cash Payment";
 $lang["total_less"] = "Total Discount";
 $lang["last_opening_balance"] = "Opening Balance";
 $lang["last_closing_balance"] = "Closing Balance";
+$lang["Split_items_new_no_Split_items_new_to_display"] = "No Record Found";
+
  
