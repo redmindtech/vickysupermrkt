@@ -80,10 +80,10 @@
 	<table id="receipt_items">
 		<!-- TABLE HEADERS -->
 		<tr id="table_headers">
-			<th style="width:40%;border-style: dotted;border-left: none;border-right: none;"><?php echo $this->lang->line('sales_itemname'); ?></th>
-			<th style="width:10%;border-style: dotted;border-left: none;border-right: none;"><?php echo $this->lang->line('sales_mrp'); ?></th>
-			<th style="width:10%;border-style: dotted;border-left: none;border-right: none;"><?php echo $this->lang->line('sales_rate'); ?></th>
-			<th style="width:20%;border-style: dotted;border-left: none;border-right: none;"><?php echo $this->lang->line('sales_qty'); ?></th>
+			<th style="width:50%;border-style: dotted;border-left: none;border-right: none;"><?php echo $this->lang->line('sales_itemname'); ?></th>
+			<th style="width:10%;border-style: dotted;border-left: none;border-right: none;text-align: center;"><?php echo $this->lang->line('sales_mrp'); ?></th>
+			<th style="width:10%;border-style: dotted;border-left: none;border-right: none;text-align: center;"><?php echo $this->lang->line('sales_rate'); ?></th>
+			<th style="width:10%;border-style: dotted;border-left: none;border-right: none;text-align: center;"><?php echo $this->lang->line('sales_qty'); ?></th>
 			<th style="width:20%;border-style: dotted;border-left: none;border-right: none;" class="total-value"><?php echo $this->lang->line('sales_amt'); ?></th>
 			<?php
 			if($this->config->item('receipt_show_tax_ind'))
@@ -237,14 +237,14 @@ for($l = 0; $l < count($i_name); $l++){
 			<!-- TABLE CONTENTS -->
 				<tr id="table_contents">
 					<td><?php echo ucfirst($i_name[$z]); ?></td>
-					<td><?php echo $i_mrp_price[$z]; ?></td>
-					<td><?php echo $i_price[$z];
+					<td style="text-align: center;"><?php echo $i_mrp_price[$z]; ?></td>
+					<td style="text-align: center;"><?php echo $i_price[$z];
 					
 					 ?></td>
-					<td><?php echo $i_quantity[$z];
+					<td style="text-align: center;"><?php echo $i_quantity[$z];
 					
 					 ?></td>
-					<td class="total-value"><?php echo number_format((float)$i_amount[$z], 4, '.', '');
+					<td class="total-value"><?php echo number_format((float)$i_amount[$z], 2, '.', '');
 					 ?></td>
 					
 				</tr>	
@@ -285,16 +285,16 @@ for($l = 0; $l < count($i_name); $l++){
 		<tr>
 		<tr>
 		<td style="text-align: center"><b><?php echo "Tot.Qty: &nbsp;&nbsp;".$i_quantity_total; ?></b></td>
-		<td style="text-align: center" colspan="2"><b><?php echo "Tot Items: &nbsp;&nbsp;".count($i_name); ?></b></td>
-		<td></td>
+		<td style="text-align: center" colspan="3"><b><?php echo "Tot Items: &nbsp;&nbsp;".count($i_name); ?></b></td>
+		
 		<td></td>
 		</tr>
 
 		<?php $border = (!$this->config->item('receipt_show_taxes') && !($this->config->item('receipt_show_total_discount') && $discount > 0)); ?>
 		<!-- 7777 -->
 		<tr id="7">
-			<td colspan="4" style="text-align:right;border-style: dotted;border-left: none;border-right: none;font-size:26px;"><b><?php echo "TOTAL:"; ?></b></td>
-			<td style="text-align:right;border-style: dotted;border-left: none;border-right: none;font-size:26px;"><b><?php echo to_currency($i_amount_total); ?></b></td>
+			
+			<td colspan="5" style="text-align:right;border-style: dotted;border-left: none;border-right: none;font-size:26px;"><b><?php echo "TOTAL:".to_currency($i_amount_total); ?></b></td>
 		</tr>
 
 		<!-- 8888 -->
