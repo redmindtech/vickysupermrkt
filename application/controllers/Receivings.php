@@ -532,5 +532,44 @@ class Receivings extends Secure_Controller
 		// var_dump($data_row);
 		echo json_encode(array('total' => $total_rows, 'rows' => $data_rows));
 	}
+
+	public function view($unique_id = -1)
+	{
+		$data['receiving_edit_info'] = $this->Receiving->get_info_edit($unique_id);
+
+		$this->load->view("receivings/receiving_edit_form", $data);
+	}
+
+	public function update_expire_date($unique_id = -1)
+	{
+		$expire_date = $this->input->post('new_expire_date');
+
+		// log_message('debug',print_r($expire_date,TRUE));
+
+		$expire_date_formatter_R = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $expire_date);
+		
+		// log_message('debug',print_r($expire_date_formatter_R,TRUE));
+
+		$expire_date_formatter = $expire_date_formatter_R->format('Y-m-d H:i:s');
+
+		$update_expire_date_data = array(
+			'expire_date' => $expire_date_formatter,
+		);
+		
+		if($this->Receiving->update_expire($update_expire_date_data, $unique_id))
+		{
+			$update_expire_date_data = $this->xss_clean($update_expire_date_data);
+
+			// Update master_category_id
+			
+				echo json_encode(array('success' => TRUE, 'message' => "Expire Date Updated Successfully", 'id' => $unique_id));
+			
+		}
+		//failure
+		else
+		{
+			echo json_encode(array('success' => FALSE, 'message' => "Expire Date Update Failed", 'id' => -1));
+		}
+	}
 }
 ?>

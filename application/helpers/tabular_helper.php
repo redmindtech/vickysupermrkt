@@ -897,12 +897,12 @@ function get_receiving_items_manage_table_headers()
 
 	$headers = array(
 		array('serial_number' => $CI->lang->line('common_serial_number'), 'sortable' => FALSE),
-		array('unique_id' => "UniqueId"),
-		array('id' => $CI->lang->line('common_serial_number')),
-		array('item_id' => "Item id"),
+		// array('unique_id' => "UniqueId"),
+		// array('id' => $CI->lang->line('common_serial_number')),
+		// array('item_id' => "Item id"),
 		array('receivings_date' => $CI->lang->line('receivings_date')),
 		array('item_name' => $CI->lang->line('receivings_item_name')),
-		array('expire_date' => $CI->lang->line('receivings_expire_date')),
+		// array('expire_date' => $CI->lang->line('receivings_expire_date')),
 		array('stock_qty' => $CI->lang->line('split_items_no_of_pack_kg')),
 	);
 
@@ -918,18 +918,26 @@ function get_receiving_item_data_row($receiving_items, $count)
 
 	$controller_name = strtolower(get_class($CI));
 
+	if ($receiving_items->expire_date !== '0000-00-00')
+	{
+		$expire_date = $receiving_items->expire_date;
+	}
+	else{
+		$expire_date = "No Expire Date";
+	}
+// var_dump($receiving_items->expire_date);
 	return array (
 		'serial_number'=>$count,
 		'unique_id' => $receiving_items->unique_id,
-		'id' => $receiving_items->receiving_id,
+		// 'id' => $receiving_items->receiving_id,
 		'item_id' => $receiving_items->item_id,
 		'receivings_date' => to_date(strtotime($receiving_items->receiving_time)),
 		'item_name' => $receiving_items->name,
-		'expire_date' =>to_date(strtotime($receiving_items->expire_date)),
+		'expire_date' =>$expire_date,
 		'stock_qty' =>to_quantity_decimals($receiving_items->stock_qty),
-		// 'edit' => anchor($controller_name."/view/$receiving_items->receiving_id", '<span class="glyphicon glyphicon-edit" disabled></span>',
-		// 	array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_new'))
-		// )
+		'edit' => anchor($controller_name."/view/$receiving_items->unique_id", '<span class="glyphicon glyphicon-edit" disabled></span>',
+			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_new'))
+		)
 	);
 }
 

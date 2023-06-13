@@ -49,16 +49,16 @@ $(document).ready(function()
 				// $("#payment_summary").html(response.payment_summary);
 				// $("#table tbody tr:last td:first").html("");
 				// $("#table tbody tr:last").css('font-weight', 'bold');
-				$('#table').find('tr').each(function(){ 
+				// $('#table').find('tr').each(function(){ 
 				
 			
-				$(this).find('td').eq(2).hide();
-				$(this).find('th').eq(2).hide();
-				$(this).find('td').eq(3).hide();
-				$(this).find('th').eq(3).hide();
+				// $(this).find('td').eq(2).hide();
+				// $(this).find('th').eq(2).hide();
+				// $(this).find('td').eq(3).hide();
+				// $(this).find('th').eq(3).hide();
 				
-				//$(this).find('td').eq(1).html('<td>'+serial_no+'</td>'); 
-				}); 
+				// //$(this).find('td').eq(1).html('<td>'+serial_no+'</td>'); 
+				// }); 
 			
 			}
 		},
